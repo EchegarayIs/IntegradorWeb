@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Pago - El Gallo Giro</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+  <header class="nav"><h1>Métodos de pago</h1><nav><a href="cart.html">Carrito</a></nav></header>
+  <main class="container">
+    <div class="card">
+      <h3>Confirmar método de pago</h3>
+      <label><input type="radio" name="pay" value="cash" checked /> Pago en efectivo</label>
+      <label><input type="radio" name="pay" value="card" /> Pago con tarjeta</label>
+      <div id="cardForm" style="display:none">
+        <label>Número de tarjeta<input id="cardNum" /></label>
+        <label>Nombre titular<input id="cardName" /></label>
+        <label>MM/AA<input id="exp" /></label>
+        <label>CVV<input id="cvv" /></label>
+      </div>
+      <button id="payBtn" class="btn">Pagar ahora</button>
+      <p id="payMsg" class="msg"></p>
+    </div>
+  </main>
+  <script src="../modelo/cartModel.js"></script>
+  <script src="../controlador/checkoutController.js"></script>
+</body>
+</html>

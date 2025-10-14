@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Registrarse - El Gallo Giro</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+  <header class="nav"><h1>Registrarse</h1><nav></nav></header>
+  <main class="container">
+    <form id="registerForm" class="card">
+      <label>Nombre(s)<input type="text" id="nombre" required /></label>
+      <label>Apellidos<input type="text" id="apellidos" required /></label>
+      <label>Correo Electrónico<input type="email" id="email" required /></label>
+      <label>Contraseña<input type="password" id="password" required /></label>
+      <button type="submit" class="btn" >registrarme</button>
+      <button type="submit" class="btn"><a class="btn" href="login.html">Cancelar</a></button>
+      <p id="registerMsg" class="msg"></p>
+    </form>
+  </main>
+  <script src="../modelo/userModel.js"></script>
+  <script src="../controlador/authController.js"></script>
+</body>
+</html>

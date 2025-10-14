@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Carrito - El Gallo Giro</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+  <header class="nav"><h1>Tu pedido</h1>
+  
+    <nav>
+      <a href="index.html">Inicio</a>
+      <div class="dropdown">
+        <a href="#">Menú</a>
+        <div class="dropdown-content">
+          <a href="Tacos.html"> Tacos</a>
+          <a href="Bebidas.html"> Bebidas</a>
+          <a href="Tortas.html"> Tortas</a>
+        </div>
+      </div>
+    
+    <a href="perfil.html">Perfil</a>
+    </nav></header>
+  <main class="container">
+    <div id="cart-items"></div>
+    <div class="card">
+      <p id="totals">Subtotal: $0.00</p>
+      <a class="btn" href="checkout.html">Proceder al pago</a>
+    </div>
+  </main>
+  <script src="../modelo/cartModel.js"></script>
+  <script src="../controlador/cartController.js"></script>
+</body>
+</html>

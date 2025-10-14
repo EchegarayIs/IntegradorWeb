@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Ingresar - El Gallo Giro</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+  <header class="nav">
+    <h1>Taquería - El Gallo Giro</h1>
+    
+  </header>
+  <main class="container">
+    <form id="loginForm" class="card">
+      <label>Correo Electrónico<input type="email" id="email" required /></label>
+      <label>Contraseña<input type="password" id="password" required /></label>
+      <button type="submit" class="btn">Iniciar Sesión</button>
+      <p>¿No tienes cuenta? <a href="register.html">Registrarse</a></p>
+      <p id="loginMsg" class="msg"></p>
+    </form>
+  </main>
+  <script src="../modelo/userModel.js"></script>
+  <script src="../controlador/authController.js"></script>
+</body>
+</html>
