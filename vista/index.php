@@ -16,14 +16,24 @@
             </div>
         </div>
         <nav id="main-nav">
-            <ul>
+            <ul class="despliegue">
                 <li><a href="#" class="active">Inicio</a></li>
-                <li><a href="#">Menú</a></li>
+                <li>
+
+                    <a href="index.html">Menú</a>
+                    <div class="despliegue-content">
+                        <a href="Tacos.html">Tacos</a>
+                        <a href="Bebidas.html">Tortas</a>
+                        <a href="Tortas.html">Bebidas</a>
+                    </div>
+
+                </li>
                 <li><a href="#">Carrito</a></li>
             </ul>
         </nav>
         <button id="login-button">Iniciar Sesión</button>
     </header>
+
 
     <main>
         <section id="hero-section">

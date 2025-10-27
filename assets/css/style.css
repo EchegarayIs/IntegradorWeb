@@ -9,6 +9,57 @@
     --card-background: #FFFFFF;
 }
 
+
+
+    /* Contenedor principal del menú */
+.despliegue {
+  position: relative; 
+  display: inline-block; 
+}
+
+/* Estilo del botón principal */
+.mainmenubtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Contenido del menú desplegable: **OCULTO POR DEFECTO** */
+.despliegue-content {
+  display: none; /* <-- ESTO LO OCULTA */
+  position: absolute; 
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1; 
+}
+
+/* Estilo de los enlaces y que se muestren en bloque (vertical) */
+.despliegue-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block; /* <-- ESTO LOS PONE UNO DEBAJO DEL OTRO */
+}
+
+/* **El truco principal:** Muestra el menú al pasar el ratón */
+.despliegue:hover .despliegue-content {
+  display: block; /* <-- ESTO LO MUESTRA AL HACER HOVER */
+}
+
+/* Estilos de interacción */
+.despliegue-content a:hover {
+  background-color: #f1f1f1;
+}
+.despliegue:hover .mainmenubtn {
+  background-color: #3e8e41;
+}
+
+
+
 /* ---------------------------------- */
 /* Estilos Generales y Mobile First   */
 /* ---------------------------------- */
@@ -2814,4 +2865,5 @@ a {
         flex-direction: column;
         gap: 20px;
     }
+
 }

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Taquería El Gallo Giro</title>
     <link rel="stylesheet" href="../assets/css/style.css"> 
-    <link rel="stylesheet" href="login.css">
 </head>
 <body>
     <header id="main-header">
@@ -19,11 +18,8 @@
         <nav id="main-nav">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="#">Menú</a></li>
-                <li><a href="#">Carrito</a></li>
             </ul>
         </nav>
-        <button id="login-button" class="active-login-btn">Iniciar Sesión</button>
     </header>
 
     <main class="login-main">
