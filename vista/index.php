@@ -20,11 +20,11 @@
                 <li><a href="#" class="active">Inicio</a></li>
                 <li>
 
-                    <a href="index.html">Menú</a>
+                    <a href="index.php">Menú</a>
                     <div class="despliegue-content">
-                        <a href="Tacos.html">Tacos</a>
-                        <a href="Bebidas.html">Tortas</a>
-                        <a href="Tortas.html">Bebidas</a>
+                        <a href="Tacos.php">Tacos</a>
+                        <a href="Bebidas.php">Tortas</a>
+                        <a href="Tortas.php">Bebidas</a>
                     </div>
 
                 </li>

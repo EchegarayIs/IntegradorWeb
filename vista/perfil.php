@@ -18,9 +18,9 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.php">Inicio</a></li>
                 <li><a href="#">Menú</a></li>
-                <li><a href="carrito.html">Carrito</a></li>
+                <li><a href="carrito.php">Carrito</a></li>
             </ul>
         </nav>
         <button id="user-button" class="user-active active-profile-button">Juan Pérez</button> 

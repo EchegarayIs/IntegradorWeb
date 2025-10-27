@@ -1,1 +1,1 @@
-<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;URL=vista/index.html">Si no redirige, abre vista/index.html
+<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;URL=vista/index.php">Si no redirige, abre vista/index.html

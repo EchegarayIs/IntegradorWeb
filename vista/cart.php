@@ -18,7 +18,7 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.php">Inicio</a></li>
                <li><a href="#">Menú</a></li>
                 <li class="active-menu-link"><a href="#">Carrito</a></li> </ul>
         </nav>

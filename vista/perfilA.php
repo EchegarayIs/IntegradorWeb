@@ -11,8 +11,8 @@
   <header class="nav">
     <h1>Taquería - El Gallo Giro</h1>
     <nav>
-      <a href="indexA.html">Inicio</a>
-      <a href="perfilA.html">Perfil</a>
+      <a href="indexA.php">Inicio</a>
+      <a href="perfilA.php">Perfil</a>
     </nav>
   </header>
 
@@ -42,7 +42,7 @@
         <li>Reportes</li>
         <li>personal</li>
         <li>Información personal</li>
-        <li><a href="login.html" > Cerrar sesión </a></li>
+        <li><a href="login.php" > Cerrar sesión </a></li>
       </ul>
     </aside>
 

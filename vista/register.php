@@ -18,7 +18,7 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.php">Inicio</a></li>
                 <li><a href="#">Menú</a></li>
                 <li><a href="#">Carrito</a></li>
             </ul>
@@ -74,7 +74,7 @@
                     
                     <div class="button-group full-width-buttons">
                         <button type="submit" class="submit-button">Registrarme</button>
-                        <button type="button" class="cancel-button" onclick="window.location.href='login.html'">Cancelar</button>
+                        <button type="button" class="cancel-button" onclick="window.location.href='login.php'">Cancelar</button>
                     </div>
                 </form>
             </div>

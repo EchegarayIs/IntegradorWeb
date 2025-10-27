@@ -17,7 +17,7 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.php">Inicio</a></li>
             </ul>
         </nav>
     </header>
@@ -45,7 +45,7 @@
                     
                     <div class="button-group">
                         <button type="submit" class="submit-button">Ingresar</button>
-                        <button type="button" class="cancel-button" onclick="window.location.href='index.html'">Cancelar</button>
+                        <button type="button" class="cancel-button" onclick="window.location.href='index.php'">Cancelar</button>
                     </div>
                 </form>
 

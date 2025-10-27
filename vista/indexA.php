@@ -10,8 +10,8 @@
   <header class="nav">
     <h1>Taquería - El Gallo Giro</h1>
     <nav>
-      <a href="indexA.html">Inicio</a>
-      <a href="perfilA.html">Perfil</a>
+      <a href="indexA.php">Inicio</a>
+      <a href="perfilA.php">Perfil</a>
     </nav>
   </header>
 
