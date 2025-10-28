@@ -118,7 +118,7 @@
                     if (currentQuantity > 1) {
                         quantityDisplay.textContent = currentQuantity - 1;
                         let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                        mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity - 1)).toFixed(2)} c/u`;
+                        mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity - 1)).toFixed(2)}`;
                     }
                 });
 
@@ -126,7 +126,7 @@
                     let currentQuantity = parseInt(quantityDisplay.textContent);
                     quantityDisplay.textContent = currentQuantity + 1;
                     let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                    mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity + 1)).toFixed(2)} c/u`;
+                    mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity + 1)).toFixed(2)}`;
                 });
             }
             
