@@ -19,8 +19,16 @@
         <nav id="main-nav">
             <ul>
                 <li><a href="index.php">Inicio</a></li>
-                <li><a href="#">Menú</a></li>
-                <li><a href="carrito.php">Carrito</a></li>
+                <li class="despliegue">
+                    <a href="#">Menú</a>
+                    <div class="despliegue-content">
+                        <a href="Tacos.php">Tacos</a>
+                        <a href="Tortas.php">Tortas</a>
+                        <a href="Bebidas.php">Bebidas</a>
+                    </div>
+
+                </li>
+                <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
         <button id="user-button" class="user-active active-profile-button">Juan Pérez</button> 
@@ -140,7 +148,7 @@
                 } else if (targetId === 'logout') {
                     document.getElementById('link-logout').classList.add('active-sidebar-link');
                     alert('Cerrando sesión...');
-                    // window.location.href = 'login.html'; // Redirección real
+                     window.location.href = 'login.php'; // Redirección real
                 }
             }
 

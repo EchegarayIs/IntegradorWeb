@@ -19,10 +19,18 @@
         <nav id="main-nav">
             <ul>
                 <li><a href="index.php">Inicio</a></li>
-               <li><a href="#">Menú</a></li>
+               <li class="despliegue">
+                    <a href="#">Menú</a>
+                    <div class="despliegue-content">
+                        <a href="Tacos.php">Tacos</a>
+                        <a href="Tortas.php">Tortas</a>
+                        <a href="Bebidas.php">Bebidas</a>
+                    </div>
+
+                </li>
                 <li class="active-menu-link"><a href="#">Carrito</a></li> </ul>
         </nav>
-        <button id="user-button" class="user-active">Juan Pérez</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
     </header>
 
     <main class="cart-main">

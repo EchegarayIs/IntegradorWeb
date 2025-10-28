@@ -19,10 +19,10 @@
             </div>
         </div>
         <nav id="main-nav">
-            <ul class="despliegue">
+            <ul >
                 <li><a href="#" class="active">Inicio</a></li>
-                <li>
-                    <a href="index.php">Menú</a>
+                <li class="despliegue">
+                    <a href="#">Menú</a>
                     <div class="despliegue-content">
                         <a href="Tacos.php">Tacos</a>
                         <a href="Tortas.php">Tortas</a>
@@ -33,7 +33,7 @@
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="login-button">Iniciar Sesión</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
     </header>
 
 
