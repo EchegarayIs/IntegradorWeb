@@ -30,7 +30,7 @@
                     </div>
 
                 </li>
-                <li><a href="#">Carrito</a></li>
+                <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
         <button id="login-button">Iniciar Sesión</button>
