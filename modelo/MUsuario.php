@@ -12,7 +12,7 @@ class MUsuario {
     public function validarLogin($usuario, $password) {
         $query = "SELECT idUsuario, nombre, correo, Roles_idRol, password, estado
                   FROM usuarios 
-                  WHERE (nombre = :usuario) 
+                  WHERE (nombre = :usuario OR correo = :usuario) 
                   AND password = :password 
                   AND estado = 1";
 

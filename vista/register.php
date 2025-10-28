@@ -33,14 +33,14 @@
 
                 <form class="register-form" method="POST" action="../controlador/registrarUsuario.php">
                     <div class="input-group">
-                        <input type="text" id="nombre" name="nombre" placeholder="Nombre(s)" required>
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre(s)" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
                     </div>
                     <div class="input-group">
-                        <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos" required>
+                        <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
                     </div>
                     
                     <div class="input-group select-group">
-                        <input type="date" id="fechaNacimiento" name="fechaNacimiento" placeholder="Fecha de nacimiento">
+                        <input type="date" id="fechaNacimiento" name="fechaNacimiento" placeholder="Fecha de nacimiento" required>
                         <span class="placeholder-text-date">Fecha de nacimiento</span>
                         </div>
                     <div class="input-group">
@@ -60,13 +60,13 @@
                     </div>
 
                     <div class="input-group password-group">
-                        <input type="password" id="reg-password" name="password" placeholder="Contraseña" required>
+                        <input type="password" id="reg-password" name="password" placeholder="Contraseña" required minlength="8">
                         <span class="toggle-password">
                             <img src="../assets/css/ojoabierto.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="reg-password">
                         </span>
                     </div>
                     <div class="input-group password-group">
-                        <input type="password" id="confirm-password" name="confirmar" placeholder="Confirmar contraseña" required>
+                        <input type="password" id="confirm-password" name="confirmar" placeholder="Confirmar contraseña" required minlength="8">
                         <span class="toggle-password">
                             <img src="../assets/css/ojoabierto.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="confirm-password">
                         </span>
