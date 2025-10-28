@@ -22,12 +22,12 @@
                     <a href="index.php">Menú</a>
                     <div class="despliegue-content">
                         <a href="Tacos.php">Tacos</a>
-                        <a href="Bebidas.php">Tortas</a>
-                        <a href="Tortas.php">Bebidas</a>
+                        <a href="Tortas.php">Tortas</a>
+                        <a href="Bebidas.php">Bebidas</a>
                     </div>
 
                 </li>
-                <li><a href="#">Carrito</a></li>
+                <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
         <button id="login-button">Iniciar Sesión</button>
