@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú - Tortas - Taquería El Gallo Giro</title>
-    <link rel="stylesheet" href="../assets/css/style.css"> 
-    <link rel="stylesheet" href="menu.css"> 
+    <link rel="stylesheet" href="../assets/css/style.css">  
 </head>
 <body>
     <header id="main-header">
@@ -104,13 +103,8 @@
                     <h3>Torta de tres quesos</h3>
                     <p class="complement-label">Complementos adicionales</p>
                     
-                    <div class="complement-options">
-                        <button class="complement-button active-complement">Jitomate</button>
-                        <button class="complement-button">Cebolla</button>
-                        <button class="complement-button">Aguacate</button>
-                        <button class="complement-button">Chiles en rajas</button>
-                        <button class="complement-button active-complement">Chipotle</button>
-                        <button class="complement-button">Mayonesa</button>
+                    <div class="complement-options" id="complementos-contenedor">
+                        
                     </div>
 
                     <div class="modal-footer-controls">
@@ -183,6 +177,36 @@
                 });
             });
         });
+        document.addEventListener('DOMContentLoaded', function() {
+        // Cargar complementos desde la base de datos
+        function cargarComplementos() {
+            fetch(`http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarTortas`)
+                .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+                
+            }).then(data => {
+                    const complementOptionsContainer = document.getElementById('complementos-contenedor');
+                    complementOptionsContainer.innerHTML = ''; // Limpiar el contenido existente
+
+                    data.contenido.forEach(complemento => {
+                        const complementButton = document.createElement('button');
+                        complementButton.classList.add('complement-button');
+                        complementButton.textContent = complemento.nombre;
+
+                        complementButton.addEventListener('click', function() {
+                            this.classList.toggle('active-complement');
+                        });
+
+                        complementOptionsContainer.appendChild(complementButton);
+                    });
+                })
+                .catch(error=>console.error('Error al cargar los complementos:', error));
+        }
+        cargarComplementos();
+    });
     </script>
 </body>
 </html>
