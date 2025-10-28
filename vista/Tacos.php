@@ -17,14 +17,23 @@
             </div>
         </div>
         <nav id="main-nav">
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="#">Menú</a></li>
-                <li><a href="cart.php">Carrito</a></li>
+            <ul class="despliegue">
+                <li><a href="#" class="active">Inicio</a></li>
+                <li>
+                    <a href="index.php">Menú</a>
+                    <div class="despliegue-content">
+                        <a href="Tacos.php">Tacos</a>
+                        <a href="Bebidas.php">Tortas</a>
+                        <a href="Tortas.php">Bebidas</a>
+                    </div>
+
+                </li>
+                <li><a href="#">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active">Juan Pérez</button>
+        <button id="login-button">Iniciar Sesión</button>
     </header>
+
 
     <main class="menu-main">
         <section id="menu-grid-section">

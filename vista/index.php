@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-    include_once "../modelo/conection/conection.php"; // prueba de conexion
+    include_once "../modelo/conexion/conection.php"; // prueba de conexion
     $db = conection::conectar();
 ?>
 <head>
@@ -22,7 +22,6 @@
             <ul class="despliegue">
                 <li><a href="#" class="active">Inicio</a></li>
                 <li>
-
                     <a href="index.php">Menú</a>
                     <div class="despliegue-content">
                         <a href="Tacos.php">Tacos</a>
