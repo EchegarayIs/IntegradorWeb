@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <?php
-    include_once "../modelos/conection/conection.php";
+    include_once "../modelos/conection/conection.php"; // prueba de conexion
+    #include_once __DIR__ . '/../modelos/conection/conection.php';
+
+    $db = conection::conectar();
+    echo "Conexión exitosa";
 ?>
 <head>
     <meta charset="UTF-8">
