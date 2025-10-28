@@ -100,7 +100,7 @@
                         $XXXXXX.00
                     </div>
 
-                    <button class="checkout-button">
+                    <button class="checkout-button" onclick="window.location.href='checkout.php'">
                         Proceder al pago
                     </button>
                 </div>
