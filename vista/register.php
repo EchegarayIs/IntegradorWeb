@@ -31,24 +31,24 @@
             <div class="register-container">
                 <h2>Registrarse</h2>
 
-                <form class="register-form">
+                <form class="register-form" method="POST" action="../controlador/registrarUsuario.php">
                     <div class="input-group">
-                        <input type="text" id="nombre" placeholder="Nombre(s)" required>
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre(s)" required>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="apellidos" placeholder="Apellidos" required>
+                        <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos" required>
                     </div>
                     
                     <div class="input-group select-group">
-                        <input type="date" id="fechaNacimiento" placeholder="Fecha de nacimiento">
+                        <input type="date" id="fechaNacimiento" name="fechaNacimiento" placeholder="Fecha de nacimiento">
                         <span class="placeholder-text-date">Fecha de nacimiento</span>
                         </div>
                     <div class="input-group">
-                        <input type="text" id="direccion" placeholder="Dirección" required>
+                        <input type="text" id="direccion" name="direccion" placeholder="Dirección" required>
                     </div>
 
                     <div class="input-group select-group">
-                        <select id="genero" required>
+                        <select id="genero" name="genero" required>
                             <option value="" disabled selected>Género</option>
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
@@ -56,17 +56,17 @@
                         </select>
                     </div>
                     <div class="input-group">
-                        <input type="email" id="correo" placeholder="Correo Electrónico" required>
+                        <input type="email" id="correo" name="correo" placeholder="Correo Electrónico" required>
                     </div>
 
                     <div class="input-group password-group">
-                        <input type="password" id="reg-password" placeholder="Contraseña" required>
+                        <input type="password" id="reg-password" name="password" placeholder="Contraseña" required>
                         <span class="toggle-password">
                             <img src="../assets/css/ojoabierto.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="reg-password">
                         </span>
                     </div>
                     <div class="input-group password-group">
-                        <input type="password" id="confirm-password" placeholder="Confirmar contraseña" required>
+                        <input type="password" id="confirm-password" name="confirmar" placeholder="Confirmar contraseña" required>
                         <span class="toggle-password">
                             <img src="../assets/css/ojoabierto.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="confirm-password">
                         </span>

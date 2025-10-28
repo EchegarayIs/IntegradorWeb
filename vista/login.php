@@ -32,7 +32,7 @@
             <div class="login-form-container">
                 <h2>Iniciar Sesión</h2>
 
-                <form  action="../controlador/dispacherUsuario.php" method="POST" class="login-form">
+                <form  action="../controlador/dispacherUsuario.php" method="POST" class="login-form"> <!-- Manda a llamar al dispacherUsuario.php y entregalos parametros -->
                     <div class="input-group">
                         <input type="text" id="usuario" name="usuario" placeholder="Ingrese el usuario" required>
                     </div>

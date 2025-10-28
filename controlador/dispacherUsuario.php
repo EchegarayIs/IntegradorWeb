@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $resultado = $model->validarLogin($usuario, $password);
 
     if ($resultado) {
-        if ($resultado["Roles_idRol"] == 1) {
+        if ($resultado["Roles_idRol"] == 1) { # Para usuarios comunes
             // Guardar sesión
             $_SESSION["idUsuario"] = $resultado["idUsuario"];
             $_SESSION["nombre"] = $resultado["nombre"];
@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             header("Location: ../vista/index.php");
             
-        }elseif ($resultado["Roles_idRol"] == 2) {
+        }elseif ($resultado["Roles_idRol"] == 2) { #Para administradores
             // Guardar sesión
             $_SESSION["idUsuario"] = $resultado["idUsuario"];
             $_SESSION["nombre"] = $resultado["nombre"];
