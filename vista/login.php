@@ -1,4 +1,4 @@
-<!DOCTYPE html> <!--Hola amor-->
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -32,12 +32,12 @@
             <div class="login-form-container">
                 <h2>Iniciar Sesión</h2>
 
-                <form class="login-form">
+                <form  action="../controlador/dispacherUsuario.php" method="POST" class="login-form">
                     <div class="input-group">
-                        <input type="email" id="email" placeholder="Correo Electrónico" required>
+                        <input type="text" id="usuario" name="usuario" placeholder="Ingrese el usuario" required>
                     </div>
                     <div class="input-group password-group">
-                        <input type="password" id="password" placeholder="Contraseña" required>
+                        <input type="password" id="password" name="password" placeholder="Contraseña" required>
                         <span class="toggle-password">
                             <img src="../assets/css/ojocerrado.png" alt="Mostrar/Ocultar Contraseña" id="togglePasswordIcon">
                         </span>
@@ -50,7 +50,7 @@
                 </form>
 
                 <p class="signup-link">
-                    ¿No tienes cuenta? <a href="#" class="register-link">Registrarse</a>
+                    ¿No tienes cuenta? <a href="register.php" class="register-link">Registrarse</a>
                 </p>
             </div>
         </section>
