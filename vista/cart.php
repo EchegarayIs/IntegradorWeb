@@ -1,3 +1,21 @@
+<?php
+// vista/Cart.php
+session_start();
+$carrito = $_SESSION['carrito'] ?? []; 
+$total_subtotal = 0.00; 
+$SHIPPING_COST = 0.00; 
+
+foreach ($carrito as $item) {
+    // Corrección de la línea 9 y adyacentes para eliminar caracteres invisibles
+    $subtotal = is_numeric($item['subtotal']) ? (float)$item['subtotal'] : 0.00;
+    $total_subtotal += $subtotal;
+}
+$total_final = $total_subtotal + $SHIPPING_COST;
+
+// Variable de control para el botón de pago
+$is_cart_empty = empty($carrito); 
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +24,8 @@
     <title>Carrito de Compras - Taquería El Gallo Giro</title>
     <link rel="stylesheet" href="../assets/css/style.css"> 
     <link rel="stylesheet" href="menu.css"> 
-    <link rel="stylesheet" href="cart.css"> </head>
+    <link rel="stylesheet" href="cart.css"> 
+</head>
 <body>
     <header id="main-header">
         <div class="logo-container">
@@ -19,16 +38,16 @@
         <nav id="main-nav">
             <ul>
                 <li><a href="index.php">Inicio</a></li>
-               <li class="despliegue">
-                    <a href="#">Menú</a>
+                <li class="despliegue">
+                    <a href="index.php">Menú</a>
                     <div class="despliegue-content">
                         <a href="Tacos.php">Tacos</a>
                         <a href="Tortas.php">Tortas</a>
                         <a href="Bebidas.php">Bebidas</a>
                     </div>
-
                 </li>
-                <li class="active-menu-link"><a href="#">Carrito</a></li> </ul>
+                <li class="active-menu-link"><a href="#">Carrito</a></li>
+            </ul>
         </nav>
         <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
     </header>
@@ -40,174 +59,196 @@
                 <div class="cart-items-container">
                     <h2>Tu pedido</h2>
 
-                    <div class="cart-item-card">
+                    <?php if ($is_cart_empty): ?>
+                        <p id="empty-cart-message" class="empty-cart-message">El carrito está vacío. ¡Añade productos del menú!</p>
+                    <?php else: ?>
+                        <p id="empty-cart-message" style="display:none;"></p>
+                    <?php endif; ?>
+                    
+                    <?php 
+                    foreach ($carrito as $item_id => $item): 
+                    ?>
+                    
+                    <div class="cart-item-card" data-product-id="<?php echo $item_id; ?>">
                         <div class="item-details">
                             <div class="item-image-container">
-                                <img src="../assets/css/tacosalpastor.png" alt="Coca Cola">
+                                <img src="../assets/css/tacosalpastor.png" alt="<?php echo htmlspecialchars($item['nombre']); ?>">
                             </div>
-                            <span class="item-name">Coca Cola</span>
+                            <span class="item-name"><?php echo htmlspecialchars($item['nombre']); ?></span>
+                            <span class="item-unit-price" data-unit-price="<?php echo number_format($item['precio'], 2, '.', ''); ?>" style="display:none;"></span>
                         </div>
                         
-                        <span class="item-price">$75.00</span>
+                        <span class="item-price" id="subtotal-<?php echo $item_id; ?>">$<?php echo number_format($item['subtotal'], 2); ?></span> 
                         
                         <div class="item-controls">
                             <div class="quantity-control small-control">
-                                <button class="quantity-button minus">-</button>
-                                <span class="quantity-display">3</span>
-                                <button class="quantity-button plus">+</button>
+                                <button class="quantity-button minus" data-action="decrement" data-id="<?php echo $item_id; ?>">-</button>
+                                <span class="quantity-display" id="quantity-<?php echo $item_id; ?>"><?php echo $item['cantidad']; ?></span>
+                                <button class="quantity-button plus" data-action="increment" data-id="<?php echo $item_id; ?>">+</button>
                             </div>
-                            <button class="remove-item-button">
-                                <img src="../assets/css/botebasura.png" alt="Eliminar"> </button>
-                        </div>
-                    </div>
-
-                    <div class="cart-item-card">
-                        <div class="item-details">
-                            <div class="item-image-container">
-                                <img src="../assets/css/tacosalpastor.png" alt="Tacos de carne molida">
-                            </div>
-                            <span class="item-name">Tacos de carne molida</span>
-                        </div>
-                        
-                        <span class="item-price">$68.00</span>
-                        
-                        <div class="item-controls">
-                            <div class="quantity-control small-control">
-                                <button class="quantity-button minus">-</button>
-                                <span class="quantity-display">4</span>
-                                <button class="quantity-button plus">+</button>
-                            </div>
-                            <button class="remove-item-button">
-                                <img src="../assets/css/botebasura.png" alt="Eliminar">
+                            <button class="remove-item-button" data-action="remove" data-id="<?php echo $item_id; ?>">
+                                <img src="../assets/css/botebasura.png" alt="Eliminar"> 
                             </button>
                         </div>
                     </div>
-                    
-                    </div>
 
-                <div class="ticket-container">
+                    <?php endforeach; ?>
+                    </div><div class="ticket-container">
                     <h3>Ticket de compra</h3>
                     <div class="summary-line">
                         <span>Subtotal:</span>
-                        <span class="summary-value">XXXXXXX</span>
+                        <span id="summary-subtotal" class="summary-value">$<?php echo number_format($total_subtotal, 2); ?></span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Costo de Servicio/Envío:</span>
+                        <span id="summary-shipping" class="summary-value"><?php echo ($SHIPPING_COST > 0) ? '$' . number_format($SHIPPING_COST, 2) : 'Gratis'; ?></span>
                     </div>
                     <hr class="summary-divider">
                     <div class="summary-line total-line">
                         <span>Total:</span>
-                        <span class="summary-value">XXXXXXX</span>
+                        <span id="summary-total" class="summary-value">$<?php echo number_format($total_final, 2); ?></span>
                     </div>
-                    <div class="final-price">
-                        $XXXXXX.00
+                    <div class="final-price" id="final-price-display">
+                        $<?php echo number_format($total_final, 2); ?>
                     </div>
 
-                    <button class="checkout-button" onclick="window.location.href='checkout.php'">
+                    <button class="checkout-button" onclick="finalizarPedido()" <?php echo $is_cart_empty ? 'disabled' : ''; ?> id="checkout-button-main">
                         Proceder al pago
                     </button>
                 </div>
-                
             </div>
         </section>
     </main>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- 1. CONFIGURACIÓN INICIAL Y CÁLCULO ---
-        
-        // Define el precio por unidad para cada producto (simulado)
-        // En una app real, esto vendría del backend.
-        const PRODUCT_PRICES = {
-            'Coca Cola': 25.00,  // Precio base por unidad
-            'Tacos de carne molida': 17.00 // Precio base por unidad
-            // Agrega más productos aquí si es necesario
-        };
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    
+    <script>
+        // RUTA AJAX CORREGIDA (debe apuntar al controlador)
+        const CAR_AJAX_URL = '../controlador/procesar_carrito.php'; 
+        const SHIPPING_COST = <?php echo $SHIPPING_COST; ?>;
 
-        const SHIPPING_COST = 0; // Se elimina el costo de envío, por lo que es 0
+        // -------------------------------------------------------------
+        // 1. FUNCIONES DE ACTUALIZACIÓN VISUAL DEL RESUMEN
+        // -------------------------------------------------------------
+        function updateSummaryDisplay(newTotal) {
+            const subtotal = parseFloat(newTotal);
+            const total = subtotal + SHIPPING_COST;
+            
+            // Actualiza los elementos del resumen
+            $('#summary-subtotal').text(`$${subtotal.toFixed(2)}`);
+            $('#summary-total').text(`$${total.toFixed(2)}`);
+            $('#final-price-display').text(`$${total.toFixed(2)}`);
+            
+            // Lógica para mostrar/ocultar el mensaje de carrito vacío y habilitar/deshabilitar el botón de pago
+            if (subtotal <= 0) {
+                $('#checkout-button-main').prop('disabled', true);
+                $('#empty-cart-message').show().text('El carrito está vacío. ¡Añade productos del menú!');
+                // Corrección funcional: Elimina los items del DOM si el total llega a cero
+                $('.cart-items-container').find('.cart-item-card').remove();
+            } else {
+                $('#checkout-button-main').prop('disabled', false);
+                $('#empty-cart-message').hide();
+            }
+        }
 
-        /**
-         * Calcula el subtotal, total y actualiza el ticket de compra.
-         */
-        function updateCartSummary() {
-            let subtotal = 0;
-            const itemCards = document.querySelectorAll('.cart-item-card');
+        // -------------------------------------------------------------
+        // 2. FUNCIÓN AJAX PARA ACTUALIZAR O ELIMINAR
+        // -------------------------------------------------------------
+        function updateCartItem(productId, quantity, action) {
+            
+            const cardElement = $(`.cart-item-card[data-product-id="${productId}"]`);
+            
+            // Si es un cambio de cantidad a 0, lo cambiamos a acción 'remove'
+            if (action === 'update' && quantity === 0) {
+                action = 'remove';
+            }
+            
+            $.ajax({
+                url: CAR_AJAX_URL,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: action, 
+                    id: productId,
+                    cantidad: quantity 
+                },
+                success: function(response) {
+                    if (response.success) {
+                        
+                        // 1. ELIMINACIÓN EXITOSA
+                        if (action === 'remove') {
+                            cardElement.remove();
+                            alert("✅ Producto eliminado correctamente."); 
+                        } 
+                        
+                        // 2. ACTUALIZACIÓN EXITOSA
+                        else if (action === 'update') {
+                            const unitPrice = parseFloat(cardElement.find('.item-unit-price').data('unit-price'));
+                            
+                            // Actualiza la cantidad visual
+                            $(`#quantity-${productId}`).text(quantity);
+                            
+                            // Actualiza el subtotal del ítem
+                            const newSubtotalItem = unitPrice * quantity;
+                            $(`#subtotal-${productId}`).text(`$${newSubtotalItem.toFixed(2)}`);
+                        }
+                        
+                        // 3. ACTUALIZAR RESUMEN CON EL TOTAL DEL SERVIDOR
+                        updateSummaryDisplay(response.total_carrito);
+                        
+                    } else {
+                        alert(`❌ Error en la operación: ${response.message}`);
+                    }
+                },
+                error: function(xhr) {
+                    alert("❌ Error de comunicación con el servidor al actualizar el carrito.");
+                    console.error("AJAX Error:", xhr.responseText);
+                }
+            });
+        }
 
-            itemCards.forEach(card => {
-                const nameElement = card.querySelector('.item-name');
-                const quantityElement = card.querySelector('.quantity-display');
-                const priceElement = card.querySelector('.item-price');
+        // -------------------------------------------------------------
+        // 3. MANEJO DE EVENTOS DEL DOM
+        // -------------------------------------------------------------
+        $(document).ready(function() {
+            
+            // Delegamos el evento de click a los botones de cantidad y eliminar
+            $('.cart-items-container').on('click', 'button', function() {
+                const button = $(this);
+                const productId = button.data('id');
+                const action = button.data('action');
+                
+                const quantityDisplay = $(`#quantity-${productId}`);
+                let currentQuantity = parseInt(quantityDisplay.text());
 
-                if (nameElement && quantityElement && priceElement) {
-                    const productName = nameElement.textContent.trim();
-                    const quantity = parseInt(quantityElement.textContent);
-                    // Usamos un precio base por unidad (ajusta la lógica si el precio ya es por 4 tacos, etc.)
-                    const pricePerUnit = PRODUCT_PRICES[productName] || 0; 
-                    
-                    const itemTotal = pricePerUnit * quantity;
-                    
-                    // Actualiza el precio visible total del ítem (ej: $75.00 en la imagen)
-                    priceElement.textContent = `$${itemTotal.toFixed(2)}`;
-                    
-                    subtotal += itemTotal;
+                // Botón de ELIMINAR (remove)
+                if (action === 'remove') {
+                    const itemName = button.closest('.cart-item-card').find('.item-name').text();
+                    if (confirm(`¿Estás seguro de que quieres eliminar "${itemName}"?`)) {
+                        updateCartItem(productId, 0, 'remove'); 
+                    }
+                    return;
+                }
+                
+                // Botón de AUMENTAR (+) o DISMINUIR (-) (update)
+                let newQuantity = currentQuantity;
+                if (action === 'increment') {
+                    newQuantity = currentQuantity + 1;
+                } else if (action === 'decrement' && currentQuantity > 0) {
+                    newQuantity = currentQuantity - 1;
+                }
+
+                if (newQuantity !== currentQuantity) {
+                    updateCartItem(productId, newQuantity, 'update');
                 }
             });
 
-            const total = subtotal + SHIPPING_COST;
-
-            // Actualiza los elementos del Ticket
-            document.querySelector('.summary-line:nth-child(2) .summary-value').textContent = `$${subtotal.toFixed(2)}`; // Subtotal
-            document.querySelector('.summary-line:nth-child(4) .summary-value').textContent = `$${subtotal.toFixed(2)}`; // Total (antes de envío)
-            document.querySelector('.summary-line:nth-child(5) .summary-value').textContent = (SHIPPING_COST === 0) ? 'Gratis' : `$${SHIPPING_COST.toFixed(2)}`; // Costo de envío
-            document.querySelector('.final-price').textContent = `$${total.toFixed(2)}`; // Precio Final
-        }
-
-        // --- 2. MANEJO DE CANTIDAD Y ELIMINACIÓN ---
-
-        const cartContainer = document.querySelector('.cart-items-container');
-        
-        // Delegamos los eventos al contenedor principal para eficiencia
-        cartContainer.addEventListener('click', function(event) {
-            const button = event.target.closest('button');
-            if (!button) return;
-
-            const itemCard = button.closest('.cart-item-card');
-            if (!itemCard) return;
-
-            const quantityDisplay = itemCard.querySelector('.quantity-display');
-            let currentQuantity = parseInt(quantityDisplay.textContent);
-
-            // Botón de AUMENTAR (+)
-            if (button.classList.contains('plus')) {
-                currentQuantity += 1;
-                quantityDisplay.textContent = currentQuantity;
-                updateCartSummary();
-
-            // Botón de DISMINUIR (-)
-            } else if (button.classList.contains('minus')) {
-                if (currentQuantity > 1) {
-                    currentQuantity -= 1;
-                    quantityDisplay.textContent = currentQuantity;
-                    updateCartSummary();
-                }
-
-            // Botón de ELIMINAR (Bote de basura)
-            } else if (button.classList.contains('remove-item-button')) {
-                // Muestra la alerta
-                const itemName = itemCard.querySelector('.item-name').textContent;
-                const confirmDelete = confirm(`¿Estás seguro de que quieres eliminar "${itemName}" del carrito?`);
-                
-                if (confirmDelete) {
-                    itemCard.remove(); // Elimina la tarjeta del producto del DOM
-                    updateCartSummary(); // Vuelve a calcular el total
-                    
-                    // Opcional: Si el carrito queda vacío, mostrar un mensaje
-                    if (document.querySelectorAll('.cart-item-card').length === 0) {
-                        cartContainer.innerHTML = '<h2>Tu pedido</h2><p>Tu carrito está vacío.</p>';
-                    }
-                }
-            }
         });
-
-        // Inicializa el cálculo al cargar la página
-        updateCartSummary();
-    });
-</script>
-    </body>
+        
+        // El direccionamiento a checkout.php
+        function finalizarPedido() {
+            window.location.href = 'checkout.php';
+        }
+    </script>
+</body>
 </html>
