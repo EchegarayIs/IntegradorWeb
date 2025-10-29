@@ -178,7 +178,7 @@ $is_cart_empty = empty($carrito);
                         // 1. ELIMINACIÓN EXITOSA
                         if (action === 'remove') {
                             cardElement.remove();
-                            alert("✅ Producto eliminado correctamente."); 
+                            alert(" Producto eliminado correctamente."); 
                         } 
                         
                         // 2. ACTUALIZACIÓN EXITOSA
@@ -197,11 +197,11 @@ $is_cart_empty = empty($carrito);
                         updateSummaryDisplay(response.total_carrito);
                         
                     } else {
-                        alert(`❌ Error en la operación: ${response.message}`);
+                        alert(` Error en la operación: ${response.message}`);
                     }
                 },
                 error: function(xhr) {
-                    alert("❌ Error de comunicación con el servidor al actualizar el carrito.");
+                    alert(" Error de comunicación con el servidor al actualizar el carrito.");
                     console.error("AJAX Error:", xhr.responseText);
                 }
             });

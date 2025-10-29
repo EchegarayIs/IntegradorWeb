@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú - Bebidas - Taquería El Gallo Giro</title>
     <link rel="stylesheet" href="../assets/css/style.css"> 
-    <link rel="stylesheet" href="menu.css"> 
 </head>
 <body>
     <?php session_start(); // Iniciar sesión para mantener el carrito activo ?>
@@ -61,7 +60,7 @@
                         </div>
 
                     <div class="modal-footer-controls">
-                        <span class="product-price-modal" id="modal-product-price-display">00.00</span>
+                        <span class="product-price-modal" id="modal-product-price-display">$0.00 c/u</span> 
                         
                         <div class="quantity-control">
                             <button class="quantity-button minus" id="modal-minus-button">-</button>
@@ -73,7 +72,6 @@
                             <img src="../assets/css/carrito.png" alt="Añadir">
                         </button>
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -95,13 +93,14 @@
             const quantityDisplay = document.getElementById('modal-quantity-display');
             const minusButton = document.getElementById('modal-minus-button');
             const plusButton = document.getElementById('modal-plus-button');
+            const complementosContenedor = document.getElementById('complementos-contenedor');
             
             let productosCargados = []; 
             const contenedor = document.getElementById('bebidasContainer');
             const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-            
-            // RUTA AJAX CORREGIDA (Asume controlador/ está fuera de vista/)
+            const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarBebidas';
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
+            const CATEGORIA_ID = 2; // <--- ID de Categoría para Bebidas
 
             // ----------------------------------------------------
             // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
@@ -164,34 +163,6 @@
                 const productName = modalName.textContent;
                 const cantidad = parseInt(quantityDisplay.textContent);
 
-<<<<<<< HEAD
-            if (minusButton && plusButton && quantityDisplay) {
-                minusButton.addEventListener('click', () => {
-                    let currentQuantity = parseInt(quantityDisplay.textContent);
-                    if (currentQuantity > 1) {
-                        quantityDisplay.textContent = currentQuantity - 1;
-                        let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                        mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity - 1)).toFixed(2)}`;
-                    }
-                });
-
-                plusButton.addEventListener('click', () => {
-                    let currentQuantity = parseInt(quantityDisplay.textContent);
-                    quantityDisplay.textContent = currentQuantity + 1;
-                    let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                    mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity + 1)).toFixed(2)}`;
-                });
-            }
-            
-            // Lógica de complementos (selección naranja)
-            const complementButtons = document.querySelectorAll('.complement-button');
-
-            complementButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Mantiene el toggle para permitir múltiples selecciones si el usuario lo necesita
-                    this.classList.toggle('active-complement');
-                });
-=======
                 if (cantidad < 1) {
                     alert("La cantidad debe ser al menos 1.");
                     return;
@@ -211,26 +182,25 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            alert("✅ ¡Agregado al Carrito! " + productName + " x " + cantidad);
+                            alert(" ¡Agregado al Carrito! " + productName + " x " + cantidad);
                             closeModal();
                             // Aquí podrías agregar una función para refrescar un contador de carrito si existe
                         } else {
-                             alert("❌ Error al añadir: " + response.message);
+                             alert(" Error al añadir: " + response.message);
                         }
                     },
                     error: function(xhr) {
-                        alert("❌ Error de comunicación con el servidor. Revisa la ruta AJAX y 'procesar_carrito.php'.");
+                        alert(" Error de comunicación con el servidor. Revisa la ruta AJAX y 'procesar_carrito.php'.");
                         console.error("AJAX Error: ", xhr.responseText);
                     }
                 });
->>>>>>> 97ea89d37e1c817448f42cf3e12e5d9082255f8f
             });
             
-            // ----------------------------------------------------
+           // ----------------------------------------------------
             // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ
             // ----------------------------------------------------
             async function cargarProductos() {
-                contenedor.innerHTML = ''; // Limpia el contenedor
+                contenedor.innerHTML = ''; 
 
                 try {
                     const respuesta = await fetch(apiUrl); 
@@ -242,14 +212,13 @@
                     const data = await respuesta.json();
                     const todosLosProductos = data.contenido; 
                     
-                    // Guardamos todos los productos para usarlos en openModal()
                     productosCargados = todosLosProductos; 
                     
-                    // Asumiendo que categoria == 1 son Bebidas, si no ajusta este filtro
+                    // FILTRO CRÍTICO para Tortas
                     const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == 1); 
 
                     if (productosParaMostrar.length === 0) {
-                         contenedor.innerHTML = `<p class="info-message">No hay bebidas disponibles en este momento.</p>`;
+                         contenedor.innerHTML = `<p class="info-message">No hay tortas disponibles en este momento.</p>`;
                          return;
                     }
                     
@@ -268,7 +237,7 @@
                             </button>
                         `;
 
-                        // Re-adjuntar el listener al botón para abrir el modal
+                        // Adjuntar listener para abrir el modal y cargar la info del producto
                         dishCard.querySelector('.add-to-cart-button').addEventListener('click', (e) => {
                              const productId = e.currentTarget.getAttribute('data-product-id');
                              openModal(productId);
@@ -283,9 +252,46 @@
                     contenedor.innerHTML = `<p class="error-message">Error al cargar los productos. Por favor, revisa la consola para más detalles.</p>`; 
                 }
             }
+            // ----------------------------------------------------
+            // 5. LÓGICA DE CARGA DE COMPLEMENTOS
+            // ----------------------------------------------------
+            async function cargarComplementos() {
+                try {
+                    const response = await fetch(ingredientesApiUrl);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    
+                    complementosContenedor.innerHTML = ''; 
+
+                    if (data.contenido && data.contenido.length > 0) {
+                         data.contenido.forEach(complemento => {
+                            const complementButton = document.createElement('button');
+                            complementButton.classList.add('complement-button');
+                            complementButton.textContent = complemento.nombre;
+
+                            complementButton.addEventListener('click', function() {
+                                this.classList.toggle('active-complement');
+                            });
+
+                            complementosContenedor.appendChild(complementButton);
+                        });
+                    } else {
+                        complementosContenedor.innerHTML = `<p style="font-size: 0.9em; color: #555;">No hay complementos disponibles.</p>`;
+                    }
+
+                } catch(error) {
+                    console.error('Error al cargar los complementos:', error);
+                    complementosContenedor.innerHTML = `<p class="error-message">Error al cargar complementos.</p>`;
+                }
+            }
+
 
             // --- Ejecución y Cierre del Modal ---
             cargarProductos();
+            cargarComplementos();
+            
             closeButton.addEventListener('click', closeModal);
             window.addEventListener('click', (event) => {
                 if (event.target === modal) {

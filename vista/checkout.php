@@ -394,6 +394,11 @@ $total_final_js = number_format($total_final, 2, '.', '');
 
             // --- INICIALIZACIÓN FINAL ---
             initializeCheckout();
+
+            document.getElementById('cerrarSesion').addEventListener('click', function() {
+                alert("Gracias por su compra. ¡Vuelva pronto!");
+            });
+
         });
     </script>
 </body>

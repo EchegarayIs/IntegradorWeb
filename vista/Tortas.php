@@ -180,33 +180,6 @@
                     nombreFinal += " (" + complementosSeleccionados.join(', ') + ")";
                 }
 
-<<<<<<< HEAD
-            if (minusButton && plusButton && quantityDisplay) {
-                minusButton.addEventListener('click', () => {
-                    let currentQuantity = parseInt(quantityDisplay.textContent);
-                    if (currentQuantity > 1) {
-                        quantityDisplay.textContent = currentQuantity - 1;
-                        let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                        mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity - 1)).toFixed(2)}`;
-                    }
-                });
-
-                plusButton.addEventListener('click', () => {
-                    let currentQuantity = parseInt(quantityDisplay.textContent);
-                    quantityDisplay.textContent = currentQuantity + 1;
-                    let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                    mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity + 1)).toFixed(2)}`;
-                });
-            }
-            
-            // Lógica de complementos (reutilizada)
-            const complementButtons = document.querySelectorAll('.complement-button');
-
-            complementButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    this.classList.toggle('active-complement');
-                });
-=======
                 if (cantidad < 1) {
                     alert("La cantidad debe ser al menos 1.");
                     return;
@@ -226,18 +199,17 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            alert("✅ ¡Agregado al Carrito! " + nombreFinal + " x " + cantidad);
+                            alert(" ¡Agregado al Carrito! " + nombreFinal + " x " + cantidad);
                             closeModal();
                         } else {
-                             alert("❌ Error al añadir: " + response.message);
+                             alert(" Error al añadir: " + response.message);
                         }
                     },
                     error: function(xhr) {
-                        alert("❌ Error de comunicación con el servidor. Revisa la ruta AJAX y 'procesar_carrito.php'.");
+                        alert(" Error de comunicación con el servidor. Revisa la ruta AJAX y 'procesar_carrito.php'.");
                         console.error("AJAX Error: ", xhr.responseText);
                     }
                 });
->>>>>>> 97ea89d37e1c817448f42cf3e12e5d9082255f8f
             });
             
             // ----------------------------------------------------
