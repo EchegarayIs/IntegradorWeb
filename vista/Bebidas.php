@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú - Bebidas - Taquería El Gallo Giro</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css"> 
+    <link rel="stylesheet" href="menu.css"> 
 </head>
 <body>
+    <?php session_start(); // Iniciar sesión para mantener el carrito activo ?>
+    
     <header id="main-header">
         <div class="logo-container">
             <img src="../assets/css/logosolotaco.png" alt="Logo El Gallo Giro" id="logo">
@@ -17,7 +20,7 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php" class="active">Inicio</a></li>
+                <li><a href="index.php">Inicio</a></li>
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
@@ -25,7 +28,6 @@
                         <a href="Tortas.php">Tortas</a>
                         <a href="Bebidas.php">Bebidas</a>
                     </div>
-
                 </li>
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
@@ -38,10 +40,7 @@
             <h2>Menú de Bebidas</h2>
             
             <div class="dishes-grid menu-bebidas-grid" id="bebidasContainer">
-                
-                <!-- Los productos se cargarán aquí dinámicamente -->
-                
-            </div>
+                </div>
         </section>
     </main>
     
@@ -50,267 +49,221 @@
             <span class="close-button">&times;</span>
             
             <div class="modal-body">
-                
                 <div class="modal-product-image">
-                    <img src="../assets/css/tacosalpastor.png" alt="Coca Cola">
+                    <img id="modal-image" src="../assets/css/tacosalpastor.png" alt="Producto">
                 </div>
                 
                 <div class="modal-product-details">
-                    <h3>Coca Cola</h3>
+                    <h3 id="modal-product-name">Nombre del Producto</h3>
                     <p class="complement-label">Complementos adicionales</p>
                     
                     <div class="complement-options" id="complementos-contenedor">
-                        
-                    </div>
+                        </div>
 
                     <div class="modal-footer-controls">
-                        <span class="product-price-modal">00.00</span>
+                        <span class="product-price-modal" id="modal-product-price-display">00.00</span>
                         
                         <div class="quantity-control">
-                            <button class="quantity-button minus">-</button>
-                            <span class="quantity-display">1</span>
-                            <button class="quantity-button plus">+</button>
+                            <button class="quantity-button minus" id="modal-minus-button">-</button>
+                            <span class="quantity-display" id="modal-quantity-display">1</span>
+                            <button class="quantity-button plus" id="modal-plus-button">+</button>
                         </div>
                         
-                        <button class="add-to-cart-modal-button">
+                        <button class="add-to-cart-modal-button" id="addToCartModalButton" data-product-id="" data-product-price="">
                             <img src="../assets/css/carrito.png" alt="Añadir">
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Lógica del modal
-            const modal = document.getElementById("complements-modal");
-            const openButtons = document.querySelectorAll(".open-modal");
-            const closeButton = document.querySelector(".close-button");
+            
+            // ----------------------------------------------------
+            // 1. SELECTORES DE ELEMENTOS DEL MODAL
+            // ----------------------------------------------------
+            const modal = document.getElementById('complements-modal');
+            const closeButton = modal.querySelector('.close-button');
+            const modalImage = document.getElementById('modal-image');
+            const modalName = document.getElementById('modal-product-name');
+            const modalPriceDisplay = document.getElementById('modal-product-price-display');
+            const addToCartModalButton = document.getElementById('addToCartModalButton');
+            const quantityDisplay = document.getElementById('modal-quantity-display');
+            const minusButton = document.getElementById('modal-minus-button');
+            const plusButton = document.getElementById('modal-plus-button');
+            
+            let productosCargados = []; 
+            const contenedor = document.getElementById('bebidasContainer');
+            const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
+            
+            // RUTA AJAX CORREGIDA (Asume controlador/ está fuera de vista/)
+            const AJAX_CART_URL = '../controlador/procesar_carrito.php';
 
-            openButtons.forEach(btn => {
-                btn.onclick = function() {
-                    modal.style.display = "block";
+            // ----------------------------------------------------
+            // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
+            // ----------------------------------------------------
+            function closeModal() {
+                 modal.style.display = 'none';
+            }
+            
+            function updateModalPrice(cantidad) {
+                const unitPrice = parseFloat(addToCartModalButton.getAttribute('data-product-price') || 0);
+                const newTotal = unitPrice * cantidad;
+                modalPriceDisplay.textContent = `$${newTotal.toFixed(2)} c/u`;
+            }
+
+            // Eventos de botones de cantidad del modal
+            minusButton.addEventListener('click', () => {
+                let currentQuantity = parseInt(quantityDisplay.textContent);
+                if (currentQuantity > 1) {
+                    quantityDisplay.textContent = currentQuantity - 1;
+                    updateModalPrice(currentQuantity - 1);
                 }
             });
 
-            closeButton.onclick = function() {
-                modal.style.display = "none";
-            }
+            plusButton.addEventListener('click', () => {
+                let currentQuantity = parseInt(quantityDisplay.textContent);
+                quantityDisplay.textContent = currentQuantity + 1;
+                updateModalPrice(currentQuantity + 1);
+            });
 
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
+
+            // --- FUNCIÓN CENTRAL: ABRIR MODAL ---
+            function openModal(productId) {
+                // Buscamos el producto en el array cargado previamente
+                const producto = productosCargados.find(p => p.idProductos == productId); 
+
+                if (producto) {
+                    modalImage.src = (producto.imagen === null || producto.imagen === '') ? "../assets/css/tacosalpastor.png" : producto.imagen;
+                    modalName.textContent = producto.nombre;
+                    
+                    // CRÍTICO: Guardar ID y Precio UNITARIO en el botón para el AJAX
+                    addToCartModalButton.setAttribute('data-product-id', producto.idProductos);
+                    addToCartModalButton.setAttribute('data-product-price', parseFloat(producto.precio).toFixed(2));
+
+                    // Reiniciar cantidad y precio al abrir
+                    quantityDisplay.textContent = '1';
+                    modalPriceDisplay.textContent = `$${parseFloat(producto.precio).toFixed(2)} c/u`;
+                    
+                    modal.style.display = 'block';
+                } else {
+                    console.error(`Producto con ID ${productId} no encontrado en datos cargados.`);
                 }
             }
             
-            // Lógica de cantidad
-            const minusButton = document.querySelector('.quantity-button.minus');
-            const plusButton = document.querySelector('.quantity-button.plus');
-            const quantityDisplay = document.querySelector('.quantity-display');
-            const mone = document.querySelector('.product-price-modal');
+            // ----------------------------------------------------
+            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX)
+            // ----------------------------------------------------
+            addToCartModalButton.addEventListener('click', () => {
+                const productId = addToCartModalButton.getAttribute('data-product-id');
+                const productPrice = addToCartModalButton.getAttribute('data-product-price');
+                const productName = modalName.textContent;
+                const cantidad = parseInt(quantityDisplay.textContent);
 
-            if (minusButton && plusButton && quantityDisplay) {
-                minusButton.addEventListener('click', () => {
-                    let currentQuantity = parseInt(quantityDisplay.textContent);
-                    if (currentQuantity > 1) {
-                        quantityDisplay.textContent = currentQuantity - 1;
-                        let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                        mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity - 1)).toFixed(2)} c/u`;
+                if (cantidad < 1) {
+                    alert("La cantidad debe ser al menos 1.");
+                    return;
+                }
+
+                // Llamada AJAX usando jQuery
+                $.ajax({
+                    url: AJAX_CART_URL, 
+                    type: 'POST',
+                    dataType: 'json', 
+                    data: {
+                        action: 'add',
+                        id: productId,
+                        nombre: productName,
+                        precio: productPrice, // Precio unitario
+                        cantidad: cantidad
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert("✅ ¡Agregado al Carrito! " + productName + " x " + cantidad);
+                            closeModal();
+                            // Aquí podrías agregar una función para refrescar un contador de carrito si existe
+                        } else {
+                             alert("❌ Error al añadir: " + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert("❌ Error de comunicación con el servidor. Revisa la ruta AJAX y 'procesar_carrito.php'.");
+                        console.error("AJAX Error: ", xhr.responseText);
                     }
                 });
-
-                plusButton.addEventListener('click', () => {
-                    let currentQuantity = parseInt(quantityDisplay.textContent);
-                    quantityDisplay.textContent = currentQuantity + 1;
-                    let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                    mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity + 1)).toFixed(2)} c/u`;
-                });
-            }
-            
-            // Lógica de complementos (selección naranja)
-            const complementButtons = document.querySelectorAll('.complement-button');
-
-            complementButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Mantiene el toggle para permitir múltiples selecciones si el usuario lo necesita
-                    this.classList.toggle('active-complement');
-                });
             });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-        // Cargar complementos desde la base de datos
-        function cargarComplementos() {
-            fetch(`http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarBebidas`)
-                .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-                
-            }).then(data => {
-                    const complementOptionsContainer = document.getElementById('complementos-contenedor');
-                    complementOptionsContainer.innerHTML = ''; // Limpiar el contenido existente
+            
+            // ----------------------------------------------------
+            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ
+            // ----------------------------------------------------
+            async function cargarProductos() {
+                contenedor.innerHTML = ''; // Limpia el contenedor
 
-                    data.contenido.forEach(complemento => {
-                        const complementButton = document.createElement('button');
-                        complementButton.classList.add('complement-button');
-                        complementButton.textContent = complemento.nombre;
+                try {
+                    const respuesta = await fetch(apiUrl); 
+                    
+                    if (!respuesta.ok) {
+                        throw new Error(`Error HTTP! Estado: ${respuesta.status}`);
+                    }
 
-                        complementButton.addEventListener('click', function() {
-                            this.classList.toggle('active-complement');
+                    const data = await respuesta.json();
+                    const todosLosProductos = data.contenido; 
+                    
+                    // Guardamos todos los productos para usarlos en openModal()
+                    productosCargados = todosLosProductos; 
+                    
+                    // Asumiendo que categoria == 1 son Bebidas, si no ajusta este filtro
+                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == 1); 
+
+                    if (productosParaMostrar.length === 0) {
+                         contenedor.innerHTML = `<p class="info-message">No hay bebidas disponibles en este momento.</p>`;
+                         return;
+                    }
+                    
+                    productosParaMostrar.forEach(producto => {
+                        const dishCard = document.createElement('div');
+                        dishCard.classList.add('dish-card', 'menu-card');
+
+                        dishCard.innerHTML = `
+                            <div class="card-image-container">
+                                <img src="${producto.imagen || "../assets/css/tacosalpastor.png"}" alt="${producto.nombre}">
+                            </div>
+                            <h3>${producto.nombre}</h3>
+                            <p class="price">$${parseFloat(producto.precio).toFixed(2)} c/u</p>
+                            <button class="add-to-cart-button open-modal" data-product-id="${producto.idProductos}">
+                                <img src="../assets/css/carrito.png" alt="Agregar">
+                            </button>
+                        `;
+
+                        // Re-adjuntar el listener al botón para abrir el modal
+                        dishCard.querySelector('.add-to-cart-button').addEventListener('click', (e) => {
+                             const productId = e.currentTarget.getAttribute('data-product-id');
+                             openModal(productId);
                         });
 
-                        complementOptionsContainer.appendChild(complementButton);
+
+                        contenedor.appendChild(dishCard);
                     });
-                })
-                .catch(error=>console.error('Error al cargar los complementos:', error));
-        }
-        cargarComplementos();
-    });
 
-    // Código para cargar las bebidas desde la API
-    
-
-    // --- Selectores del DOM ---
-    const contenedor = document.getElementById('bebidasContainer');
-    const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-
-
-    // Selectores del Modal (se mantienen del código anterior para la interacción)
-    const modal = document.getElementById('complements-modal');
-    const closeButton = modal.querySelector('.close-button');
-    const modalImage = modal.querySelector('.modal-product-image img');
-    const modalName = modal.querySelector('.modal-product-details h3');
-    const modalPrice = modal.querySelector('.product-price-modal');
-    const addToCartModalButton = modal.querySelector('.add-to-cart-modal-button');
-    let productosCargados = []; 
-
-    // --- Funciones de Interacción del Modal ---
-
-    function openModal(productId) {
-        // Usa == para comparar el ID del producto (número) con el data-attribute (string)
-        const producto = productosCargados.find(p => p.idProductos == productId); 
-
-        if (producto) {
-            modalImage.src = (producto.imagen === null || producto.imagen === '') ? "../assets/css/tacosalpastor.png" : producto.imagen;
-            modalImage.alt = producto.nombre;
-            modalName.textContent = producto.nombre;
-            modalPrice.textContent = `$${parseFloat(producto.precio).toFixed(2)} c/u`; // Formato de precio
-            
-            addToCartModalButton.setAttribute('data-product-id', producto.idProductos);
-
-            modal.style.display = 'block';
-            const quantityDisplay = modal.querySelector('.quantity-display');
-            quantityDisplay.textContent = '1';
-        } else {
-            console.error(`Producto con ID ${productId} no encontrado.`);
-        }
-    }
-
-    function closeModal() {
-        modal.style.display = 'none';
-    }
-
-
-    
-    async function cargarProductos() {
-        try {
-            const respuesta = await fetch(apiUrl); 
-            
-            if (!respuesta.ok) {
-                throw new Error(`Error HTTP! Estado: ${respuesta.status}`);
+                } catch (error) {
+                    console.error('Error al cargar los productos:', error); 
+                    contenedor.innerHTML = `<p class="error-message">Error al cargar los productos. Por favor, revisa la consola para más detalles.</p>`; 
+                }
             }
 
-            const data = await respuesta.json(); // La respuesta completa: { error: ..., contenido: [...] }
-            
-            // se accede al array que contiene los productos despues del texto "contenido: [{...}]"
-            const todosLosProductos = data.contenido; 
-            
-            // No sabia que se podia filtrar desde aqui; filtra solo las bebidas (categoria 1);
-            const tacosParaMostrar = todosLosProductos.filter(producto => producto.categoria == 1);
-
-            // Guardar TODOS los productos cargados (incluyendo bebidas y tortas) para el modal
-            // solo sirve si se quiere mostrar todo.
-             productosCargados = todosLosProductos; 
-
-            // se hace el for-each para mostrar los productos en el HTML
-            tacosParaMostrar.forEach(producto => {
-                
-                // este es el div que contiene la informacion general del producto
-                // <div class="dish-card menu-card">...</div>
-                const dishCard = document.createElement('div');
-                dishCard.classList.add('dish-card', 'menu-card');
-
-                // contenedor de la imagen dentro de la tarjeta
-                const cardImageContainer = document.createElement('div');
-                cardImageContainer.classList.add('card-image-container');
-
-                // obten la imagen del producto desde el array del contenido
-                const imagen = document.createElement('img');
-                // Si 'imagen' es null o vacío, usa la imagen por defecto.
-                imagen.src = (producto.imagen === null || producto.imagen === '') ? "../assets/css/tacosalpastor.png" : producto.imagen; 
-                imagen.alt = producto.nombre; 
-    
-                // hace el nombre del platillo con titulo de etiqueta (h3)
-                const dishName = document.createElement('h3');
-                dishName.textContent = producto.nombre;
-
-                // coloca el precio del platillo con la eqtiqueta (p)
-                const dishPrice = document.createElement('p');
-                dishPrice.classList.add('price');
-                // Usa parseFloat para asegurar que el precio se ponga correctamente
-                dishPrice.textContent = `$${parseFloat(producto.precio).toFixed(2)} c/u`; 
-
-                // Hace el botón de agregar al carrito
-                const addToCartButton = document.createElement('button');
-                addToCartButton.classList.add('add-to-cart-button', 'open-modal');
-                addToCartButton.setAttribute('data-product-id', producto.idProductos);
-                
-                // *** EVENT LISTENER para ABRIR MODAL ***
-                addToCartButton.addEventListener('click', () => {
-                    const productId = addToCartButton.getAttribute('data-product-id');
-                    openModal(productId);
-                });
-                // **************************************
-
-                // pond la imagen del carrito dentro del botón
-                const cartImage = document.createElement('img');
-                cartImage.src = "../assets/css/carrito.png";
-                cartImage.alt = "Agregar";
-
-                // junta la imagen del carrito al botón
-                addToCartButton.appendChild(cartImage);
-    
-                // Ensambla el contenedor de la imagen grande
-                cardImageContainer.appendChild(imagen);
-    
-                // forma la tarjeta completa del producto
-                dishCard.appendChild(cardImageContainer);
-                dishCard.appendChild(dishName);
-                dishCard.appendChild(dishPrice);
-                dishCard.appendChild(addToCartButton);
-    
-                // añade la tarjeta al contenedor principal en el HTML
-                contenedor.appendChild(dishCard);
+            // --- Ejecución y Cierre del Modal ---
+            cargarProductos();
+            closeButton.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
             });
-
-        } catch (error) {
-            console.error('Error al cargar los productos:', error); 
-            contenedor.innerHTML = `<p class="error-message">Error al cargar los productos: ${error.message}.</p>`; 
-        }
-    }
-
-    // --- Ejecución y Cierre del Modal ---
-    cargarProductos();
-    
-    closeButton.addEventListener('click', closeModal);
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            closeModal();
-        }
-    });
-
+        });
 
     </script>
 </body>

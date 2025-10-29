@@ -1,4 +1,5 @@
 <?php
+
     /**
      * Autor: Mariel Hernández Reyes
      * Fecha: 27/10/25

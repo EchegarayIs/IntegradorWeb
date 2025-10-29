@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
 require_once "conection.php";
-require_once "ADProductos.php";
+require_once "ADPedidos.php";
 
 function verificarParametros($params) {
     $available = true;
@@ -24,29 +24,3 @@ function verificarParametros($params) {
         die();
     }
 }
-
-$response = array();
-
-if (isset($_GET['api'])) {
-    $db = new ADProductos();
-
-    switch ($_GET['api']) {        
-        case 'listar':
-            $lista = $db->listar();
-            $response['error'] = false;
-            $response['aviso'] = 'Solicitud completada correctamente';
-            $response['contenido'] = $lista;
-            break;
-        default:
-            $response['error'] = true;
-            $response['aviso'] = 'Operación no válida';
-            break;
-    }
-} else {
-    $response['error'] = true;
-    $response['aviso'] = 'No se llamó a la API';
-}
-
-echo json_encode($response);
-
-?>
