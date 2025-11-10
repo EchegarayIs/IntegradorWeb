@@ -8,16 +8,17 @@ class Usuario {
         $this->conexion = (new Conexion())->conectar();
     }
 
-    public function registrarUsuario($nombre, $apellidos, $fechaNac, $direccion, $genero, $correo, $password, $rol = 2, $estado = 1) {
+    public function registrarUsuario($nombre, $apellidos, $fechaNac, $direccion, $genero, $correo, $passwor) {
         try {
             // Convertir género a número
             $generoValor = ($genero === 'M') ? 1 : (($genero === 'F') ? 2 : 3);
              // Definir valores automáticos
             $rol = 1;       // idRol por defecto = 1
             $estado = 1;    // estado por defecto = 1 (trabajando)
+            
 
-            $sql = "INSERT INTO usuarios (nombre, apellidos, fechaNac, direccion, genero, correo, password, Roles_idRol, estado)
-                    VALUES (:nombre, :apellidos, :fechaNac, :direccion, :genero, :correo, :password, :rol, :estado)";
+            $sql = "INSERT INTO usuarios (nombre, apellidos, fechaNac, direccion, genero, correo, passwor, Roles_idRol, estado)
+                    VALUES (:nombre, :apellidos, :fechaNac, :direccion, :genero, :correo, :passwor, :rol, :estado)";
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':nombre', $nombre);
@@ -26,7 +27,7 @@ class Usuario {
             $stmt->bindParam(':direccion', $direccion);
             $stmt->bindParam(':genero', $generoValor);
             $stmt->bindParam(':correo', $correo);
-            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':passwor', $passwor);
             $stmt->bindParam(':rol', $rol);
             $stmt->bindParam(':estado', $estado);
 

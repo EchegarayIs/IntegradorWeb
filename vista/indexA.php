@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+SESSION_start();
     //LOS COMENTE PORQUE YO NO TENGO LA BASE DE DATOS
     //include_once "../modelo/conexion/conection.php"; // prueba de conexion
     //$db = conection::conectar();
@@ -24,7 +25,7 @@
                 <li><a href="#" class="active">Inicio</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active" onclick="window.location.href='admin.php'">Perfil</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='admin.php'"><?php echo htmlspecialchars($_SESSION['nombre']);?></button>
     </header>
 
 

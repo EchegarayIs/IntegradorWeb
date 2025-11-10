@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+SESSION_start();
     //include_once "../modelo/conexion/conection.php"; // prueba de conexion
     //$db = conection::conectar();
 ?>
@@ -33,7 +34,7 @@
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'"><?php echo htmlspecialchars($_SESSION['nombre']);?></button>
     </header>
 
 

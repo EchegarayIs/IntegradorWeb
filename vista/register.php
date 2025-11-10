@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="input-group password-group">
-                        <input type="password" id="reg-password" name="password" placeholder="Contraseña" required minlength="8">
+                        <input type="password" id="reg-password" name="passwor" placeholder="Contraseña" required minlength="8">
                         <span class="toggle-password">
                             <img src="../assets/css/ojoabierto.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="reg-password">
                         </span>

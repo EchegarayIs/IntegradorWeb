@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+SESSION_START();
+?>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -31,7 +34,7 @@
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active active-profile-button">Juan Pérez</button> 
+        <button id="user-button" class="user-active active-profile-button"> <?php echo $_SESSION['nombre']; ?></button> 
     </header>
 
     <main class="profile-main">
@@ -49,35 +52,35 @@
 
             <section class="profile-content">
                 
-                <h2 class="profile-greeting">Hola, Juan Pérez</h2>
+                <h2 class="profile-greeting">Hola, <?php echo $_SESSION['nombre']; ?></h2>
                 
                 <div id="personal-info-container" class="profile-info-panel active-panel">
                     <div class="form-title">Información personal</div>
                     
-                    <form class="profile-form">
+                    <form class="profile-form" action="../controlador/CUsuario.php" method="POST">
                         
-                        <input type="text" value="Juan" class="profile-input" placeholder="Nombre(s)">
-                        <input type="text" value="Pérez López" class="profile-input" placeholder="Apellidos">
+                        <input type="text" value="<?php echo $_SESSION['nombre']; ?>" name="nombre" class="profile-input" placeholder="Nombre(s)">
+                        <input type="text" value="<?php echo $_SESSION['apellidos']; ?>" name="apellidos" class="profile-input" placeholder="Apellidos">
 
-                        <input type="date" value="1985-02-15" class="profile-input" id="birth-date-input">
+                        <input type="date" value="<?php echo $_SESSION['fechaNac']; ?>" name="fechaNac" class="profile-input" id="birth-date-input">
                         
-                        <input type="text" value="Av. del Trabajo s/n Tlahuelilpan" class="profile-input" placeholder="Dirección">
+                        <input type="text" value="<?php echo $_SESSION['direccion']; ?>" name="direccion" class="profile-input" placeholder="Dirección">
 
-                        <select class="profile-input" id="gender-select">
-                            <option value="masculino" selected>Masculino</option>
-                            <option value="femenino">Femenino</option>
+                        <select class="profile-input" id="gender-select" name="genero">
+                            <option value="1" <?php if ($_SESSION['genero'] == 1) echo 'selected'; ?>>Masculino</option>
+                            <option value="2" <?php if ($_SESSION['genero'] == 2) echo 'selected'; ?>>Femenino</option>
                             <option value="otro">Otro</option>
                             <option value="prefiero_no_decir">Prefiero no decir</option>
                         </select>
-                        
-                        <input type="email" value="juanperez@gmail.com" class="profile-input" placeholder="Correo Electrónico">
+
+                        <input type="email" value="<?php echo $_SESSION['correo']; ?>" name="correo" class="profile-input" placeholder="Correo Electrónico">
 
                         <div class="password-wrapper">
-                            <input type="password" value="password123" class="profile-input" placeholder="Contraseña">
+                            <input type="password" value="<?php echo $_SESSION['passwor']; ?>" name="passwor" class="profile-input" placeholder="Contraseña">
                             <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button> 
                         </div>
                         <div class="password-wrapper">
-                            <input type="password" value="password123" class="profile-input" placeholder="Confirmar Contraseña">
+                            <input type="password" value="<?php echo $_SESSION['passwor']; ?>" name="confirm_password" class="profile-input" placeholder="Confirmar Contraseña">
                             <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button>
                         </div>
 
@@ -139,11 +142,11 @@
                 // Muestra el panel y actualiza el título
                 if (targetId === 'personal') {
                     document.getElementById('personal-info-container').classList.remove('hidden');
-                    profileGreeting.textContent = "Hola, Juan Pérez";
+                    profileGreeting.textContent = "Hola, <?php echo $_SESSION['nombre']; ?>";
                     document.getElementById('link-personal').classList.add('active-sidebar-link');
                 } else if (targetId === 'orders') {
                     document.getElementById('orders-container').classList.remove('hidden');
-                    profileGreeting.textContent = "Hola, Juan Pérez"; 
+                    profileGreeting.textContent = "Hola, <?php echo $_SESSION['nombre']; ?>"; 
                     document.getElementById('link-orders').classList.add('active-sidebar-link');
                 } else if (targetId === 'logout') {
                     document.getElementById('link-logout').classList.add('active-sidebar-link');
@@ -170,22 +173,8 @@
                 });
             });
 
-            // Simulación de guardar cambios
-            const profileForm = document.querySelector('.profile-form');
-            if (profileForm) {
-                 profileForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Aquí puedes obtener los valores de los selectores
-                    const birthDate = document.getElementById('birth-date-input').value;
-                    const gender = document.getElementById('gender-select').value;
-                    
-                    console.log('Fecha de nacimiento:', birthDate);
-                    console.log('Género seleccionado:', gender);
-
-                    alert('¡Cambios guardados con éxito!');
-                });
-            }
+          
+           
 
             // Inicializa mostrando el panel de "Información personal"
             switchProfilePanel('personal');

@@ -2,6 +2,7 @@
 require_once '../modelo/Usuario.php';
 
 // Validar que vienen los datos del formulario
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre     = $_POST['nombre'] ?? '';
     $apellidos  = $_POST['apellidos'] ?? '';
@@ -9,21 +10,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $direccion  = $_POST['direccion'] ?? '';
     $genero     = $_POST['genero'] ?? '';
     $correo     = $_POST['correo'] ?? '';
-    $password   = $_POST['password'] ?? '';
+    $passwor   = $_POST['passwor'] ?? '';
     $confirmar  = $_POST['confirmar'] ?? '';
 
-    if ($password !== $confirmar) {
+    if ($passwor !== $confirmar) {
         die("Las contraseñas no coinciden.");
     }
 
     // Aquí puedes agregar validaciones adicionales
     $usuario = new Usuario();
-    $resultado = $usuario->registrarUsuario($nombre, $apellidos, $fechaNac, $direccion, $genero, $correo, $password);
+    $resultado = $usuario->registrarUsuario($nombre, $apellidos, $fechaNac, $direccion, $genero, $correo, $passwor);
 
     if ($resultado) {
         echo "<script>alert('Usuario registrado exitosamente'); window.location.href='../vista/login.php';</script>";
     } else {
-        echo "<script>alert('Error al registrar usuario'); window.location.href='../vista/registrar.php';</script>";
+        echo "<script>alert('Error al registrar usuario' . ); window.location.href='../vista/register.php';</script>";
+        echo "<pre>$resultado</pre>";
     }
 }
 ?>

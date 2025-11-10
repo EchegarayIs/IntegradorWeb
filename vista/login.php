@@ -37,7 +37,7 @@
                         <input type="email" id="usuario" name="usuario" placeholder="Ingrese el usuario" title="Ingrese un correo electrónico" required>
                     </div>
                     <div class="input-group password-group">
-                        <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="8">
+                        <input type="password" id="passwor" name="passwor" placeholder="Contraseña" required minlength="8">
                         <span class="toggle-password">
                             <img src="../assets/css/ojocerrado.png" alt="Mostrar/Ocultar Contraseña" id="togglePasswordIcon">
                         </span>
@@ -58,11 +58,11 @@
     
     <script>
         const togglePasswordIcon = document.getElementById('togglePasswordIcon');
-        const passwordField = document.getElementById('password');
+        const passwordField = document.getElementById('passwor');
 
         if (togglePasswordIcon && passwordField) {
             togglePasswordIcon.addEventListener('click', function() {
-                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                const type = passwordField.getAttribute('type') === 'passwor' ? 'text' : 'passwor';
                 passwordField.setAttribute('type', type);
                 
                 // Nota: Para cambiar el icono, necesitarías tener dos archivos de imagen (ojo abierto y ojo cerrado)

@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+SESSION_start();
+?>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +25,7 @@
         <div class="admin-grid">
             
             <aside class="admin-sidebar">
-                <h2 class="admin-greeting">Hola, Emmanuel</h2>
+                <h2 class="admin-greeting">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h2>
                 <nav>
                     <ul>
                         <li><a href="#" class="sidebar-link active-sidebar-link" id="link-inicio">Inicio</a></li>
@@ -100,13 +103,13 @@
                 <div id="add-edit-product-panel" class="admin-panel hidden">
                     <h3 class="panel-title" id="add-edit-product-title">Agregar nuevo producto</h3>
                     
-                    <form class="product-form" id="product-form">
+                    <form class="product-form" id="product-form" action="../controlador/CProducto.php" method="POST" enctype="multipart/form-data">
                         <div class="form-grid">
-                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto">
-                            <input type="text" class="profile-input price-input" placeholder="Precio">
+                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre" required>
+                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio" required>
                             
                             <div class="file-upload-wrapper wide-input">
-                                <input type="file" id="product-image-upload" accept="image/*" class="file-input">
+                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen">
                                 <label for="product-image-upload" class="file-label">
                                     <img src="../assets/css/imagen.png" alt="Subir imagen">
                                     <span id="file-name-display">Subir imagen</span>
@@ -308,25 +311,26 @@
                 <div id="informacion-personal-panel" class="admin-panel hidden">
                     <h3 class="panel-title">Información personal</h3>
                     
-                    <form class="profile-form">
-                        <input type="text" value="Emmanuel" class="profile-input" placeholder="Nombre(s)">
-                        <input type="text" value="García" class="profile-input" placeholder="Apellidos">
+                    <form class="profile-form" action="../controlador/actualizarUsuario.php" method="POST">
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['nombre']); ?>" class="profile-input" placeholder="Nombre(s)">
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['apellidos']); ?>" class="profile-input" placeholder="Apellidos">
 
-                        <input type="date" value="1990-05-20" class="profile-input">
-                        <input type="text" value="Calle Principal #123" class="profile-input" placeholder="Dirección">
-
+                        <input type="date" value="<?php echo htmlspecialchars($_SESSION['fechaNac']); ?>" class="profile-input">
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['direccion']); ?>" class="profile-input" placeholder="Dirección">
                         <select class="profile-input">
-                            <option value="masculino" selected>Masculino</option>
-                            <option value="femenino">Femenino</option>
+                            <option value="1" <?php if ($_SESSION['genero'] == 1) echo 'selected'; ?>>Masculino</option>
+                            <option value="2" <?php if ($_SESSION['genero'] == 2) echo 'selected'; ?>>Femenino</option>
+
                         </select>
-                        <input type="email" value="emmanuel@gallo.com" class="profile-input" placeholder="Correo Electrónico">
+                        <input type="email" value="<?php echo htmlspecialchars($_SESSION['correo']); ?>" class="profile-input" placeholder="Correo Electrónico">
 
                         <div class="password-wrapper">
-                            <input type="password" value="********" class="profile-input" placeholder="Contraseña">
+                            <input type="password" value= "<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Contraseña">
                             <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button> 
+                            
                         </div>
                         <div class="password-wrapper">
-                            <input type="password" value="********" class="profile-input" placeholder="Confirmar Contraseña">
+                            <input type="password" value="<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Confirmar Contraseña">
                             <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button>
                         </div>
 
