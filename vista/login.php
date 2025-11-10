@@ -34,7 +34,7 @@
 
                 <form  action="../controlador/dispacherUsuario.php" method="POST" class="login-form"> <!-- Manda a llamar al dispacherUsuario.php y entregalos parametros -->
                     <div class="input-group">
-                        <input type="email" id="usuario" name="usuario" placeholder="Ingrese el usuario" required>
+                        <input type="email" id="usuario" name="usuario" placeholder="Ingrese el usuario" title="Ingrese un correo electrónico" required>
                     </div>
                     <div class="input-group password-group">
                         <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="8">
