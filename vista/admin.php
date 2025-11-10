@@ -14,7 +14,7 @@
                 <h1>Taquería</h1>
                 <h2>El Gallo Giro</h2>
             </div>
-        </div>
+        </div>      
         <div class="admin-header-title">Panel de Administración</div>
     </header>
 
