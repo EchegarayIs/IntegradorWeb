@@ -21,9 +21,9 @@ SESSION_START();
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php">Inicio</a></li>
+                <li><a href="inicio.php">Inicio</a></li>
                 <li class="despliegue">
-                    <a href="#">Menú</a>
+                    <a href="inicio.php">Menú</a>
                     <div class="despliegue-content">
                         <a href="Tacos.php">Tacos</a>
                         <a href="Tortas.php">Tortas</a>
@@ -34,7 +34,15 @@ SESSION_START();
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active active-profile-button"> <?php echo $_SESSION['nombre']; ?></button> 
+        <button id="user-button" class="user-active active-profile-button"> 
+            <?php 
+                 if (empty($_SESSION['nombre'])) {
+                 echo "";
+                 } else {
+                     echo htmlspecialchars($_SESSION['nombre']);
+                }
+            ?>
+        </button> 
     </header>
 
     <main class="profile-main">
@@ -45,26 +53,35 @@ SESSION_START();
                     <ul>
                         <li><a href="#" class="sidebar-link active-sidebar-link" id="link-personal">Información personal</a></li>
                         <li><a href="#" class="sidebar-link" id="link-orders">Mis pedidos</a></li>
-                        <li><a href="#" class="sidebar-link" id="link-logout">Cerrar sesión</a></li>
+                        <li><a href="../controlador/logout.php" class="sidebar-link" id="link-logout">Cerrar sesión</a></li>
                     </ul>
                 </nav>
             </aside>
 
             <section class="profile-content">
                 
-                <h2 class="profile-greeting">Hola, <?php echo $_SESSION['nombre']; ?></h2>
+                <h2 class="profile-greeting">
+                    <?php 
+                        if (empty($_SESSION['nombre'])) {
+                        echo "Perfil";
+                        } else {
+                        echo htmlspecialchars($_SESSION['nombre']);
+                        }
+                    ?>
+                </h2>
                 
                 <div id="personal-info-container" class="profile-info-panel active-panel">
                     <div class="form-title">Información personal</div>
                     
                     <form class="profile-form" action="../controlador/CUsuario.php" method="POST">
                         
-                        <input type="text" value="<?php echo $_SESSION['nombre']; ?>" name="nombre" class="profile-input" placeholder="Nombre(s)">
-                        <input type="text" value="<?php echo $_SESSION['apellidos']; ?>" name="apellidos" class="profile-input" placeholder="Apellidos">
+                        <input type="text" value="<?php echo !empty($_SESSION['nombre']) ? htmlspecialchars($_SESSION['nombre']) : ''; ?>" name="nombre" class="profile-input" placeholder="Nombre(s)">
 
-                        <input type="date" value="<?php echo $_SESSION['fechaNac']; ?>" name="fechaNac" class="profile-input" id="birth-date-input">
+                        <input type="text" value="<?php echo !empty($_SESSION['apellidos']) ? htmlspecialchars($_SESSION['apellidos']) : ''; ?>" name="apellidos" class="profile-input" placeholder="Apellidos">
+
+                        <input type="date" value="<?php echo !empty($_SESSION['fechaNac']) ? htmlspecialchars($_SESSION['fechaNac']) : ''; ?>" name="fechaNac" class="profile-input" id="birth-date-input">
                         
-                        <input type="text" value="<?php echo $_SESSION['direccion']; ?>" name="direccion" class="profile-input" placeholder="Dirección">
+                        <input type="text" value="<?php echo !empty($_SESSION['direccion']) ? htmlspecialchars($_SESSION['direccion']) : ''; ?>" name="direccion" class="profile-input" placeholder="Dirección">
 
                         <select class="profile-input" id="gender-select" name="genero">
                             <option value="1" <?php if ($_SESSION['genero'] == 1) echo 'selected'; ?>>Masculino</option>
@@ -73,14 +90,14 @@ SESSION_START();
                             <option value="prefiero_no_decir">Prefiero no decir</option>
                         </select>
 
-                        <input type="email" value="<?php echo $_SESSION['correo']; ?>" name="correo" class="profile-input" placeholder="Correo Electrónico">
+                        <input type="email" value="<?php echo !empty($_SESSION['correo']) ? htmlspecialchars($_SESSION['correo']) : ''; ?>" name="correo" class="profile-input" placeholder="Correo Electrónico">
 
                         <div class="password-wrapper">
-                            <input type="password" value="<?php echo $_SESSION['passwor']; ?>" name="passwor" class="profile-input" placeholder="Contraseña">
+                            <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="passwor" class="profile-input" placeholder="Contraseña">
                             <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button> 
                         </div>
                         <div class="password-wrapper">
-                            <input type="password" value="<?php echo $_SESSION['passwor']; ?>" name="confirm_password" class="profile-input" placeholder="Confirmar Contraseña">
+                            <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="confirm_password" class="profile-input" placeholder="Confirmar Contraseña">
                             <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button>
                         </div>
 
@@ -91,8 +108,6 @@ SESSION_START();
                 </div>
                 
                 <div id="orders-container" class="profile-info-panel hidden">
-                    
-                   
                      <?php include "../controlador/CPedido.php"; ?>
                 </div>
                
@@ -125,7 +140,7 @@ SESSION_START();
                 } else if (targetId === 'logout') {
                     document.getElementById('link-logout').classList.add('active-sidebar-link');
                     alert('Cerrando sesión...');
-                     window.location.href = 'login.php'; // Redirección real
+                     window.location.href = '../controlador/logout.php'; // Redirección real
                 }
             }
 

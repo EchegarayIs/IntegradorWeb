@@ -80,7 +80,7 @@ $total_final_js = number_format($total_final, 2, '.', '');
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php">Inicio</a></li>
+                <li><a href="inicios.php">Inicio</a></li>
                 <li><a href="menu.php">Menú</a></li>
                 <li class="active-menu-link"><a href="cart.php">Carrito</a></li> 
             </ul>
@@ -170,7 +170,7 @@ $total_final_js = number_format($total_final, 2, '.', '');
                 <p>Número de Orden: <strong id="order-number"></strong></p>
                 <p>Total: <strong id="final-total"></strong></p>
                 <p>¡Gracias por tu compra en Taquería El Gallo Giro!</p>
-                <a href="index.php">Volver al Inicio</a>
+                <a href="inicio.php">Volver al Inicio</a>
             </div>
         </section>
         

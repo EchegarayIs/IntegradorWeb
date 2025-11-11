@@ -30,15 +30,38 @@
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
-                        <a href="Tacos.php">Tacos</a>
-                        <a href="Tortas.php">Tortas</a>
-                        <a href="Bebidas.php">Bebidas</a>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tacos-form">
+                            <input type="hidden" id="accion" name="accion" value="tacos">
+                            <a href="#" id="enviarTacos">Tacos</a>
+                        </form>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tortas-form">
+                            <input type="hidden" id="accion" name="accion" value="tortas">
+                            <a href="#" id="enviarTortas">Tortas</a>
+                        </form>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="bebidas-form">
+                            <input type="hidden" id="accion" name="accion" value="bebidas">
+                            <a href="#" id="enviarBebidas">Bebidas</a>
+                        </form>
                     </div>
                 </li>
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='<?php 
+                    if (empty($_SESSION['nombre'])) {
+                        echo "login.php"; 
+                    } else {
+                        echo "Perfil.php"; 
+                    }
+                ?>'">
+        <?php 
+                 if (empty($_SESSION['nombre'])) {
+                 echo "Perfil";
+                 } else {
+                     echo htmlspecialchars($_SESSION['nombre']);
+                }
+        ?>
+        </button>
     </header>
 
     <main class="menu-main">
@@ -85,6 +108,40 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ----------------------------------------------------
+            // 0. LOGICA DE BOTONES DEL MENÚ - ACTUALIZACIÓN 10-11-2025
+            // ----------------------------------------------------
+
+            document.getElementById('enviarTacos').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tacos-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarTortas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tortas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarBebidas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('bebidas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
             
             // ----------------------------------------------------
             // 1. SELECTORES DE ELEMENTOS DEL MODAL - ACTUALIZACIÓN 10-11-2025

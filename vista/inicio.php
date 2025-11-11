@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+    SESSION_start();
     include_once "../modelo/conexion/conection.php"; // prueba de conexion
     $db = conection::conectar();
 ?>
@@ -24,17 +25,17 @@
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
-                        <form action="../controlador/dispacherProductos.php" method="post">
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tacos-form">
                             <input type="hidden" id="accion" name="accion" value="tacos">
-                            <input type="submit" value="Tacos">
+                            <a href="#" id="enviarTacos">Tacos</a>
                         </form>
-                        <form action="../controlador/dispacherProductos.php" method="post">
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tortas-form">
                             <input type="hidden" id="accion" name="accion" value="tortas">
-                            <input type="submit" value="Tortas">
+                            <a href="#" id="enviarTortas">Tortas</a>
                         </form>
-                        <form action="../controlador/dispacherProductos.php" method="post">
+                        <form action="../controlador/dispacherProductos.php" method="post" id="bebidas-form">
                             <input type="hidden" id="accion" name="accion" value="bebidas">
-                            <input type="submit" value="Bebidas">
+                            <a href="#" id="enviarBebidas">Bebidas</a>
                         </form>
                     </div>
 
@@ -42,7 +43,21 @@
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='<?php 
+                    if (empty($_SESSION['nombre'])) {
+                        echo "login.php"; 
+                    } else {
+                        echo "Perfil.php"; 
+                    }
+                ?>'">
+        <?php 
+                 if (empty($_SESSION['nombre'])) {
+                 echo "Perfil";
+                 } else {
+                     echo htmlspecialchars($_SESSION['nombre']);
+                }
+        ?>
+        </button>
     </header>
 
 
@@ -133,5 +148,37 @@
             <p>&copy; 2025 Taquería El Gallo Giro. Todos los derechos reservados.</p>
         </div>
     </footer>
+    <script>
+        document.getElementById('enviarTacos').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tacos-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarTortas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tortas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarBebidas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('bebidas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+    </script>
 </body>
 </html>
