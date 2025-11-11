@@ -27,7 +27,7 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php" class="active">Inicio</a></li>
+                <li><a href="inicio.php" class="active">Inicio</a></li>
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
