@@ -9,11 +9,11 @@ class MProducto {
     }
 
     // Método para registrar un producto nuevo (estado y categoría = 1 por defecto)
-    public function registrarProducto($nombre, $precio, $imagen) {
+    public function registrarProducto($nombre, $precio, $categoria, $imagen ) {
         try {
             // Valores por defecto
             $estado = 1;
-            $categoria = 1;
+        
 
             $sql = "INSERT INTO productos (nombre, precio, imagen, estado, categoria)
                     VALUES (:nombre, :precio, :imagen, :estado, :categoria)";

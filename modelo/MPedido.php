@@ -29,4 +29,31 @@ class MPedido {
         $stmt->bindParam(":idPedido", $idPedido, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    public function pedidosEspera() {
+    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado, idPago 
+              FROM pedidos 
+              WHERE estado = 1
+              ORDER BY fechaPedido DESC";
+
+    $stmt = $this->conexion->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+public function actualizarEstadoPedido($idPedido) {
+    try {
+        $query = "UPDATE pedidos 
+                  SET estado = estado + 1 
+                  WHERE idPedido = :idPedido";
+
+        $stmt = $this->conexion->prepare($query);
+        $stmt->bindParam(":idPedido", $idPedido, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        return "Error al actualizar estado del pedido: " . $e->getMessage();
+    }
+}
+
+
 }

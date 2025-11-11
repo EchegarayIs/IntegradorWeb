@@ -83,6 +83,14 @@ SESSION_start();
                         <div class="form-grid">
                             <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre" required>
                             <input type="text" class="profile-input price-input" placeholder="Precio" name="precio" required>
+                            <div class="input-group select-group">
+                                <select id="categoria" name="categoria" required>
+                                  <option value="" disabled selected>Categoría</option>
+                                  <option value="0">Tacos</option>
+                                   <option value="1">Bebidas</option>
+                                   <option value="2">Tortas</option>
+                                </select>
+                            </div>
                             
                             <div class="file-upload-wrapper wide-input">
                                 <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen">
@@ -105,6 +113,44 @@ SESSION_start();
                         </div>
                     </form>
                 </div>
+
+                <div id="solo_edit-product-panel" class="admin-panel hidden">
+                    <h3 class="panel-title" id="add-edit-product-title">Editar un producto</h3>
+                    
+                    <form class="product-form" id="product-form" action="../controlador/CProducto.php" method="POST" enctype="multipart/form-data">
+                        <div class="form-grid">
+                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre2" required>
+                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio2" required>
+                            <div class="input-group select-group">
+                                <select id="categoria" name="categoria2" required>
+                                  <option value="" disabled selected>Categoría</option>
+                                  <option value="0">Tacos</option>
+                                   <option value="1">Bebidas</option>
+                                   <option value="2">Tortas</option>
+                                </select>
+                            </div>
+                            
+                            <div class="file-upload-wrapper wide-input">
+                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen2">
+                                <label for="product-image-upload" class="file-label">
+                                    <img src="../assets/css/imagen.png" alt="Subir imagen">
+                                    <span id="file-name-display">Subir imagen</span>
+                                </label>
+                            </div>
+                            <div class="spacer"></div>
+                        </div>
+                        
+                        <h4 class="form-subtitle">Complementos adicionales</h4>
+                        
+                        <div class="complements-container" id="product-complements-container">
+                            </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="save-changes-button">Editar producto</button>
+                            <button type="button" class="cancel-button" id="cancel-product-btn">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
                 
                 <div id="pedidos-panel" class="admin-panel hidden">
                     <h3 class="panel-title">Gestión de pedidos</h3>
@@ -112,36 +158,9 @@ SESSION_start();
                     <div class="pedidos-sections-container">
                         
                         <div class="pedidos-table-wrapper">
-                            <h4 class="table-title pending-title">Pedidos en espera</h4>
-                            <div class="table-scroll-area" id="pedidos-espera">
-                                <table class="pedidos-table">
-                                    <thead>
-                                        <tr>
-                                            <th>No. de pedido</th>
-                                            <th>Fecha del pedido</th>
-                                            <th>Turno</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr data-id="1735">
-                                            <td>1735</td>
-                                            <td>10/08/2025</td>
-                                            <td>15</td>
-                                            <td><span class="status pending" data-status="pending">En espera</span></td>
-                                        </tr>
-                                        <tr data-id="1734">
-                                            <td>1734</td>
-                                            <td>10/08/2025</td>
-                                            <td>15</td>
-                                            <td><span class="status pending" data-status="pending">En espera</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button class="change-status-button" data-from="pending" data-to="in-progress">Cambiar estado</button>
+                            <?php include "../controlador/pedidosEspera.php"; ?>
                         </div>
-
+                        
                         <div class="pedidos-table-wrapper">
                             <h4 class="table-title in-progress-title">Pedidos en proceso</h4>
                             <div class="table-scroll-area" id="pedidos-proceso">
@@ -336,6 +355,10 @@ SESSION_start();
             const btnCancelProduct = document.getElementById('cancel-product-btn');
             const productTitle = document.getElementById('product-management-title');
             const complementsContainer = document.getElementById('product-complements-container');
+            function showPanel(panelId) {
+    adminPanels.forEach(panel => panel.classList.add('hidden'));
+    document.getElementById(panelId).classList.remove('hidden');
+}
 
             // Definiciones de complementos por tipo de producto
             const complements = {
@@ -457,14 +480,26 @@ SESSION_start();
             // Botón Agregar
             btnAddProduct.addEventListener('click', () => openProductForm(false, 'tacos'));
             
-            // Botón Editar (delegación de eventos para tarjetas existentes/futuras)
+            // Botón Editar (delegación de eventos para tarjetas existentes/futuras) aquiiiiiiiiiiiiiiiiii
             productManagementPanel.addEventListener('click', function(e) {
-                if (e.target.closest('.edit-button')) {
-                    const card = e.target.closest('.product-item-card');
-                    const productType = card.dataset.productType;
-                    openProductForm(true, productType);
-                }
-            });
+    if (e.target.closest('.edit-button')) {
+        const card = e.target.closest('.product-item-card');
+        const productId = card.dataset.id; // Asegúrate que tus tarjetas tengan este atributo
+        const productType = card.dataset.productType;
+
+
+        // Cambiar al nuevo contenedor de edición
+        showPanel('solo_edit-product-panel');
+
+        
+        
+    }
+});
+// Botón Cancelar en el panel de edición
+document.querySelector('#solo_edit-product-panel .cancel-button').addEventListener('click', function() {
+    showPanel('productos-panel');
+});
+
             
             // Botón Cancelar
             btnCancelProduct.addEventListener('click', function() {
@@ -494,41 +529,7 @@ SESSION_start();
             });
             
             // --- Funcionalidad de GESTIÓN DE PEDIDOS ---
-            const changeStatusButtons = document.querySelectorAll('.change-status-button');
-            
-            changeStatusButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const fromStatus = this.dataset.from;
-                    const toStatus = this.dataset.to;
-                    
-                    const fromTableBody = document.querySelector(`#pedidos-${fromStatus.replace('-', '')} .pedidos-table tbody`);
-                    const toTableBody = document.querySelector(`#pedidos-${toStatus.replace('-', '')} .pedidos-table tbody`);
-                    
-                    // Simulación de mover el primer pedido de la tabla
-                    const firstRow = fromTableBody.querySelector('tr');
-                    
-                    if (firstRow) {
-                        // 1. Clonar y mover la fila
-                        const newRow = firstRow.cloneNode(true);
-                        
-                        // 2. Actualizar el estado en la fila clonada
-                        const statusSpan = newRow.querySelector('.status');
-                        statusSpan.textContent = toStatus.charAt(0).toUpperCase() + toStatus.slice(1).replace('-', ' ');
-                        statusSpan.className = `status ${toStatus}`;
-                        statusSpan.dataset.status = toStatus;
-                        
-                        // 3. Agregar la nueva fila a la tabla de destino
-                        toTableBody.appendChild(newRow);
-                        
-                        // 4. Eliminar la fila original
-                        fromTableBody.removeChild(firstRow);
-                        
-                        alert(`El pedido ${firstRow.dataset.id} ha pasado a estado "${toStatus.replace('-', ' ')}".`);
-                    } else {
-                        alert(`No hay pedidos en estado "${fromStatus.replace('-', ' ')}" para cambiar.`);
-                    }
-                });
-            });
+          
 
             // Inicializa mostrando el panel de "Productos" (que es el panel de inicio)
             activateLink(document.getElementById('link-inicio'));
@@ -543,6 +544,46 @@ SESSION_start();
                 passwordInput.type = isPassword ? 'text' : 'password';
             });
         });
+        
+    // Captura los pedidos seleccionados al hacer clic en el botón
+    document.addEventListener('DOMContentLoaded', () => {
+    const botonCambiar = document.getElementById('btnCambiarEstado');
+    
+    if (botonCambiar) {
+        botonCambiar.addEventListener('click', () => {
+            const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+
+            if (seleccionados.length === 0) {
+                alert('Selecciona al menos un pedido para cambiar su estado.');
+                return;
+            }
+
+            // Solo tomamos el primero seleccionado (ya que tu PHP solo recibe un idPedido)
+            const idPedido = seleccionados[0];
+            console.log("Pedido seleccionado:", idPedido);
+
+            // Creamos un objeto FormData
+            const formData = new FormData();
+            formData.append('idPedido', idPedido);
+
+            // Enviamos los datos al PHP
+            fetch('../controlador/editarPedidosEspera.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                location.reload(); // Recargar la página para actualizar la tabla
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+});
+
+    
+
     </script>
 </body>
 </html>

@@ -4,6 +4,7 @@ require_once "../modelo/MProducto.php";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nombre = trim($_POST["nombre"]);
     $precio = trim($_POST["precio"]);
+    $categoria = trim($_POST["categoria"]);
     
 
     // Subida de imagen
@@ -20,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $producto = new MProducto();
-    $resultado = $producto->registrarProducto($nombre, $precio, $imagen);
+    $resultado = $producto->registrarProducto($nombre, $precio, $categoria, $imagen);
 
     if ($resultado === true) {
         echo "<script>alert('✅ Producto registrado correctamente'); window.location.href='../vista/admin.php';</script>";
