@@ -30,5 +30,40 @@ class MProducto {
             return "Error al registrar producto: " . $e->getMessage();
         }
     }
+    // ✅ Listar productos de categoría 0
+    public function listarTacos() {
+        try {
+            $sql = "SELECT * FROM productos WHERE categoria = 0";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return "Error al listar productos de categoría 0: " . $e->getMessage();
+        }
+    }
+
+    // ✅ Listar productos de categoría 1
+    public function listarBebidas() {
+        try {
+            $sql = "SELECT * FROM productos WHERE categoria = 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return "Error al listar productos de categoría 1: " . $e->getMessage();
+        }
+    }
+
+    // ✅ Listar productos de categoría 2
+    public function listarTortas() {
+        try {
+            $sql = "SELECT * FROM productos WHERE categoria = 2";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return "Error al listar productos de categoría 2: " . $e->getMessage();
+        }
+    }
 }
 ?>

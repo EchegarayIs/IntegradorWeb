@@ -62,40 +62,16 @@ SESSION_start();
                     <h3 class="panel-title" id="product-management-title">Gestión de productos</h3>
 
                     <div id="product-list-container">
-                        <div class="product-item-card" data-product-type="tacos" data-product-id="1">
-                            <img src="../assets/css/tacosalpastor.png" alt="Tacos al pastor" class="product-image">
-                            <div class="product-info">
-                                <span class="product-name">Tacos al pastor</span>
-                                <span class="product-price">$14.00</span>
-                            </div>
-                            <div class="product-actions">
-                                <button class="action-button edit-button"><img src="../assets/css/editar.png" alt="Editar"></button>
-                                <button class="action-button delete-button"><img src="../assets/css/botebasuranaranja.png" alt="Eliminar"></button>
-                            </div>
+                        <div  data-product-type="tacos" >
+                           <?php include "../controlador/listar_tacos.php"; ?>
+                            
+                        </div>                       
+                                         
+                        <div data-product-type="tortas">
+                            <?php include "../controlador/listar_tortas.php"; ?>
                         </div>
-
-                        <div class="product-item-card" data-product-type="tacos" data-product-id="2">
-                            <img src="../assets/css/tacosalpastor.png" alt="Tacos de chorizo" class="product-image">
-                            <div class="product-info">
-                                <span class="product-name">Tacos de chorizo</span>
-                                <span class="product-price">$17.00</span>
-                            </div>
-                            <div class="product-actions">
-                                <button class="action-button edit-button"><img src="../assets/css/editar.png" alt="Editar"></button>
-                                <button class="action-button delete-button"><img src="../assets/css/botebasuranaranja.png" alt="Eliminar"></button>
-                            </div>
-                        </div>
-                        
-                        <div class="product-item-card hidden" data-product-type="tortas" data-product-id="3">
-                            <img src="../assets/css/tacosalpastor.png" alt="Torta de tres quesos" class="product-image">
-                            <div class="product-info">
-                                <span class="product-name">Torta de tres quesos</span>
-                                <span class="product-price">$68.00</span>
-                            </div>
-                            <div class="product-actions">
-                                <button class="action-button edit-button"><img src="../assets/css/editar.png" alt="Editar"></button>
-                                <button class="action-button delete-button"><img src="../assets/css/botebasuranaranja.png" alt="Eliminar"></button>
-                            </div>
+                        <div data-product-type="bebidas">
+                            <?php include "../controlador/listar_bebidas.php"; ?>
                         </div>
                     </div>
                 </div>

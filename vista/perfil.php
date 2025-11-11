@@ -92,36 +92,10 @@ SESSION_START();
                 
                 <div id="orders-container" class="profile-info-panel hidden">
                     
-                    <div class="order-card">
-                        <img src="../assets/css/logosolotaco.png" alt="Taco" class="order-image">
-                        <div class="order-details">
-                            <span class="order-id">Pedido #225</span>
-                            <span class="order-date">10 de octubre, 2025</span>
-                            <span class="order-total">Total: $XXXX.00</span>
-                        </div>
-                        <div class="order-status finished">Terminado</div>
-                    </div>
-                    
-                    <div class="order-card">
-                        <img src="../assets/css/logosolotaco.png" alt="Taco" class="order-image">
-                        <div class="order-details">
-                            <span class="order-id">Pedido #226</span>
-                            <span class="order-date">10 de octubre, 2025</span>
-                            <span class="order-total">Total: $XXXX.00</span>
-                        </div>
-                        <div class="order-status in-progress">En proceso</div>
-                    </div>
-                    
-                    <div class="order-card">
-                        <img src="../assets/css/logosolotaco.png" alt="Taco" class="order-image">
-                        <div class="order-details">
-                            <span class="order-id">Pedido #227</span>
-                            <span class="order-date">10 de octubre, 2025</span>
-                            <span class="order-total">Total: $XXXX.00</span>
-                        </div>
-                        <div class="order-status pending">En espera</div>
-                    </div>
+                   
+                     <?php include "../controlador/CPedido.php"; ?>
                 </div>
+               
             </section>
         </div>
     </main>
