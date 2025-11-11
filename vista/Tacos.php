@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+
+    <?php
+
+        session_start();
+        // Obtener resultado del dispatcher
+        $rs = $_SESSION['productosT'];
+        $complementosT = $_SESSION['complementosT'];
+
+    ?>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,9 +16,7 @@
     <title>Menú - Tacos - Taquería El Gallo Giro</title>
     <link rel="stylesheet" href="../assets/css/style.css"> 
     </head>
-<body>
-    <?php session_start(); // CRÍTICO: Iniciar sesión para mantener el carrito activo ?>
-    
+<body>    
     <header id="main-header">
         <div class="logo-container">
             <img src="../assets/css/logosolotaco.png" alt="Logo El Gallo Giro" id="logo">
@@ -19,7 +27,7 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php" class="active">Inicio</a></li>
+                <li><a href="inicio.php" class="active">Inicio</a></li>
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
@@ -83,7 +91,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             
             // ----------------------------------------------------
-            // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES
+            // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
@@ -98,8 +106,6 @@
 
             let productosCargados = []; 
             const contenedor = document.getElementById('tacosContainer');
-            const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-            const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarTacos';
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
             const CATEGORIA_ID = 0; // <--- ID de Categoría para TACOS
 
@@ -126,18 +132,16 @@
             minusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 if (currentQuantity > 1) {
-                    quantityDisplay.textContent = currentQuantity - 1;
-                    let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                    mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity - 1)).toFixed(2)}`;
-                    updateModalPrice(currentQuantity - 1);
+                quantityDisplay.textContent = currentQuantity - 1;
+                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
+                updateModalPrice(currentQuantity - 1); 
                 }
             });
 
             plusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 quantityDisplay.textContent = currentQuantity + 1;
-                let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity + 1)).toFixed(2)}`;
+                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
                 updateModalPrice(currentQuantity + 1);
             });
 
@@ -216,32 +220,31 @@
             });
             
             // ----------------------------------------------------
-            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ
-            // ----------------------------------------------------
+           // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ - ACTUALIZACIÓN 10-11-2025
+           // ----------------------------------------------------
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
                 try {
-                    const respuesta = await fetch(apiUrl); 
-                    
-                    if (!respuesta.ok) {
-                        throw new Error(`Error HTTP! Estado: ${respuesta.status}`);
-                    }
 
-                    const data = await respuesta.json();
-                    const todosLosProductos = data.contenido; 
+                    // CRÍTICO: La variable PHP $rs se inyecta directamente aquí. 
+                    // Asegúrate de que $rs contenga un objeto JSON válido con la propiedad 'contenido'.
+                    const data = <?= json_encode($rs); ?>; 
+                    const todosLosProductos = data; 
                     
                     productosCargados = todosLosProductos; 
                     
-                    // FILTRO CRÍTICO para Tacos
+                    // FILTRO CORREGIDO: Usamos CATEGORIA_ID
                     const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
-                         contenedor.innerHTML = `<p class="info-message">No hay tacos disponibles en este momento.</p>`;
-                         return;
+                        // MENSAJE CORREGIDO
+                        contenedor.innerHTML = `<p class="info-message">No hay **tacos** disponibles en este momento.</p>`;
+                        return;
                     }
-                    
+
                     productosParaMostrar.forEach(producto => {
+
                         const dishCard = document.createElement('div');
                         dishCard.classList.add('dish-card', 'menu-card');
 
@@ -256,13 +259,14 @@
                             </button>
                         `;
 
+                        // Adjuntar listener para abrir el modal y cargar la info del producto
                         dishCard.querySelector('.add-to-cart-button').addEventListener('click', (e) => {
                              const productId = e.currentTarget.getAttribute('data-product-id');
                              openModal(productId);
                         });
 
-
                         contenedor.appendChild(dishCard);
+                        
                     });
 
                 } catch (error) {
@@ -270,22 +274,18 @@
                     contenedor.innerHTML = `<p class="error-message">Error al cargar los productos. Por favor, revisa la consola para más detalles.</p>`; 
                 }
             }
-            
             // ----------------------------------------------------
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS
+            // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
-                    const response = await fetch(ingredientesApiUrl);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
+                    
+                    const data = <?= json_encode($complementosT); ?>;
                     
                     complementosContenedor.innerHTML = ''; 
 
-                    if (data.contenido && data.contenido.length > 0) {
-                         data.contenido.forEach(complemento => {
+                    if (data && data.length > 0) {
+                         data.forEach(complemento => {
                             const complementButton = document.createElement('button');
                             complementButton.classList.add('complement-button');
                             complementButton.textContent = complemento.nombre;

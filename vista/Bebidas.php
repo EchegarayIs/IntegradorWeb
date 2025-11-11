@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+    <?php
+
+        session_start();
+        // Obtener resultado del dispatcher
+        $rs = $_SESSION['productos'];
+        $complementosB = $_SESSION['complementosB'];
+
+    ?>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -7,8 +16,6 @@
     <link rel="stylesheet" href="../assets/css/style.css"> 
 </head>
 <body>
-    <?php session_start(); // Iniciar sesión para mantener el carrito activo ?>
-    
     <header id="main-header">
         <div class="logo-container">
             <img src="../assets/css/logosolotaco.png" alt="Logo El Gallo Giro" id="logo">
@@ -19,7 +26,7 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php">Inicio</a></li>
+                <li><a href="inicio.php">Inicio</a></li>
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
@@ -76,13 +83,11 @@
         </div>
     </div>
     
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
             // ----------------------------------------------------
-            // 1. SELECTORES DE ELEMENTOS DEL MODAL
+            // 1. SELECTORES DE ELEMENTOS DEL MODAL - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
@@ -97,10 +102,8 @@
             
             let productosCargados = []; 
             const contenedor = document.getElementById('bebidasContainer');
-            const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-            const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarBebidas';
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
-            const CATEGORIA_ID = 2; // <--- ID de Categoría para Bebidas
+            const CATEGORIA_ID = 1; // <--- ID de Categoría para Bebidas
 
             // ----------------------------------------------------
             // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
@@ -154,75 +157,32 @@
                 }
             }
             
-            // ----------------------------------------------------
-            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX)
-            // ----------------------------------------------------
-            addToCartModalButton.addEventListener('click', () => {
-                const productId = addToCartModalButton.getAttribute('data-product-id');
-                const productPrice = addToCartModalButton.getAttribute('data-product-price');
-                const productName = modalName.textContent;
-                const cantidad = parseInt(quantityDisplay.textContent);
-
-                if (cantidad < 1) {
-                    alert("La cantidad debe ser al menos 1.");
-                    return;
-                }
-
-                // Llamada AJAX usando jQuery
-                $.ajax({
-                    url: AJAX_CART_URL, 
-                    type: 'POST',
-                    dataType: 'json', 
-                    data: {
-                        action: 'add',
-                        id: productId,
-                        nombre: productName,
-                        precio: productPrice, // Precio unitario
-                        cantidad: cantidad
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            alert(" ¡Agregado al Carrito! " + productName + " x " + cantidad);
-                            closeModal();
-                            // Aquí podrías agregar una función para refrescar un contador de carrito si existe
-                        } else {
-                             alert(" Error al añadir: " + response.message);
-                        }
-                    },
-                    error: function(xhr) {
-                        alert(" Error de comunicación con el servidor. Revisa la ruta AJAX y 'procesar_carrito.php'.");
-                        console.error("AJAX Error: ", xhr.responseText);
-                    }
-                });
-            });
-            
            // ----------------------------------------------------
-            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ
-            // ----------------------------------------------------
+           // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ - ACTUALIZACIÓN 10-11-2025
+           // ----------------------------------------------------
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
                 try {
-                    const respuesta = await fetch(apiUrl); 
-                    
-                    if (!respuesta.ok) {
-                        throw new Error(`Error HTTP! Estado: ${respuesta.status}`);
-                    }
 
-                    const data = await respuesta.json();
-                    const todosLosProductos = data.contenido; 
+                    // CRÍTICO: La variable PHP $rs se inyecta directamente aquí. 
+                    // Asegúrate de que $rs contenga un objeto JSON válido con la propiedad 'contenido'.
+                    const data = <?= json_encode($rs); ?>; 
+                    const todosLosProductos = data; 
                     
                     productosCargados = todosLosProductos; 
                     
-                    // FILTRO CRÍTICO para Tortas
-                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == 1); 
+                    // FILTRO CORREGIDO: Usamos CATEGORIA_ID (2 para Bebidas)
+                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
-                         contenedor.innerHTML = `<p class="info-message">No hay tortas disponibles en este momento.</p>`;
-                         return;
+                        // MENSAJE CORREGIDO
+                        contenedor.innerHTML = `<p class="info-message">No hay **bebidas** disponibles en este momento.</p>`;
+                        return;
                     }
-                    
+
                     productosParaMostrar.forEach(producto => {
+
                         const dishCard = document.createElement('div');
                         dishCard.classList.add('dish-card', 'menu-card');
 
@@ -243,8 +203,8 @@
                              openModal(productId);
                         });
 
-
                         contenedor.appendChild(dishCard);
+                        
                     });
 
                 } catch (error) {
@@ -253,20 +213,17 @@
                 }
             }
             // ----------------------------------------------------
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS
+            // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
-                    const response = await fetch(ingredientesApiUrl);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
+                    
+                    const data = <?= json_encode($complementosB); ?>;
                     
                     complementosContenedor.innerHTML = ''; 
 
-                    if (data.contenido && data.contenido.length > 0) {
-                         data.contenido.forEach(complemento => {
+                    if (data && data.length > 0) {
+                         data.forEach(complemento => {
                             const complementButton = document.createElement('button');
                             complementButton.classList.add('complement-button');
                             complementButton.textContent = complemento.nombre;
