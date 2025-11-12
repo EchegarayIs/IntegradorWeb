@@ -634,6 +634,34 @@ SESSION_start();
         }
     });
 });
+        // ----------------------------ELIMINAR PRODUCTO ----------------------------
+        async function eliminarProducto(id) {
+    if (!confirm("¿Seguro que deseas eliminar este producto?")) return;
+
+    try {
+        const formData = new FormData();
+        formData.append("idProductos", id);
+
+        const response = await fetch("../controlador/eliminarProducto.php", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Producto eliminado correctamente ✅");
+            // 🔄 Recarga la página o el panel
+            location.reload();
+        } else {
+            alert("⚠️ No se pudo eliminar: " + (data.error || "Error desconocido"));
+        }
+    } catch (error) {
+        console.error("Error al eliminar:", error);
+        alert("Ocurrió un error al intentar eliminar el producto.");
+    }
+}
+//--------------------------------------------  FIN ELIMINAR PRODUCTO ----------------------------
 
         // --- Funcionalidad de mostrar/ocultar contraseña (para Personal y Admin Info) ---
         document.querySelectorAll('.toggle-password').forEach(button => {

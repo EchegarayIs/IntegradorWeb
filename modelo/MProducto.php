@@ -90,5 +90,15 @@ class MProducto {
         return false;
     }
 }
+public function eliminarProducto($idProductos) {
+        try {
+            $sql = "DELETE FROM productos WHERE idProductos = :idProductos";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':idProductos', $idProductos, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
 ?>
