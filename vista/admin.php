@@ -308,26 +308,26 @@ SESSION_start();
                 <div id="informacion-personal-panel" class="admin-panel hidden">
                     <h3 class="panel-title">Información personal</h3>
                     
-                    <form class="profile-form" action="../controlador/actualizarUsuario.php" method="POST">
-                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['nombre']); ?>" class="profile-input" placeholder="Nombre(s)">
-                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['apellidos']); ?>" class="profile-input" placeholder="Apellidos">
+                    <form class="profile-form" action="../controlador/CUsuarioA.php" method="POST">
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['nombre']); ?>" class="profile-input" placeholder="Nombre(s)" name="nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['apellidos']); ?>" class="profile-input" placeholder="Apellidos" name="apellidos" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
 
-                        <input type="date" value="<?php echo htmlspecialchars($_SESSION['fechaNac']); ?>" class="profile-input">
-                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['direccion']); ?>" class="profile-input" placeholder="Dirección">
-                        <select class="profile-input">
+                        <input type="date" value="<?php echo htmlspecialchars($_SESSION['fechaNac']); ?>" class="profile-input" name="fechaNac" required>
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['direccion']); ?>" class="profile-input" placeholder="Dirección" name="direccion" required>
+                        <select class="profile-input" name="genero" required>
                             <option value="1" <?php if ($_SESSION['genero'] == 1) echo 'selected'; ?>>Masculino</option>
                             <option value="2" <?php if ($_SESSION['genero'] == 2) echo 'selected'; ?>>Femenino</option>
 
                         </select>
-                        <input type="email" value="<?php echo htmlspecialchars($_SESSION['correo']); ?>" class="profile-input" placeholder="Correo Electrónico">
+                        <input type="email" value="<?php echo htmlspecialchars($_SESSION['correo']); ?>" class="profile-input" placeholder="Correo Electrónico" name="correo" required>
 
                         <div class="password-wrapper">
-                            <input type="password" value= "<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Contraseña">
+                            <input type="password" value= "<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Contraseña" name="passwor" required minlength="8">
                             <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button> 
                             
                         </div>
                         <div class="password-wrapper">
-                            <input type="password" value="<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Confirmar Contraseña">
+                            <input type="password" value="<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Confirmar Contraseña" name="confirm_password" required minlength="8">
                             <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button>
                         </div>
 

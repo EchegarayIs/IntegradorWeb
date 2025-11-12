@@ -49,6 +49,7 @@
                     } else {
                         echo "Perfil.php"; 
                     }
+                
                 ?>'">
         <?php 
                  if (empty($_SESSION['nombre'])) {
