@@ -75,13 +75,13 @@ SESSION_START();
                     
                     <form class="profile-form" action="../controlador/CUsuario.php" method="POST">
                         
-                        <input type="text" value="<?php echo !empty($_SESSION['nombre']) ? htmlspecialchars($_SESSION['nombre']) : ''; ?>" name="nombre" class="profile-input" placeholder="Nombre(s)">
+                        <input type="text" value="<?php echo !empty($_SESSION['nombre']) ? htmlspecialchars($_SESSION['nombre']) : ''; ?>" name="nombre" class="profile-input" placeholder="Nombre(s)" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
 
-                        <input type="text" value="<?php echo !empty($_SESSION['apellidos']) ? htmlspecialchars($_SESSION['apellidos']) : ''; ?>" name="apellidos" class="profile-input" placeholder="Apellidos">
+                        <input type="text" value="<?php echo !empty($_SESSION['apellidos']) ? htmlspecialchars($_SESSION['apellidos']) : ''; ?>" name="apellidos" class="profile-input" placeholder="Apellidos" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
 
                         <input type="date" value="<?php echo !empty($_SESSION['fechaNac']) ? htmlspecialchars($_SESSION['fechaNac']) : ''; ?>" name="fechaNac" class="profile-input" id="birth-date-input">
                         
-                        <input type="text" value="<?php echo !empty($_SESSION['direccion']) ? htmlspecialchars($_SESSION['direccion']) : ''; ?>" name="direccion" class="profile-input" placeholder="Dirección">
+                        <input type="text" value="<?php echo !empty($_SESSION['direccion']) ? htmlspecialchars($_SESSION['direccion']) : ''; ?>" name="direccion" class="profile-input" placeholder="Dirección" required>
 
                         <select class="profile-input" id="gender-select" name="genero">
                             <option value="1" <?php if ($_SESSION['genero'] == 1) echo 'selected'; ?>>Masculino</option>
@@ -90,14 +90,14 @@ SESSION_START();
                             <option value="prefiero_no_decir">Prefiero no decir</option>
                         </select>
 
-                        <input type="email" value="<?php echo !empty($_SESSION['correo']) ? htmlspecialchars($_SESSION['correo']) : ''; ?>" name="correo" class="profile-input" placeholder="Correo Electrónico">
+                        <input type="email" value="<?php echo !empty($_SESSION['correo']) ? htmlspecialchars($_SESSION['correo']) : ''; ?>" name="correo" class="profile-input" placeholder="Correo Electrónico" required>
 
                         <div class="password-wrapper">
-                            <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="passwor" class="profile-input" placeholder="Contraseña">
+                            <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="passwor" class="profile-input" placeholder="Contraseña" required minlength="8">
                             <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button> 
                         </div>
                         <div class="password-wrapper">
-                            <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="confirm_password" class="profile-input" placeholder="Confirmar Contraseña">
+                            <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="confirm_password" class="profile-input" placeholder="Confirmar Contraseña" required minlength="8">
                             <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button>
                         </div>
 

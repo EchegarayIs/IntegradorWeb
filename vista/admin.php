@@ -81,8 +81,8 @@ SESSION_start();
                     
                     <form class="product-form" id="product-form" action="../controlador/CProducto.php" method="POST" enctype="multipart/form-data">
                         <div class="form-grid">
-                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre" required>
-                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio" required>
+                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
+                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio" required pattern="\d+(\.\d{1,2})?" title="Ingrese un precio válido (número con hasta dos decimales).">
                             <div class="input-group select-group">
                                 <select id="categoria" name="categoria" required>
                                   <option value="" disabled selected>Categoría</option>
@@ -93,7 +93,7 @@ SESSION_start();
                             </div>
                             
                             <div class="file-upload-wrapper wide-input">
-                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen">
+                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen" required>
                                 <label for="product-image-upload" class="file-label">
                                     <img src="../assets/css/imagen.png" alt="Subir imagen">
                                     <span id="file-name-display">Subir imagen</span>
@@ -119,8 +119,8 @@ SESSION_start();
                     
                     <form class="product-form" id="product-form" action="../controlador/CProducto.php" method="POST" enctype="multipart/form-data">
                         <div class="form-grid">
-                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre2" required>
-                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio2" required>
+                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre2" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
+                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio2" required pattern="\d+(\.\d{1,2})?" title="Ingrese un precio válido (número con hasta dos decimales).">
                             <div class="input-group select-group">
                                 <select id="categoria" name="categoria2" required>
                                   <option value="" disabled selected>Categoría</option>
@@ -131,7 +131,7 @@ SESSION_start();
                             </div>
                             
                             <div class="file-upload-wrapper wide-input">
-                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen2">
+                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen2" required>
                                 <label for="product-image-upload" class="file-label">
                                     <img src="../assets/css/imagen.png" alt="Subir imagen">
                                     <span id="file-name-display">Subir imagen</span>
@@ -212,11 +212,11 @@ SESSION_start();
                     <form class="reportes-form">
                         <div class="date-selectors">
                             <div class="select-wrapper">
-                                <input type="date" class="profile-input" id="fecha-inicio" placeholder="Fecha de inicio">
+                                <input type="date" class="profile-input" id="fecha-inicio" placeholder="Fecha de inicio" required>
                                 <span class="dropdown-arrow-date"></span>
                             </div>
                             <div class="select-wrapper">
-                                <input type="date" class="profile-input" id="fecha-fin" placeholder="Fecha de fin">
+                                <input type="date" class="profile-input" id="fecha-fin" placeholder="Fecha de fin" required>
                                 <span class="dropdown-arrow-date"></span>
                             </div>
                         </div>
