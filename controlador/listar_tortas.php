@@ -16,6 +16,7 @@ try {
 
     if ($tortas && count($tortas) > 0) {
         foreach ($tortas as $producto) {
+
             // ✅ Validar ruta de imagen
             if (!empty($producto["imagen"]) && file_exists($producto["imagen"])) {
                 $imagen = $producto["imagen"];
@@ -23,18 +24,26 @@ try {
                 $imagen = "../assets/css/torta_default.png"; // Imagen por defecto
             }
 
-            // ✅ Estructura HTML del producto
+            // ✅ Estructura del producto con data-id (necesario para editar)
             echo "
-            <div class='product-item-card' data-product-type='tortas' data-product-id='{$producto['idProductos']}'>
+            <div class='product-item-card' 
+                 data-id='{$producto['idProductos']}' 
+                 data-product-type='tortas'>
+
                 <img src='{$imagen}' alt='{$producto['nombre']}' class='product-image'>
+
                 <div class='product-info'>
                     <span class='product-name'>{$producto['nombre']}</span>
                     <span class='product-price'>$" . number_format($producto['precio'], 2) . "</span>
                 </div>
+
                 <div class='product-actions'>
-                    <button class='action-button edit-button' onclick='editarProducto({$producto['idProductos']})'>
+                    <!-- Botón de editar (ya no usa onclick, el script lo maneja por delegación) -->
+                    <button class='action-button edit-button'>
                         <img src='../assets/css/editar.png' alt='Editar'>
                     </button>
+
+                    <!-- Botón de eliminar -->
                     <button class='action-button delete-button' onclick='eliminarProducto({$producto['idProductos']})'>
                         <img src='../assets/css/botebasuranaranja.png' alt='Eliminar'>
                     </button>
@@ -49,4 +58,5 @@ try {
     echo "<p>Error al cargar las tortas: " . $e->getMessage() . "</p>";
 }
 ?>
+
 

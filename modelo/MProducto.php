@@ -65,5 +65,30 @@ class MProducto {
             return "Error al listar productos de categoría 2: " . $e->getMessage();
         }
     }
+    public function buscarPorId($idProductos) {
+    try {
+        $sql = "SELECT * FROM productos WHERE idProductos = :idProductos LIMIT 1";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idProductos', $idProductos, PDO::PARAM_INT);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado ?: null;
+    } catch (PDOException $e) {
+        return null;
+    }
+}
+
+
+    public function editarPrecio($idProductos, $precio) {
+    try {
+        $sql = "UPDATE productos SET precio = :precio WHERE idProductos = :idProductos";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':precio', $precio, PDO::PARAM_STR);
+        $stmt->bindParam(':idProductos', $idProductos, PDO::PARAM_INT);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        return false;
+    }
+}
 }
 ?>

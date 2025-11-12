@@ -117,12 +117,14 @@ SESSION_start();
                 <div id="solo_edit-product-panel" class="admin-panel hidden">
                     <h3 class="panel-title" id="add-edit-product-title">Editar un producto</h3>
                     
-                    <form class="product-form" id="product-form" action="../controlador/CProducto.php" method="POST" enctype="multipart/form-data">
+                    <form class="product-form" id="formEditarProducto" method="POST" enctype="multipart/form-data">
+                        <!-- agregado: input hidden para guardar id del producto (necesario para editar) -->
+                        <input type="hidden" name="idProductos" id="edit-idProductos">
                         <div class="form-grid">
-                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre2" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
-                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio2" required pattern="\d+(\.\d{1,2})?" title="Ingrese un precio válido (número con hasta dos decimales).">
+                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre2" id="edit-nombre2" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
+                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio2" id="edit-precio2" required pattern="\d+(\.\d{1,2})?" title="Ingrese un precio válido (número con hasta dos decimales).">
                             <div class="input-group select-group">
-                                <select id="categoria" name="categoria2" required>
+                                <select id="edit-categoria2" name="categoria2" required>
                                   <option value="" disabled selected>Categoría</option>
                                   <option value="0">Tacos</option>
                                    <option value="1">Bebidas</option>
@@ -131,10 +133,10 @@ SESSION_start();
                             </div>
                             
                             <div class="file-upload-wrapper wide-input">
-                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen2" required>
-                                <label for="product-image-upload" class="file-label">
+                                <input type="file" id="edit-product-image-upload" accept="image/*" class="file-input" name="imagen2">
+                                <label for="edit-product-image-upload" class="file-label">
                                     <img src="../assets/css/imagen.png" alt="Subir imagen">
-                                    <span id="file-name-display">Subir imagen</span>
+                                    <span id="file-name-display-edit">Subir imagen</span>
                                 </label>
                             </div>
                             <div class="spacer"></div>
@@ -142,12 +144,12 @@ SESSION_start();
                         
                         <h4 class="form-subtitle">Complementos adicionales</h4>
                         
-                        <div class="complements-container" id="product-complements-container">
+                        <div class="complements-container" id="product-complements-container-edit">
                             </div>
                         
                         <div class="form-actions">
                             <button type="submit" class="save-changes-button">Editar producto</button>
-                            <button type="button" class="cancel-button" id="cancel-product-btn">Cancelar</button>
+                            <button type="button" class="cancel-button" id="cancel-edit-btn">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -480,27 +482,77 @@ SESSION_start();
             // Botón Agregar
             btnAddProduct.addEventListener('click', () => openProductForm(false, 'tacos'));
             
-            // Botón Editar (delegación de eventos para tarjetas existentes/futuras) aquiiiiiiiiiiiiiiiiii
+            // ---------- AQUI SE SUSTITUYE EL MANEJADOR EDIT PARA QUE FUNCIONE ----------
+            // Botón Editar (delegación de eventos para tarjetas existentes/futuras)
             productManagementPanel.addEventListener('click', function(e) {
-    if (e.target.closest('.edit-button')) {
-        const card = e.target.closest('.product-item-card');
-        const productId = card.dataset.id; // Asegúrate que tus tarjetas tengan este atributo
-        const productType = card.dataset.productType;
+                const editBtn = e.target.closest('.edit-button');
+                if (!editBtn) return;
 
+                const card = editBtn.closest('.product-item-card');
+                if (!card) return;
 
-        // Cambiar al nuevo contenedor de edición
-        showPanel('solo_edit-product-panel');
+                // intenta obtener id desde data-id o data-idProductos
+                const idFromData = card.dataset.id || card.dataset.idproductos || card.dataset.idProductos || card.dataset.idProductos;
+                const id = idFromData ? idFromData : null;
+                if (!id) {
+                    alert('No se encontró el identificador del producto en la tarjeta (data-id).');
+                    return;
+                }
 
-        
-        
-    }
-});
-// Botón Cancelar en el panel de edición
-document.querySelector('#solo_edit-product-panel .cancel-button').addEventListener('click', function() {
-    showPanel('productos-panel');
-});
+                // Usamos GET para pedir el producto por id (despachador buscarXIdProductos.php)
+                fetch(`../controlador/buscarXIdProductos.php?idProductos=${encodeURIComponent(id)}`)
+                    .then(resp => {
+                        if (!resp.ok) throw new Error('Respuesta no OK del servidor');
+                        return resp.json();
+                    })
+                    .then(data => {
+                        // El despachador debe devolver JSON con las propiedades del producto.
+                        // Ajusta las claves si tu JSON usa otros nombres (ej. idProductos en lugar de id).
+                        const product = data;
+                        // Soportamos respuesta con idProductos o id
+                        const pid = product.idProductos || product.id || product.id_producto || product.idProducto;
+                        if (!pid) {
+                            console.warn('Objeto producto recibido:', product);
+                            alert('No se pudieron obtener los datos del producto. Revisa la respuesta del despachador.');
+                            return;
+                        }
 
-            
+                        // Rellenar campos del formulario de edición
+                        document.getElementById('edit-idProductos').value = pid;
+                        // nombre (campo readonly en tu formulario)
+                        const nombreField = document.getElementById('edit-nombre2');
+                        if (nombreField) nombreField.value = product.nombre ?? product.name ?? '';
+
+                        // precio (campo editable)
+                        const precioField = document.getElementById('edit-precio2');
+                        if (precioField) {
+                            // si la respuesta trae 'precio' o 'price'
+                            precioField.value = product.precio ?? product.price ?? '';
+                        }
+
+                        // categoría (si existe)
+                        const categoriaField = document.getElementById('edit-categoria2');
+                        if (categoriaField) categoriaField.value = (product.categoria ?? product.category ?? '');
+
+                        // Actualizar texto del nombre de archivo si viene imagen
+                        const fileNameSpan = document.getElementById('file-name-display-edit');
+                        if (fileNameSpan) fileNameSpan.textContent = product.imagen ?? product.image ?? 'Subir imagen';
+
+                        // Mostrar panel de edición
+                        showPanel('solo_edit-product-panel');
+                    })
+                    .catch(err => {
+                        console.error('Error al obtener producto:', err);
+                        alert('Ocurrió un error al obtener los datos del producto. Revisa la consola.');
+                    });
+            });
+            // ---------- FIN del manejador edit sustituido ----------
+
+            // Botón Cancelar en el panel de edición
+            document.querySelector('#solo_edit-product-panel .cancel-button')?.addEventListener('click', function() {
+                showPanel('productos-panel');
+            });
+
             // Botón Cancelar
             btnCancelProduct.addEventListener('click', function() {
                  showPanel('productos-panel');
@@ -510,12 +562,22 @@ document.querySelector('#solo_edit-product-panel .cancel-button').addEventListen
                  filterProducts(type);
             });
             
-            // Manejo de la subida de imagen
+            // Manejo de la subida de imagen (panel crear)
             const fileInput = document.getElementById('product-image-upload');
             const fileNameDisplay = document.getElementById('file-name-display');
-            fileInput.addEventListener('change', function() {
-                fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Subir imagen';
-            });
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Subir imagen';
+                });
+            }
+            // Manejo de la subida de imagen (panel editar)
+            const editFileInput = document.getElementById('edit-product-image-upload');
+            const editFileNameDisplay = document.getElementById('file-name-display-edit');
+            if (editFileInput) {
+                editFileInput.addEventListener('change', function() {
+                    editFileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Subir imagen';
+                });
+            }
             
             // --- Funcionalidad de AGREGAR/EDITAR PERSONAL ---
             btnAddPerson.addEventListener('click', function() {
@@ -536,6 +598,43 @@ document.querySelector('#solo_edit-product-panel .cancel-button').addEventListen
             showPanel('productos-panel');
         });
         
+        document.addEventListener('DOMContentLoaded', () => {
+    const formEditar = document.getElementById('formEditarProducto');
+    if (!formEditar) return;
+
+    formEditar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const idProductos = document.getElementById('edit-idProductos').value;
+        const precio = document.getElementById('edit-precio2').value;
+
+        console.log("📤 Enviando al servidor:", { idProductos, precio });
+
+        const formData = new FormData();
+        formData.append('idProductos', idProductos);
+        formData.append('precio', precio);
+
+        try {
+            const response = await fetch('../controlador/editarProductos.php', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Producto actualizado correctamente');
+                window.location.href = 'admin.php';
+                 // Recargar la lista de productos (asumiendo que tienes una función para eso)
+                if (typeof cargarProductos === 'function') cargarProductos();
+            } else {
+                alert('⚠️ No se pudo actualizar: ' + (data.error || 'Error desconocido'));
+            }
+        } catch (error) {
+           
+        }
+    });
+});
+
         // --- Funcionalidad de mostrar/ocultar contraseña (para Personal y Admin Info) ---
         document.querySelectorAll('.toggle-password').forEach(button => {
             button.addEventListener('click', function() {
