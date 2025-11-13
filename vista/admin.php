@@ -17,8 +17,14 @@ SESSION_start();
                 <h1>Taquería</h1>
                 <h2>El Gallo Giro</h2>
             </div>
-        </div>      
+        </div>
+        <nav id="main-nav">
+            <ul >
+                <li><a href="indexA.php" class="">Inicio</a></li>                
+            </ul>
+        </nav>      
         <div class="admin-header-title">Panel de Administración</div>
+        <button id="user-button" class="user-active" onclick="window.location.href='admin.php'"><?php echo htmlspecialchars($_SESSION['nombre']);?></button>
     </header>
 
     <main class="admin-main">
