@@ -4,8 +4,8 @@
 
         session_start();
         // Obtener resultado del dispatcher
-        $rs = $_SESSION['productosT'];
-        $complementosTorta = $_SESSION['complementosTorta'];
+        $rs = $_SESSION['productosTo'] ?? [];
+        $complementosTorta = $_SESSION['complementosTorta'] ?? [];
 
     ?>
 
@@ -53,7 +53,7 @@
                     if (empty($_SESSION['nombre'])) {
                         echo "login.php"; 
                     } else {
-                        echo "Perfil.php"; 
+                        echo "perfil.php"; 
                     }
                 ?>'">
         <?php 
@@ -164,22 +164,18 @@
 
             let productosCargados = []; 
             const contenedor = document.getElementById('tortasContainer');
-<<<<<<< HEAD
-            // Rutas relativas
-            const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-            const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarTortas';
-=======
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
             let modificadoresDisponibles = [];
-            const CATEGORIA_ID = 2; 
+            const CATEGORIA_ID = 2; // <--- ID de Categoría para TACOS
 
             // ----------------------------------------------------
             // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
             // ----------------------------------------------------
             function closeModal() {
                  modal.style.display = 'none';
+                 // Resetear cantidad al cerrar
                  quantityDisplay.textContent = '1';
+                 // Resetear complementos seleccionados
                  complementosContenedor.querySelectorAll('.active-complement').forEach(btn => {
                     btn.classList.remove('active-complement');
                  });
@@ -188,20 +184,23 @@
             function updateModalPrice(cantidad) {
                 const unitPrice = parseFloat(addToCartModalButton.getAttribute('data-product-price') || 0);
                 const newTotal = unitPrice * cantidad;
-                modalPriceDisplay.textContent = `$${newTotal.toFixed(2)} Total`; 
+                modalPriceDisplay.textContent = `$${newTotal.toFixed(2)} c/u`;
             }
 
+            // Eventos de botones de cantidad del modal
             minusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 if (currentQuantity > 1) {
-                    quantityDisplay.textContent = currentQuantity - 1;
-                    updateModalPrice(currentQuantity - 1); 
+                quantityDisplay.textContent = currentQuantity - 1;
+                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
+                updateModalPrice(currentQuantity - 1); 
                 }
             });
 
             plusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 quantityDisplay.textContent = currentQuantity + 1;
+                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
                 updateModalPrice(currentQuantity + 1);
             });
 
@@ -214,9 +213,11 @@
                     modalImage.src = (producto.imagen === null || producto.imagen === '') ? "../assets/css/tacosalpastor.png" : producto.imagen;
                     modalName.textContent = producto.nombre;
                     
+                    // CRÍTICO: Guardar ID y Precio UNITARIO en el botón para el AJAX
                     addToCartModalButton.setAttribute('data-product-id', producto.idProductos);
                     addToCartModalButton.setAttribute('data-product-price', parseFloat(producto.precio).toFixed(2));
 
+                    // Reiniciar cantidad y precio al abrir
                     quantityDisplay.textContent = '1';
                     updateModalPrice(1);
                     
@@ -227,73 +228,73 @@
             }
             
             // ----------------------------------------------------
-            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX) 
+            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX)
             // ----------------------------------------------------
-            addToCartModalButton.addEventListener('click', () => {
-                const productId = addToCartModalButton.getAttribute('data-product-id'); 
-                const productPrice = addToCartModalButton.getAttribute('data-product-price'); 
-                const productName = modalName.textContent; 
-                const cantidad = parseInt(quantityDisplay.textContent);
-                
-                if (cantidad < 1 || !productId || !productPrice) {
-                    alert("Por favor, selecciona una cantidad válida y un producto.");
-                    return;
-                }
+            // Tacos.php - Reemplaza el contenido de este listener
 
-                const modificadoresSeleccionados = [];
-                complementosContenedor.querySelectorAll('.active-complement').forEach(btn => {
-                    const modName = btn.getAttribute('data-mod-name'); 
-                    const modData = modificadoresDisponibles.find(m => m.nombre === modName); 
-                    
-                    if (modData) {
-                        modificadoresSeleccionados.push({
-                            nombre: modData.nombre,
-                            precio_extra: 0.00, 
-                            idIngrediente: modData.idIngrediente,
-                            categoria: modData.categoria
-                        });
-                    }
-                });
+addToCartModalButton.addEventListener('click', () => {
+    // 1. Obtener datos base (usando los atributos guardados al abrir el modal)
+    const productId = addToCartModalButton.getAttribute('data-product-id'); 
+    const productPrice = addToCartModalButton.getAttribute('data-product-price'); 
+    const productName = modalName.textContent; 
+    const cantidad = parseInt(quantityDisplay.textContent);
+    
+    if (cantidad < 1 || !productId || !productPrice) {
+        alert("Por favor, selecciona una cantidad válida y un producto.");
+        return;
+    }
 
-                const ajaxData = {
-                    action: 'add',
-                    producto_id: productId,        
-                    nombre: productName,           
-                    precio_base: productPrice,     
-                    cantidad: cantidad,
-                    modificadores_json: JSON.stringify(modificadoresSeleccionados) 
-                };
-
-                $.ajax({
-                    url: AJAX_CART_URL, 
-                    type: 'POST',
-                    dataType: 'json', 
-                    data: ajaxData, 
-                    success: function(response) {
-                        if (response.success) {
-                            alert(" ¡Agregado al Carrito! " + productName + " x " + cantidad); 
-                            closeModal();
-                        } else {
-                             alert(" Error al añadir: " + response.message);
-                             console.error("Server Error Response:", response);
-                        }
-                    },
-                    error: function(xhr) {
-                         alert(" Error de comunicación con el servidor al actualizar el carrito.");
-                         console.error("AJAX Error:", xhr.responseText);
-                    }
-                });
+    // 2. CRÍTICO: Recopilar los modificadores y ASIGNAR precio_extra 0.00
+    const modificadoresSeleccionados = [];
+    complementosContenedor.querySelectorAll('.active-complement').forEach(btn => {
+        const modName = btn.getAttribute('data-mod-name'); 
+        const modData = modificadoresDisponibles.find(m => m.nombre === modName); 
+        
+        if (modData) {
+            modificadoresSeleccionados.push({
+                nombre: modData.nombre,
+                precio_extra: 0.00, 
+                idIngrediente: modData.idIngrediente,
+                categoria: modData.categoria
             });
-            
+        }
+    });
+
+    // 3. CRÍTICO: Preparar los datos con las claves correctas para el controlador PHP
+    const ajaxData = {
+        action: 'add',
+        producto_id: productId,        // Esperado por PHP
+        nombre: productName,           // Esperado por PHP
+        precio_base: productPrice,     // Esperado por PHP
+        cantidad: cantidad,
+        modificadores_json: JSON.stringify(modificadoresSeleccionados) // Esperado por PHP
+    };
+
+    // Llamada AJAX
+    $.ajax({
+        url: AJAX_CART_URL, 
+        type: 'POST',
+        dataType: 'json', 
+        data: ajaxData, 
+        success: function(response) {
+            if (response.success) {
+                alert(" ¡Agregado al Carrito! " + productName + " x " + cantidad); 
+                closeModal();
+            } else {
+                 alert(" Error al añadir: " + response.message);
+                 console.error("Server Error Response:", response);
+            }
+        },
+        error: function(xhr) {
+             alert(" Error de comunicación con el servidor al actualizar el carrito.");
+             console.error("AJAX Error:", xhr.responseText);
+        }
+    });
+});
             
             // ----------------------------------------------------
-<<<<<<< HEAD
-            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ (UNIFICADA CON TACOS)
-            // ----------------------------------------------------
-=======
            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ - ACTUALIZACIÓN 10-11-2025
            // ----------------------------------------------------
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
@@ -306,21 +307,13 @@
                     
                     productosCargados = todosLosProductos; 
                     
-<<<<<<< HEAD
-                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
-
-                    if (productosParaMostrar.length === 0) {
-                         contenedor.innerHTML = `<p class="info-message">No hay productos disponibles en este momento.</p>`;
-                         return;
-=======
                     // FILTRO CORREGIDO: Usamos CATEGORIA_ID
                     const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
                         // MENSAJE CORREGIDO
-                        contenedor.innerHTML = `<p class="info-message">No hay **tacos** disponibles en este momento.</p>`;
+                        contenedor.innerHTML = `<p class="info-message">No hay tortas disponibles en este momento.</p>`;
                         return;
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                     }
 
                     productosParaMostrar.forEach(producto => {
@@ -339,6 +332,7 @@
                             </button>
                         `;
 
+                        // Adjuntar listener para abrir el modal y cargar la info del producto
                         dishCard.querySelector('.add-to-cart-button').addEventListener('click', (e) => {
                              const productId = e.currentTarget.getAttribute('data-product-id');
                              openModal(productId);
@@ -354,11 +348,7 @@
                 }
             }
             // ----------------------------------------------------
-<<<<<<< HEAD
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS (UNIFICADA CON TACOS)
-=======
             // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
@@ -366,15 +356,10 @@
                     const data = <?= json_encode($complementosTorta); ?>;
                     
                     complementosContenedor.innerHTML = ''; 
-                    modificadoresDisponibles = data.contenido || []; 
+                    modificadoresDisponibles = data || []; 
 
-<<<<<<< HEAD
                     if (modificadoresDisponibles.length > 0) {
                         modificadoresDisponibles.forEach(complemento => {
-=======
-                    if (data && data.length > 0) {
-                         data.forEach(complemento => {
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                             const complementButton = document.createElement('button');
                             complementButton.classList.add('complement-button');
                             complementButton.textContent = complemento.nombre;

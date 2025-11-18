@@ -55,9 +55,8 @@ try {
                 echo "<script>console.log('Productos: " . json_encode($productos) . "');</script>";
 
                 // Almacenar los productos en la sesión para pasarlos a la vista
-                $_SESSION['productos'] = $productos;
-                $_SESSION['complementosTorta'] = $complementosTorta;
-
+                $_SESSION['productosTo'] = $productos; // Guarda los productos de tortas con la clave 'productosTo'
+                $_SESSION['complementosTorta'] = $complementosTorta; // Guarda los complementos con la clave 'complementosTorta'
                 header("Location: ../vista/Tortas.php");
                 break;
         default:

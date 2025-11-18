@@ -51,7 +51,7 @@
                     if (empty($_SESSION['nombre'])) {
                         echo "login.php"; 
                     } else {
-                        echo "Perfil.php"; 
+                        echo "perfil.php"; 
                     }
                 ?>'">
         <?php 
@@ -105,50 +105,47 @@
             </div>
         </div>
     </div>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        
         document.addEventListener('DOMContentLoaded', function() {
             // ----------------------------------------------------
             // 0. LOGICA DE BOTONES DEL MENÚ - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
 
-            document.getElementById('enviarTacos').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
-            e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
-            const form = document.getElementById('tacos-form');
-            // 3. Envía el formulario
-            if (form) {
+                document.getElementById('enviarTacos').addEventListener('click', function(e) {
+                // 1. Evita que el navegador navegue a '#'
+                e.preventDefault(); 
+                // 2. Encuentra el formulario por su ID
+                const form = document.getElementById('tacos-form');
+                // 3. Envía el formulario
+                if (form) {
+                    form.submit();
+                }
+            });
+            document.getElementById('enviarTortas').addEventListener('click', function(e) {
+                // 1. Evita que el navegador navegue a '#'
+                e.preventDefault(); 
+                // 2. Encuentra el formulario por su ID
+                const form = document.getElementById('tortas-form');
+                // 3. Envía el formulario
+                if (form) {
+                    form.submit();
+                }
+            });
+            document.getElementById('enviarBebidas').addEventListener('click', function(e) {
+                // 1. Evita que el navegador navegue a '#'
+                e.preventDefault(); 
+                // 2. Encuentra el formulario por su ID
+                const form = document.getElementById('bebidas-form');
+                // 3. Envía el formulario
+                if (form) {
                 form.submit();
-            }
-        });
-         document.getElementById('enviarTortas').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
-            e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
-            const form = document.getElementById('tortas-form');
-            // 3. Envía el formulario
-            if (form) {
-                form.submit();
-            }
-        });
-         document.getElementById('enviarBebidas').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
-            e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
-            const form = document.getElementById('bebidas-form');
-            // 3. Envía el formulario
-            if (form) {
-                form.submit();
-            }
-        });
+                }
+            });
             
             // ----------------------------------------------------
-<<<<<<< HEAD
             // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES
-=======
-            // 1. SELECTORES DE ELEMENTOS DEL MODAL - ACTUALIZACIÓN 10-11-2025
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             // ----------------------------------------------------
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
@@ -162,21 +159,15 @@
             const complementosContenedor = document.getElementById('complementos-contenedor');
 
             let productosCargados = []; 
-<<<<<<< HEAD
             // Asume el ID del contenedor (ajusta si es necesario)
             const contenedor = document.getElementById('bebidasContainer') || document.getElementById('productosContainer'); 
             
             // Rutas relativas
-            const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-            const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarBebidas';
+            //const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
+            //const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarBebidas';
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
             let modificadoresDisponibles = [];
             const CATEGORIA_ID = 1;
-=======
-            const contenedor = document.getElementById('bebidasContainer');
-            const AJAX_CART_URL = '../controlador/procesar_carrito.php';
-            const CATEGORIA_ID = 1; // <--- ID de Categoría para Bebidas
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
 
             // ----------------------------------------------------
             // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
@@ -230,7 +221,6 @@
                 }
             }
             
-<<<<<<< HEAD
             // ----------------------------------------------------
             // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX) 
             // ----------------------------------------------------
@@ -293,11 +283,6 @@
             // ----------------------------------------------------
             // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ (UNIFICADA CON TACOS)
             // ----------------------------------------------------
-=======
-           // ----------------------------------------------------
-           // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ - ACTUALIZACIÓN 10-11-2025
-           // ----------------------------------------------------
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
@@ -310,21 +295,11 @@
                     
                     productosCargados = todosLosProductos; 
                     
-<<<<<<< HEAD
                     const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
                          contenedor.innerHTML = `<p class="info-message">No hay productos disponibles en este momento.</p>`;
                          return;
-=======
-                    // FILTRO CORREGIDO: Usamos CATEGORIA_ID (2 para Bebidas)
-                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
-
-                    if (productosParaMostrar.length === 0) {
-                        // MENSAJE CORREGIDO
-                        contenedor.innerHTML = `<p class="info-message">No hay **bebidas** disponibles en este momento.</p>`;
-                        return;
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                     }
 
                     productosParaMostrar.forEach(producto => {
@@ -359,11 +334,7 @@
             }
             
             // ----------------------------------------------------
-<<<<<<< HEAD
             // 5. LÓGICA DE CARGA DE COMPLEMENTOS (UNIFICADA CON TACOS)
-=======
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
@@ -371,15 +342,10 @@
                     const data = <?= json_encode($complementosB); ?>;
                     
                     complementosContenedor.innerHTML = ''; 
-                    modificadoresDisponibles = data.contenido || []; 
+                    modificadoresDisponibles = data || []; 
 
-<<<<<<< HEAD
                     if (modificadoresDisponibles.length > 0) {
                         modificadoresDisponibles.forEach(complemento => {
-=======
-                    if (data && data.length > 0) {
-                         data.forEach(complemento => {
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                             const complementButton = document.createElement('button');
                             complementButton.classList.add('complement-button');
                             complementButton.textContent = complemento.nombre;

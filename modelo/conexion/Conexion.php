@@ -1,13 +1,9 @@
 <?php
 class Conexion {
     private $host = "localhost";
-    private $db   = "dbintegrador1";
+    private $db   = "dbintegrador";
     private $user = "root";
-<<<<<<< HEAD
     private $pass = "123456";
-=======
-    private $pass = "qwerty1234.";
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
     private $charset = "utf8mb4";
 
     public function conectar() {

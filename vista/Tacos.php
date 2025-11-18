@@ -52,7 +52,7 @@
                     if (empty($_SESSION['nombre'])) {
                         echo "login.php"; 
                     } else {
-                        echo "Perfil.php"; 
+                        echo "perfil.php"; 
                     }
                 ?>'">
         <?php 
@@ -350,56 +350,35 @@ addToCartModalButton.addEventListener('click', () => {
             // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
             async function cargarComplementos() {
-<<<<<<< HEAD
-    try {
-        const response = await fetch(ingredientesApiUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        
-        complementosContenedor.innerHTML = ''; 
-        
-        modificadoresDisponibles = data.contenido || []; 
-
-        if (modificadoresDisponibles.length > 0) {
-            modificadoresDisponibles.forEach(complemento => {
-                const complementButton = document.createElement('button');
-                complementButton.classList.add('complement-button');
-                
-                complementButton.textContent = complemento.nombre;
-                
-                // CRÍTICO B: Guardar el nombre para la búsqueda AJAX
-                complementButton.setAttribute('data-mod-name', complemento.nombre);
-=======
                 try {
                     
                     const data = <?= json_encode($complementosT); ?>;
                     
                     complementosContenedor.innerHTML = ''; 
+                    modificadoresDisponibles = data || []; 
 
-                    if (data && data.length > 0) {
-                         data.forEach(complemento => {
+                    if (modificadoresDisponibles.length > 0) {
+                        modificadoresDisponibles.forEach(complemento => {
                             const complementButton = document.createElement('button');
                             complementButton.classList.add('complement-button');
                             complementButton.textContent = complemento.nombre;
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
+                            complementButton.setAttribute('data-mod-name', complemento.nombre);
 
-                complementButton.addEventListener('click', function() {
-                    this.classList.toggle('active-complement');
-                });
+                            complementButton.addEventListener('click', function() {
+                                this.classList.toggle('active-complement');
+                            });
 
-                complementosContenedor.appendChild(complementButton);
-            });
-        } else {
-            complementosContenedor.innerHTML = `<p style="font-size: 0.9em; color: #555;">No hay complementos disponibles.</p>`;
-        }
+                            complementosContenedor.appendChild(complementButton);
+                        });
+                    } else {
+                        complementosContenedor.innerHTML = `<p style="font-size: 0.9em; color: #555;">No hay complementos disponibles.</p>`;
+                    }
 
-    } catch(error) {
-        console.error('Error al cargar los complementos:', error);
-        complementosContenedor.innerHTML = `<p class="error-message">Error al cargar complementos.</p>`;
-    }
-}
+                } catch(error) {
+                    console.error('Error al cargar los complementos:', error);
+                    complementosContenedor.innerHTML = `<p class="error-message">Error al cargar complementos.</p>`;
+                }
+            }
 
 
             // --- Ejecución y Cierre del Modal ---

@@ -47,7 +47,7 @@
                     if (empty($_SESSION['nombre'])) {
                         echo "login.php"; 
                     } else {
-                        echo "Perfil.php"; 
+                        echo "perfil.php"; 
                     }
                 
                 ?>'">
