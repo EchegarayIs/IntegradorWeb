@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Redirigir según el rol
         if ($resultado["Roles_idRol"] == 1) {
-            header("Location: ../vista/index.php");
+            header("Location: ../vista/inicio.php");
         } elseif ($resultado["Roles_idRol"] == 2) {
             header("Location: ../vista/indexA.php");
         } else {

@@ -9,11 +9,11 @@ class MProducto {
     }
 
     // Método para registrar un producto nuevo (estado y categoría = 1 por defecto)
-    public function registrarProducto($nombre, $precio, $imagen) {
+    public function registrarProducto($nombre, $precio, $categoria, $imagen ) {
         try {
             // Valores por defecto
             $estado = 1;
-            $categoria = 1;
+        
 
             $sql = "INSERT INTO productos (nombre, precio, imagen, estado, categoria)
                     VALUES (:nombre, :precio, :imagen, :estado, :categoria)";
@@ -63,6 +63,41 @@ class MProducto {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return "Error al listar productos de categoría 2: " . $e->getMessage();
+        }
+    }
+    public function buscarPorId($idProductos) {
+    try {
+        $sql = "SELECT * FROM productos WHERE idProductos = :idProductos LIMIT 1";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idProductos', $idProductos, PDO::PARAM_INT);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado ?: null;
+    } catch (PDOException $e) {
+        return null;
+    }
+}
+
+
+    public function editarPrecio($idProductos, $precio) {
+    try {
+        $sql = "UPDATE productos SET precio = :precio WHERE idProductos = :idProductos";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':precio', $precio, PDO::PARAM_STR);
+        $stmt->bindParam(':idProductos', $idProductos, PDO::PARAM_INT);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+public function eliminarProducto($idProductos) {
+        try {
+            $sql = "DELETE FROM productos WHERE idProductos = :idProductos";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':idProductos', $idProductos, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
         }
     }
 }

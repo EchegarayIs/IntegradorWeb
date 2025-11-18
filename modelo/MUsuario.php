@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once "../modelo/conexion/Conexion.php";
 
 class MUsuario {

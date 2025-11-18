@@ -60,8 +60,13 @@ require_once('../controlador/checkoutController.php');
         </div>
         <nav id="main-nav">
             <ul>
+<<<<<<< HEAD
                 <li><a href="index.php">Inicio</a></li>
                 <li><a href="index.php">Menú</a></li>
+=======
+                <li><a href="inicios.php">Inicio</a></li>
+                <li><a href="menu.php">Menú</a></li>
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                 <li class="active-menu-link"><a href="cart.php">Carrito</a></li> 
             </ul>
         </nav>
@@ -150,7 +155,7 @@ require_once('../controlador/checkoutController.php');
                 <p>Número de Orden: <strong id="order-number"></strong></p>
                 <p>Total: <strong id="final-total"></strong></p>
                 <p>¡Gracias por tu compra en Taquería El Gallo Giro!</p>
-                <a href="index.php">Volver al Inicio</a>
+                <a href="inicio.php">Volver al Inicio</a>
             </div>
         </section>
         

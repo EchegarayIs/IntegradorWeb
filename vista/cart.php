@@ -34,9 +34,9 @@ $is_cart_empty = $cart->isEmpty();
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php">Inicio</a></li>
+                <li><a href="inicio.php">Inicio</a></li>
                 <li class="despliegue">
-                    <a href="index.php">Menú</a>
+                    <a href="inicios.php">Menú</a>
                     <div class="despliegue-content">
                         <a href="Tacos.php">Tacos</a>
                         <a href="Tortas.php">Tortas</a>

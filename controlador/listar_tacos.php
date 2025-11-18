@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once "../modelo/MProducto.php";
 
+// Validar sesión activa
 if (!isset($_SESSION["idUsuario"])) {
     echo "<p>Debe iniciar sesión para ver los productos.</p>";
     exit;
@@ -11,29 +12,37 @@ if (!isset($_SESSION["idUsuario"])) {
 
 try {
     $productoModel = new MProducto();
-    $tacos = $productoModel->listarTacos(); // Método que trae productos tipo tacos
+    $tacos = $productoModel->listarTacos(); // Método del modelo
 
     if ($tacos && count($tacos) > 0) {
         foreach ($tacos as $producto) {
-            // Validar si hay imagen en la BD, o usar una por defecto
+            // ✅ Validar si la imagen existe
             if (!empty($producto["imagen"]) && file_exists($producto["imagen"])) {
                 $imagen = $producto["imagen"];
             } else {
-                $imagen = "../assets/css/Captura de pantalla 2025-11-07 001614.png";
+                $imagen = "../assets/css/Captura de pantalla 2025-11-07 001614.png"; // Imagen por defecto
             }
 
-            // Generar HTML del producto
+            // ✅ Estructura del producto con data-id (necesario para editar)
             echo "
-            <div class='product-item-card' data-product-type='tacos' data-product-id='{$producto['idProductos']}'>
+            <div class='product-item-card'
+                 data-id='{$producto['idProductos']}'
+                 data-product-type='tacos'>
+
                 <img src='{$imagen}' alt='{$producto['nombre']}' class='product-image'>
+
                 <div class='product-info'>
                     <span class='product-name'>{$producto['nombre']}</span>
                     <span class='product-price'>$" . number_format($producto['precio'], 2) . "</span>
                 </div>
+
                 <div class='product-actions'>
-                    <button class='action-button edit-button' onclick='editarProducto({$producto['idProductos']})'>
+                    <!-- Botón editar: manejado por delegación en el JS -->
+                    <button class='action-button edit-button'>
                         <img src='../assets/css/editar.png' alt='Editar'>
                     </button>
+
+                    <!-- Botón eliminar (mantiene su onclick) -->
                     <button class='action-button delete-button' onclick='eliminarProducto({$producto['idProductos']})'>
                         <img src='../assets/css/botebasuranaranja.png' alt='Eliminar'>
                     </button>
@@ -48,4 +57,6 @@ try {
     echo "<p>Error al cargar los productos: " . $e->getMessage() . "</p>";
 }
 ?>
+
+
 

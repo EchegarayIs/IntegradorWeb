@@ -17,8 +17,14 @@ SESSION_start();
                 <h1>Taquería</h1>
                 <h2>El Gallo Giro</h2>
             </div>
-        </div>      
+        </div>
+        <nav id="main-nav">
+            <ul >
+                <li><a href="indexA.php" class="">Inicio</a></li>                
+            </ul>
+        </nav>      
         <div class="admin-header-title">Panel de Administración</div>
+        <button id="user-button" class="user-active" onclick="window.location.href='admin.php'"><?php echo htmlspecialchars($_SESSION['nombre']);?></button>
     </header>
 
     <main class="admin-main">
@@ -81,11 +87,19 @@ SESSION_start();
                     
                     <form class="product-form" id="product-form" action="../controlador/CProducto.php" method="POST" enctype="multipart/form-data">
                         <div class="form-grid">
-                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre" required>
-                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio" required>
+                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
+                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio" required pattern="\d+(\.\d{1,2})?" title="Ingrese un precio válido (número con hasta dos decimales).">
+                            <div class="input-group select-group">
+                                <select id="categoria" name="categoria" required>
+                                  <option value="" disabled selected>Categoría</option>
+                                  <option value="0">Tacos</option>
+                                   <option value="1">Bebidas</option>
+                                   <option value="2">Tortas</option>
+                                </select>
+                            </div>
                             
                             <div class="file-upload-wrapper wide-input">
-                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen">
+                                <input type="file" id="product-image-upload" accept="image/*" class="file-input" name="imagen" required>
                                 <label for="product-image-upload" class="file-label">
                                     <img src="../assets/css/imagen.png" alt="Subir imagen">
                                     <span id="file-name-display">Subir imagen</span>
@@ -105,6 +119,46 @@ SESSION_start();
                         </div>
                     </form>
                 </div>
+
+                <div id="solo_edit-product-panel" class="admin-panel hidden">
+                    <h3 class="panel-title" id="add-edit-product-title">Editar un producto</h3>
+                    
+                    <form class="product-form" id="formEditarProducto" method="POST" enctype="multipart/form-data">
+                        <!-- agregado: input hidden para guardar id del producto (necesario para editar) -->
+                        <input type="hidden" name="idProductos" id="edit-idProductos">
+                        <div class="form-grid">
+                            <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre2" id="edit-nombre2" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
+                            <input type="text" class="profile-input price-input" placeholder="Precio" name="precio2" id="edit-precio2" required pattern="\d+(\.\d{1,2})?" title="Ingrese un precio válido (número con hasta dos decimales).">
+                            <div class="input-group select-group">
+                                <select id="edit-categoria2" name="categoria2" required>
+                                  <option value="" disabled selected>Categoría</option>
+                                  <option value="0">Tacos</option>
+                                   <option value="1">Bebidas</option>
+                                   <option value="2">Tortas</option>
+                                </select>
+                            </div>
+                            
+                            <div class="file-upload-wrapper wide-input">
+                                <input type="file" id="edit-product-image-upload" accept="image/*" class="file-input" name="imagen2">
+                                <label for="edit-product-image-upload" class="file-label">
+                                    <img src="../assets/css/imagen.png" alt="Subir imagen">
+                                    <span id="file-name-display-edit">Subir imagen</span>
+                                </label>
+                            </div>
+                            <div class="spacer"></div>
+                        </div>
+                        
+                        <h4 class="form-subtitle">Complementos adicionales</h4>
+                        
+                        <div class="complements-container" id="product-complements-container-edit">
+                            </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="save-changes-button">Editar producto</button>
+                            <button type="button" class="cancel-button" id="cancel-edit-btn">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
                 
                 <div id="pedidos-panel" class="admin-panel hidden">
                     <h3 class="panel-title">Gestión de pedidos</h3>
@@ -112,36 +166,9 @@ SESSION_start();
                     <div class="pedidos-sections-container">
                         
                         <div class="pedidos-table-wrapper">
-                            <h4 class="table-title pending-title">Pedidos en espera</h4>
-                            <div class="table-scroll-area" id="pedidos-espera">
-                                <table class="pedidos-table">
-                                    <thead>
-                                        <tr>
-                                            <th>No. de pedido</th>
-                                            <th>Fecha del pedido</th>
-                                            <th>Turno</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr data-id="1735">
-                                            <td>1735</td>
-                                            <td>10/08/2025</td>
-                                            <td>15</td>
-                                            <td><span class="status pending" data-status="pending">En espera</span></td>
-                                        </tr>
-                                        <tr data-id="1734">
-                                            <td>1734</td>
-                                            <td>10/08/2025</td>
-                                            <td>15</td>
-                                            <td><span class="status pending" data-status="pending">En espera</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button class="change-status-button" data-from="pending" data-to="in-progress">Cambiar estado</button>
+                            <?php include "../controlador/pedidosEspera.php"; ?>
                         </div>
-
+                        
                         <div class="pedidos-table-wrapper">
                             <h4 class="table-title in-progress-title">Pedidos en proceso</h4>
                             <div class="table-scroll-area" id="pedidos-proceso">
@@ -190,14 +217,14 @@ SESSION_start();
                 <div id="reportes-panel" class="admin-panel hidden">
                     <h3 class="panel-title">Generar reportes</h3>
                     
-                    <form class="reportes-form">
+                    <form class="reportes-form" id="reportes-form" action="../controlador/CReporte.php" method="POST" enctype="multipart/form-data">
                         <div class="date-selectors">
                             <div class="select-wrapper">
-                                <input type="date" class="profile-input" id="fecha-inicio" placeholder="Fecha de inicio">
+                                <input type="date" class="profile-input" id="fecha_inicio" name="fecha_inicio" placeholder="Fecha de inicio" required>
                                 <span class="dropdown-arrow-date"></span>
                             </div>
                             <div class="select-wrapper">
-                                <input type="date" class="profile-input" id="fecha-fin" placeholder="Fecha de fin">
+                                <input type="date" class="profile-input" id="fecha_fin" name="fecha_fin" placeholder="Fecha de fin" required>
                                 <span class="dropdown-arrow-date"></span>
                             </div>
                         </div>
@@ -287,26 +314,26 @@ SESSION_start();
                 <div id="informacion-personal-panel" class="admin-panel hidden">
                     <h3 class="panel-title">Información personal</h3>
                     
-                    <form class="profile-form" action="../controlador/actualizarUsuario.php" method="POST">
-                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['nombre']); ?>" class="profile-input" placeholder="Nombre(s)">
-                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['apellidos']); ?>" class="profile-input" placeholder="Apellidos">
+                    <form class="profile-form" action="../controlador/CUsuarioA.php" method="POST">
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['nombre']); ?>" class="profile-input" placeholder="Nombre(s)" name="nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['apellidos']); ?>" class="profile-input" placeholder="Apellidos" name="apellidos" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
 
-                        <input type="date" value="<?php echo htmlspecialchars($_SESSION['fechaNac']); ?>" class="profile-input">
-                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['direccion']); ?>" class="profile-input" placeholder="Dirección">
-                        <select class="profile-input">
+                        <input type="date" value="<?php echo htmlspecialchars($_SESSION['fechaNac']); ?>" class="profile-input" name="fechaNac" required>
+                        <input type="text" value="<?php echo htmlspecialchars($_SESSION['direccion']); ?>" class="profile-input" placeholder="Dirección" name="direccion" required>
+                        <select class="profile-input" name="genero" required>
                             <option value="1" <?php if ($_SESSION['genero'] == 1) echo 'selected'; ?>>Masculino</option>
                             <option value="2" <?php if ($_SESSION['genero'] == 2) echo 'selected'; ?>>Femenino</option>
 
                         </select>
-                        <input type="email" value="<?php echo htmlspecialchars($_SESSION['correo']); ?>" class="profile-input" placeholder="Correo Electrónico">
+                        <input type="email" value="<?php echo htmlspecialchars($_SESSION['correo']); ?>" class="profile-input" placeholder="Correo Electrónico" name="correo" required>
 
                         <div class="password-wrapper">
-                            <input type="password" value= "<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Contraseña">
+                            <input type="password" value= "<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Contraseña" name="passwor" required minlength="8">
                             <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button> 
                             
                         </div>
                         <div class="password-wrapper">
-                            <input type="password" value="<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Confirmar Contraseña">
+                            <input type="password" value="<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Confirmar Contraseña" name="confirm_password" required minlength="8">
                             <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button>
                         </div>
 
@@ -336,6 +363,10 @@ SESSION_start();
             const btnCancelProduct = document.getElementById('cancel-product-btn');
             const productTitle = document.getElementById('product-management-title');
             const complementsContainer = document.getElementById('product-complements-container');
+            function showPanel(panelId) {
+    adminPanels.forEach(panel => panel.classList.add('hidden'));
+    document.getElementById(panelId).classList.remove('hidden');
+}
 
             // Definiciones de complementos por tipo de producto
             const complements = {
@@ -457,15 +488,77 @@ SESSION_start();
             // Botón Agregar
             btnAddProduct.addEventListener('click', () => openProductForm(false, 'tacos'));
             
+            // ---------- AQUI SE SUSTITUYE EL MANEJADOR EDIT PARA QUE FUNCIONE ----------
             // Botón Editar (delegación de eventos para tarjetas existentes/futuras)
             productManagementPanel.addEventListener('click', function(e) {
-                if (e.target.closest('.edit-button')) {
-                    const card = e.target.closest('.product-item-card');
-                    const productType = card.dataset.productType;
-                    openProductForm(true, productType);
+                const editBtn = e.target.closest('.edit-button');
+                if (!editBtn) return;
+
+                const card = editBtn.closest('.product-item-card');
+                if (!card) return;
+
+                // intenta obtener id desde data-id o data-idProductos
+                const idFromData = card.dataset.id || card.dataset.idproductos || card.dataset.idProductos || card.dataset.idProductos;
+                const id = idFromData ? idFromData : null;
+                if (!id) {
+                    alert('No se encontró el identificador del producto en la tarjeta (data-id).');
+                    return;
                 }
+
+                // Usamos GET para pedir el producto por id (despachador buscarXIdProductos.php)
+                fetch(`../controlador/buscarXIdProductos.php?idProductos=${encodeURIComponent(id)}`)
+                    .then(resp => {
+                        if (!resp.ok) throw new Error('Respuesta no OK del servidor');
+                        return resp.json();
+                    })
+                    .then(data => {
+                        // El despachador debe devolver JSON con las propiedades del producto.
+                        // Ajusta las claves si tu JSON usa otros nombres (ej. idProductos en lugar de id).
+                        const product = data;
+                        // Soportamos respuesta con idProductos o id
+                        const pid = product.idProductos || product.id || product.id_producto || product.idProducto;
+                        if (!pid) {
+                            console.warn('Objeto producto recibido:', product);
+                            alert('No se pudieron obtener los datos del producto. Revisa la respuesta del despachador.');
+                            return;
+                        }
+
+                        // Rellenar campos del formulario de edición
+                        document.getElementById('edit-idProductos').value = pid;
+                        // nombre (campo readonly en tu formulario)
+                        const nombreField = document.getElementById('edit-nombre2');
+                        if (nombreField) nombreField.value = product.nombre ?? product.name ?? '';
+
+                        // precio (campo editable)
+                        const precioField = document.getElementById('edit-precio2');
+                        if (precioField) {
+                            // si la respuesta trae 'precio' o 'price'
+                            precioField.value = product.precio ?? product.price ?? '';
+                        }
+
+                        // categoría (si existe)
+                        const categoriaField = document.getElementById('edit-categoria2');
+                        if (categoriaField) categoriaField.value = (product.categoria ?? product.category ?? '');
+
+                        // Actualizar texto del nombre de archivo si viene imagen
+                        const fileNameSpan = document.getElementById('file-name-display-edit');
+                        if (fileNameSpan) fileNameSpan.textContent = product.imagen ?? product.image ?? 'Subir imagen';
+
+                        // Mostrar panel de edición
+                        showPanel('solo_edit-product-panel');
+                    })
+                    .catch(err => {
+                        console.error('Error al obtener producto:', err);
+                        alert('Ocurrió un error al obtener los datos del producto. Revisa la consola.');
+                    });
             });
-            
+            // ---------- FIN del manejador edit sustituido ----------
+
+            // Botón Cancelar en el panel de edición
+            document.querySelector('#solo_edit-product-panel .cancel-button')?.addEventListener('click', function() {
+                showPanel('productos-panel');
+            });
+
             // Botón Cancelar
             btnCancelProduct.addEventListener('click', function() {
                  showPanel('productos-panel');
@@ -475,12 +568,22 @@ SESSION_start();
                  filterProducts(type);
             });
             
-            // Manejo de la subida de imagen
+            // Manejo de la subida de imagen (panel crear)
             const fileInput = document.getElementById('product-image-upload');
             const fileNameDisplay = document.getElementById('file-name-display');
-            fileInput.addEventListener('change', function() {
-                fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Subir imagen';
-            });
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Subir imagen';
+                });
+            }
+            // Manejo de la subida de imagen (panel editar)
+            const editFileInput = document.getElementById('edit-product-image-upload');
+            const editFileNameDisplay = document.getElementById('file-name-display-edit');
+            if (editFileInput) {
+                editFileInput.addEventListener('change', function() {
+                    editFileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Subir imagen';
+                });
+            }
             
             // --- Funcionalidad de AGREGAR/EDITAR PERSONAL ---
             btnAddPerson.addEventListener('click', function() {
@@ -494,47 +597,78 @@ SESSION_start();
             });
             
             // --- Funcionalidad de GESTIÓN DE PEDIDOS ---
-            const changeStatusButtons = document.querySelectorAll('.change-status-button');
-            
-            changeStatusButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const fromStatus = this.dataset.from;
-                    const toStatus = this.dataset.to;
-                    
-                    const fromTableBody = document.querySelector(`#pedidos-${fromStatus.replace('-', '')} .pedidos-table tbody`);
-                    const toTableBody = document.querySelector(`#pedidos-${toStatus.replace('-', '')} .pedidos-table tbody`);
-                    
-                    // Simulación de mover el primer pedido de la tabla
-                    const firstRow = fromTableBody.querySelector('tr');
-                    
-                    if (firstRow) {
-                        // 1. Clonar y mover la fila
-                        const newRow = firstRow.cloneNode(true);
-                        
-                        // 2. Actualizar el estado en la fila clonada
-                        const statusSpan = newRow.querySelector('.status');
-                        statusSpan.textContent = toStatus.charAt(0).toUpperCase() + toStatus.slice(1).replace('-', ' ');
-                        statusSpan.className = `status ${toStatus}`;
-                        statusSpan.dataset.status = toStatus;
-                        
-                        // 3. Agregar la nueva fila a la tabla de destino
-                        toTableBody.appendChild(newRow);
-                        
-                        // 4. Eliminar la fila original
-                        fromTableBody.removeChild(firstRow);
-                        
-                        alert(`El pedido ${firstRow.dataset.id} ha pasado a estado "${toStatus.replace('-', ' ')}".`);
-                    } else {
-                        alert(`No hay pedidos en estado "${fromStatus.replace('-', ' ')}" para cambiar.`);
-                    }
-                });
-            });
+          
 
             // Inicializa mostrando el panel de "Productos" (que es el panel de inicio)
             activateLink(document.getElementById('link-inicio'));
             showPanel('productos-panel');
         });
         
+        document.addEventListener('DOMContentLoaded', () => {
+    const formEditar = document.getElementById('formEditarProducto');
+    if (!formEditar) return;
+
+    formEditar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const idProductos = document.getElementById('edit-idProductos').value;
+        const precio = document.getElementById('edit-precio2').value;
+
+        console.log("📤 Enviando al servidor:", { idProductos, precio });
+
+        const formData = new FormData();
+        formData.append('idProductos', idProductos);
+        formData.append('precio', precio);
+
+        try {
+            const response = await fetch('../controlador/editarProductos.php', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Producto actualizado correctamente');
+                window.location.href = 'admin.php';
+                 // Recargar la lista de productos (asumiendo que tienes una función para eso)
+                if (typeof cargarProductos === 'function') cargarProductos();
+            } else {
+                alert('⚠️ No se pudo actualizar: ' + (data.error || 'Error desconocido'));
+            }
+        } catch (error) {
+           
+        }
+    });
+});
+        // ----------------------------ELIMINAR PRODUCTO ----------------------------
+        async function eliminarProducto(id) {
+    if (!confirm("¿Seguro que deseas eliminar este producto?")) return;
+
+    try {
+        const formData = new FormData();
+        formData.append("idProductos", id);
+
+        const response = await fetch("../controlador/eliminarProducto.php", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Producto eliminado correctamente");
+            // 🔄 Recarga la página o el panel
+            location.reload();
+        } else {
+            alert("⚠️ No se pudo eliminar: " + (data.error || "Error desconocido"));
+        }
+    } catch (error) {
+        console.error("Error al eliminar:", error);
+        alert("Ocurrió un error al intentar eliminar el producto.");
+    }
+}
+//--------------------------------------------  FIN ELIMINAR PRODUCTO ----------------------------
+
         // --- Funcionalidad de mostrar/ocultar contraseña (para Personal y Admin Info) ---
         document.querySelectorAll('.toggle-password').forEach(button => {
             button.addEventListener('click', function() {
@@ -543,6 +677,44 @@ SESSION_start();
                 passwordInput.type = isPassword ? 'text' : 'password';
             });
         });
+        
+    // Captura los pedidos seleccionados al hacer clic en el botón
+    document.addEventListener('DOMContentLoaded', () => {
+    const botonCambiar = document.getElementById('btnCambiarEstado');
+    
+    if (botonCambiar) {
+        botonCambiar.addEventListener('click', () => {
+            const seleccionados = Array.from(document.querySelectorAll('.pedido-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+
+            if (seleccionados.length === 0) {
+                alert('Selecciona al menos un pedido para cambiar su estado.');
+                return;
+            }
+
+            // Solo tomamos el primero seleccionado (ya que tu PHP solo recibe un idPedido)
+            const idPedido = seleccionados[0];
+            console.log("Pedido seleccionado:", idPedido);
+
+            // Creamos un objeto FormData
+            const formData = new FormData();
+            formData.append('idPedido', idPedido);
+
+            // Enviamos los datos al PHP
+            fetch('../controlador/editarPedidosEspera.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                location.reload(); // Recargar la página para actualizar la tabla
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+});
+
     </script>
 </body>
 </html>

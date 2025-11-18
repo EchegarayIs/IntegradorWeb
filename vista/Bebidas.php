@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+    <?php
+
+        session_start();
+        // Obtener resultado del dispatcher
+        $rs = $_SESSION['productos'];
+        $complementosB = $_SESSION['complementosB'];
+
+    ?>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -7,8 +16,6 @@
     <link rel="stylesheet" href="../assets/css/style.css"> 
 </head>
 <body>
-    <?php session_start(); // Iniciar sesión para mantener el carrito activo ?>
-    
     <header id="main-header">
         <div class="logo-container">
             <img src="../assets/css/logosolotaco.png" alt="Logo El Gallo Giro" id="logo">
@@ -19,19 +26,42 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php">Inicio</a></li>
+                <li><a href="inicio.php">Inicio</a></li>
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
-                        <a href="Tacos.php">Tacos</a>
-                        <a href="Tortas.php">Tortas</a>
-                        <a href="Bebidas.php">Bebidas</a>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tacos-form">
+                            <input type="hidden" id="accion" name="accion" value="tacos">
+                            <a href="#" id="enviarTacos">Tacos</a>
+                        </form>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tortas-form">
+                            <input type="hidden" id="accion" name="accion" value="tortas">
+                            <a href="#" id="enviarTortas">Tortas</a>
+                        </form>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="bebidas-form">
+                            <input type="hidden" id="accion" name="accion" value="bebidas">
+                            <a href="#" id="enviarBebidas">Bebidas</a>
+                        </form>
                     </div>
                 </li>
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='<?php 
+                    if (empty($_SESSION['nombre'])) {
+                        echo "login.php"; 
+                    } else {
+                        echo "Perfil.php"; 
+                    }
+                ?>'">
+        <?php 
+                 if (empty($_SESSION['nombre'])) {
+                 echo "Perfil";
+                 } else {
+                     echo htmlspecialchars($_SESSION['nombre']);
+                }
+        ?>
+        </button>
     </header>
 
     <main class="menu-main">
@@ -76,13 +106,49 @@
         </div>
     </div>
     
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ----------------------------------------------------
+            // 0. LOGICA DE BOTONES DEL MENÚ - ACTUALIZACIÓN 10-11-2025
+            // ----------------------------------------------------
+
+            document.getElementById('enviarTacos').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tacos-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarTortas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tortas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarBebidas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('bebidas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
             
             // ----------------------------------------------------
+<<<<<<< HEAD
             // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES
+=======
+            // 1. SELECTORES DE ELEMENTOS DEL MODAL - ACTUALIZACIÓN 10-11-2025
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             // ----------------------------------------------------
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
@@ -96,6 +162,7 @@
             const complementosContenedor = document.getElementById('complementos-contenedor');
 
             let productosCargados = []; 
+<<<<<<< HEAD
             // Asume el ID del contenedor (ajusta si es necesario)
             const contenedor = document.getElementById('bebidasContainer') || document.getElementById('productosContainer'); 
             
@@ -105,6 +172,11 @@
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
             let modificadoresDisponibles = [];
             const CATEGORIA_ID = 1;
+=======
+            const contenedor = document.getElementById('bebidasContainer');
+            const AJAX_CART_URL = '../controlador/procesar_carrito.php';
+            const CATEGORIA_ID = 1; // <--- ID de Categoría para Bebidas
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
 
             // ----------------------------------------------------
             // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
@@ -158,6 +230,7 @@
                 }
             }
             
+<<<<<<< HEAD
             // ----------------------------------------------------
             // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX) 
             // ----------------------------------------------------
@@ -220,29 +293,42 @@
             // ----------------------------------------------------
             // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ (UNIFICADA CON TACOS)
             // ----------------------------------------------------
+=======
+           // ----------------------------------------------------
+           // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ - ACTUALIZACIÓN 10-11-2025
+           // ----------------------------------------------------
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
                 try {
-                    const respuesta = await fetch(apiUrl); 
-                    
-                    if (!respuesta.ok) {
-                        throw new Error(`Error HTTP! Estado: ${respuesta.status}`);
-                    }
 
-                    const data = await respuesta.json();
-                    const todosLosProductos = data.contenido; 
+                    // CRÍTICO: La variable PHP $rs se inyecta directamente aquí. 
+                    // Asegúrate de que $rs contenga un objeto JSON válido con la propiedad 'contenido'.
+                    const data = <?= json_encode($rs); ?>; 
+                    const todosLosProductos = data; 
                     
                     productosCargados = todosLosProductos; 
                     
+<<<<<<< HEAD
                     const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
                          contenedor.innerHTML = `<p class="info-message">No hay productos disponibles en este momento.</p>`;
                          return;
+=======
+                    // FILTRO CORREGIDO: Usamos CATEGORIA_ID (2 para Bebidas)
+                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
+
+                    if (productosParaMostrar.length === 0) {
+                        // MENSAJE CORREGIDO
+                        contenedor.innerHTML = `<p class="info-message">No hay **bebidas** disponibles en este momento.</p>`;
+                        return;
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                     }
-                    
+
                     productosParaMostrar.forEach(producto => {
+
                         const dishCard = document.createElement('div');
                         dishCard.classList.add('dish-card', 'menu-card');
 
@@ -263,6 +349,7 @@
                         });
 
                         contenedor.appendChild(dishCard);
+                        
                     });
 
                 } catch (error) {
@@ -272,21 +359,27 @@
             }
             
             // ----------------------------------------------------
+<<<<<<< HEAD
             // 5. LÓGICA DE CARGA DE COMPLEMENTOS (UNIFICADA CON TACOS)
+=======
+            // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
             // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
-                    const response = await fetch(ingredientesApiUrl);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
+                    
+                    const data = <?= json_encode($complementosB); ?>;
                     
                     complementosContenedor.innerHTML = ''; 
                     modificadoresDisponibles = data.contenido || []; 
 
+<<<<<<< HEAD
                     if (modificadoresDisponibles.length > 0) {
                         modificadoresDisponibles.forEach(complemento => {
+=======
+                    if (data && data.length > 0) {
+                         data.forEach(complemento => {
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                             const complementButton = document.createElement('button');
                             complementButton.classList.add('complement-button');
                             complementButton.textContent = complemento.nombre;

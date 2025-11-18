@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+
+    <?php
+
+        session_start();
+        // Obtener resultado del dispatcher
+        $rs = $_SESSION['productosT'];
+        $complementosT = $_SESSION['complementosT'];
+
+    ?>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,9 +16,7 @@
     <title>Menú - Tacos - Taquería El Gallo Giro</title>
     <link rel="stylesheet" href="../assets/css/style.css"> 
     </head>
-<body>
-    <?php session_start(); // CRÍTICO: Iniciar sesión para mantener el carrito activo ?>
-    
+<body>    
     <header id="main-header">
         <div class="logo-container">
             <img src="../assets/css/logosolotaco.png" alt="Logo El Gallo Giro" id="logo">
@@ -19,19 +27,42 @@
         </div>
         <nav id="main-nav">
             <ul>
-                <li><a href="index.php" class="active">Inicio</a></li>
+                <li><a href="inicio.php" class="active">Inicio</a></li>
                 <li class="despliegue">
                     <a href="#">Menú</a>
                     <div class="despliegue-content">
-                        <a href="Tacos.php">Tacos</a>
-                        <a href="Tortas.php">Tortas</a>
-                        <a href="Bebidas.php">Bebidas</a>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tacos-form">
+                            <input type="hidden" id="accion" name="accion" value="tacos">
+                            <a href="#" id="enviarTacos">Tacos</a>
+                        </form>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="tortas-form">
+                            <input type="hidden" id="accion" name="accion" value="tortas">
+                            <a href="#" id="enviarTortas">Tortas</a>
+                        </form>
+                        <form action="../controlador/dispacherProductos.php" method="post" id="bebidas-form">
+                            <input type="hidden" id="accion" name="accion" value="bebidas">
+                            <a href="#" id="enviarBebidas">Bebidas</a>
+                        </form>
                     </div>
                 </li>
                 <li><a href="cart.php">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='<?php 
+                    if (empty($_SESSION['nombre'])) {
+                        echo "login.php"; 
+                    } else {
+                        echo "Perfil.php"; 
+                    }
+                ?>'">
+        <?php 
+                 if (empty($_SESSION['nombre'])) {
+                 echo "Perfil";
+                 } else {
+                     echo htmlspecialchars($_SESSION['nombre']);
+                }
+        ?>
+        </button>
     </header>
 
     <main class="menu-main">
@@ -81,9 +112,43 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ----------------------------------------------------
+            // 0. LOGICA DE BOTONES DEL MENÚ - ACTUALIZACIÓN 10-11-2025
+            // ----------------------------------------------------
+
+            document.getElementById('enviarTacos').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tacos-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarTortas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('tortas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
+         document.getElementById('enviarBebidas').addEventListener('click', function(e) {
+            // 1. Evita que el navegador navegue a '#'
+            e.preventDefault(); 
+            // 2. Encuentra el formulario por su ID
+            const form = document.getElementById('bebidas-form');
+            // 3. Envía el formulario
+            if (form) {
+                form.submit();
+            }
+        });
             
             // ----------------------------------------------------
-            // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES
+            // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
@@ -98,8 +163,6 @@
 
             let productosCargados = []; 
             const contenedor = document.getElementById('tacosContainer');
-            const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-            const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarTacos';
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
             let modificadoresDisponibles = [];
             const CATEGORIA_ID = 0; // <--- ID de Categoría para TACOS
@@ -127,18 +190,16 @@
             minusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 if (currentQuantity > 1) {
-                    quantityDisplay.textContent = currentQuantity - 1;
-                    let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                    mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity - 1)).toFixed(2)}`;
-                    updateModalPrice(currentQuantity - 1);
+                quantityDisplay.textContent = currentQuantity - 1;
+                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
+                updateModalPrice(currentQuantity - 1); 
                 }
             });
 
             plusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 quantityDisplay.textContent = currentQuantity + 1;
-                let op = (parseFloat(mone.textContent.replace('$','').replace(' c/u','')) / (currentQuantity)).toFixed(2)
-                mone.textContent = `$${(parseFloat(op.replace('$','').replace(' c/u','')) * (currentQuantity + 1)).toFixed(2)}`;
+                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
                 updateModalPrice(currentQuantity + 1);
             });
 
@@ -231,32 +292,31 @@ addToCartModalButton.addEventListener('click', () => {
 });
             
             // ----------------------------------------------------
-            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ
-            // ----------------------------------------------------
+           // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ - ACTUALIZACIÓN 10-11-2025
+           // ----------------------------------------------------
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
                 try {
-                    const respuesta = await fetch(apiUrl); 
-                    
-                    if (!respuesta.ok) {
-                        throw new Error(`Error HTTP! Estado: ${respuesta.status}`);
-                    }
 
-                    const data = await respuesta.json();
-                    const todosLosProductos = data.contenido; 
+                    // CRÍTICO: La variable PHP $rs se inyecta directamente aquí. 
+                    // Asegúrate de que $rs contenga un objeto JSON válido con la propiedad 'contenido'.
+                    const data = <?= json_encode($rs); ?>; 
+                    const todosLosProductos = data; 
                     
                     productosCargados = todosLosProductos; 
                     
-                    // FILTRO CRÍTICO para Tacos
+                    // FILTRO CORREGIDO: Usamos CATEGORIA_ID
                     const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
-                         contenedor.innerHTML = `<p class="info-message">No hay tacos disponibles en este momento.</p>`;
-                         return;
+                        // MENSAJE CORREGIDO
+                        contenedor.innerHTML = `<p class="info-message">No hay **tacos** disponibles en este momento.</p>`;
+                        return;
                     }
-                    
+
                     productosParaMostrar.forEach(producto => {
+
                         const dishCard = document.createElement('div');
                         dishCard.classList.add('dish-card', 'menu-card');
 
@@ -271,13 +331,14 @@ addToCartModalButton.addEventListener('click', () => {
                             </button>
                         `;
 
+                        // Adjuntar listener para abrir el modal y cargar la info del producto
                         dishCard.querySelector('.add-to-cart-button').addEventListener('click', (e) => {
                              const productId = e.currentTarget.getAttribute('data-product-id');
                              openModal(productId);
                         });
 
-
                         contenedor.appendChild(dishCard);
+                        
                     });
 
                 } catch (error) {
@@ -285,11 +346,11 @@ addToCartModalButton.addEventListener('click', () => {
                     contenedor.innerHTML = `<p class="error-message">Error al cargar los productos. Por favor, revisa la consola para más detalles.</p>`; 
                 }
             }
-            
             // ----------------------------------------------------
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS
+            // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
             // ----------------------------------------------------
             async function cargarComplementos() {
+<<<<<<< HEAD
     try {
         const response = await fetch(ingredientesApiUrl);
         if (!response.ok) {
@@ -310,6 +371,19 @@ addToCartModalButton.addEventListener('click', () => {
                 
                 // CRÍTICO B: Guardar el nombre para la búsqueda AJAX
                 complementButton.setAttribute('data-mod-name', complemento.nombre);
+=======
+                try {
+                    
+                    const data = <?= json_encode($complementosT); ?>;
+                    
+                    complementosContenedor.innerHTML = ''; 
+
+                    if (data && data.length > 0) {
+                         data.forEach(complemento => {
+                            const complementButton = document.createElement('button');
+                            complementButton.classList.add('complement-button');
+                            complementButton.textContent = complemento.nombre;
+>>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
 
                 complementButton.addEventListener('click', function() {
                     this.classList.toggle('active-complement');

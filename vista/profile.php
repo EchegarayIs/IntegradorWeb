@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
-  <header class="nav"><h1>Mi cuenta</h1><nav><a href="index.php">Inicio</a></nav></header>
+  <header class="nav"><h1>Mi cuenta</h1><nav><a href="inicio.php">Inicio</a></nav></header>
   <main class="container">
     <div class="card">
       <h3 id="userName">Usuario</h3>
