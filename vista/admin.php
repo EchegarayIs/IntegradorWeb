@@ -656,7 +656,7 @@ SESSION_start();
         const data = await response.json();
 
         if (data.success) {
-            alert("Producto eliminado correctamente ✅");
+            alert("Producto eliminado correctamente");
             // 🔄 Recarga la página o el panel
             location.reload();
         } else {
