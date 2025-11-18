@@ -82,7 +82,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             
             // ----------------------------------------------------
-            // 1. SELECTORES DE ELEMENTOS DEL MODAL
+            // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES
             // ----------------------------------------------------
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
@@ -94,33 +94,40 @@
             const minusButton = document.getElementById('modal-minus-button');
             const plusButton = document.getElementById('modal-plus-button');
             const complementosContenedor = document.getElementById('complementos-contenedor');
-            
+
             let productosCargados = []; 
-            const contenedor = document.getElementById('bebidasContainer');
+            // Asume el ID del contenedor (ajusta si es necesario)
+            const contenedor = document.getElementById('bebidasContainer') || document.getElementById('productosContainer'); 
+            
+            // Rutas relativas
             const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
             const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarBebidas';
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
-            const CATEGORIA_ID = 2; // <--- ID de Categoría para Bebidas
+            let modificadoresDisponibles = [];
+            const CATEGORIA_ID = 1;
 
             // ----------------------------------------------------
             // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
             // ----------------------------------------------------
             function closeModal() {
                  modal.style.display = 'none';
+                 quantityDisplay.textContent = '1';
+                 complementosContenedor.querySelectorAll('.active-complement').forEach(btn => {
+                    btn.classList.remove('active-complement');
+                 });
             }
             
             function updateModalPrice(cantidad) {
                 const unitPrice = parseFloat(addToCartModalButton.getAttribute('data-product-price') || 0);
                 const newTotal = unitPrice * cantidad;
-                modalPriceDisplay.textContent = `$${newTotal.toFixed(2)} c/u`;
+                modalPriceDisplay.textContent = `$${newTotal.toFixed(2)} Total`; 
             }
 
-            // Eventos de botones de cantidad del modal
             minusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 if (currentQuantity > 1) {
                     quantityDisplay.textContent = currentQuantity - 1;
-                    updateModalPrice(currentQuantity - 1);
+                    updateModalPrice(currentQuantity - 1); 
                 }
             });
 
@@ -133,20 +140,17 @@
 
             // --- FUNCIÓN CENTRAL: ABRIR MODAL ---
             function openModal(productId) {
-                // Buscamos el producto en el array cargado previamente
                 const producto = productosCargados.find(p => p.idProductos == productId); 
 
                 if (producto) {
                     modalImage.src = (producto.imagen === null || producto.imagen === '') ? "../assets/css/tacosalpastor.png" : producto.imagen;
                     modalName.textContent = producto.nombre;
                     
-                    // CRÍTICO: Guardar ID y Precio UNITARIO en el botón para el AJAX
                     addToCartModalButton.setAttribute('data-product-id', producto.idProductos);
                     addToCartModalButton.setAttribute('data-product-price', parseFloat(producto.precio).toFixed(2));
 
-                    // Reiniciar cantidad y precio al abrir
                     quantityDisplay.textContent = '1';
-                    modalPriceDisplay.textContent = `$${parseFloat(producto.precio).toFixed(2)} c/u`;
+                    updateModalPrice(1);
                     
                     modal.style.display = 'block';
                 } else {
@@ -155,49 +159,66 @@
             }
             
             // ----------------------------------------------------
-            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX)
+            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX) 
             // ----------------------------------------------------
             addToCartModalButton.addEventListener('click', () => {
-                const productId = addToCartModalButton.getAttribute('data-product-id');
-                const productPrice = addToCartModalButton.getAttribute('data-product-price');
-                const productName = modalName.textContent;
+                const productId = addToCartModalButton.getAttribute('data-product-id'); 
+                const productPrice = addToCartModalButton.getAttribute('data-product-price'); 
+                const productName = modalName.textContent; 
                 const cantidad = parseInt(quantityDisplay.textContent);
-
-                if (cantidad < 1) {
-                    alert("La cantidad debe ser al menos 1.");
+                
+                if (cantidad < 1 || !productId || !productPrice) {
+                    alert("Por favor, selecciona una cantidad válida y un producto.");
                     return;
                 }
 
-                // Llamada AJAX usando jQuery
+                const modificadoresSeleccionados = [];
+                complementosContenedor.querySelectorAll('.active-complement').forEach(btn => {
+                    const modName = btn.getAttribute('data-mod-name'); 
+                    const modData = modificadoresDisponibles.find(m => m.nombre === modName); 
+                    
+                    if (modData) {
+                        modificadoresSeleccionados.push({
+                            nombre: modData.nombre,
+                            precio_extra: 0.00, 
+                            idIngrediente: modData.idIngrediente,
+                            categoria: modData.categoria
+                        });
+                    }
+                });
+
+                const ajaxData = {
+                    action: 'add',
+                    producto_id: productId,        
+                    nombre: productName,           
+                    precio_base: productPrice,     
+                    cantidad: cantidad,
+                    modificadores_json: JSON.stringify(modificadoresSeleccionados) 
+                };
+
                 $.ajax({
                     url: AJAX_CART_URL, 
                     type: 'POST',
                     dataType: 'json', 
-                    data: {
-                        action: 'add',
-                        id: productId,
-                        nombre: productName,
-                        precio: productPrice, // Precio unitario
-                        cantidad: cantidad
-                    },
+                    data: ajaxData, 
                     success: function(response) {
                         if (response.success) {
-                            alert(" ¡Agregado al Carrito! " + productName + " x " + cantidad);
+                            alert(" ¡Agregado al Carrito! " + productName + " x " + cantidad); 
                             closeModal();
-                            // Aquí podrías agregar una función para refrescar un contador de carrito si existe
                         } else {
                              alert(" Error al añadir: " + response.message);
+                             console.error("Server Error Response:", response);
                         }
                     },
                     error: function(xhr) {
-                        alert(" Error de comunicación con el servidor. Revisa la ruta AJAX y 'procesar_carrito.php'.");
-                        console.error("AJAX Error: ", xhr.responseText);
+                         alert(" Error de comunicación con el servidor al actualizar el carrito.");
+                         console.error("AJAX Error:", xhr.responseText);
                     }
                 });
             });
             
-           // ----------------------------------------------------
-            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ
+            // ----------------------------------------------------
+            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ (UNIFICADA CON TACOS)
             // ----------------------------------------------------
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
@@ -214,11 +235,10 @@
                     
                     productosCargados = todosLosProductos; 
                     
-                    // FILTRO CRÍTICO para Tortas
-                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == 1); 
+                    const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
-                         contenedor.innerHTML = `<p class="info-message">No hay tortas disponibles en este momento.</p>`;
+                         contenedor.innerHTML = `<p class="info-message">No hay productos disponibles en este momento.</p>`;
                          return;
                     }
                     
@@ -237,12 +257,10 @@
                             </button>
                         `;
 
-                        // Adjuntar listener para abrir el modal y cargar la info del producto
                         dishCard.querySelector('.add-to-cart-button').addEventListener('click', (e) => {
                              const productId = e.currentTarget.getAttribute('data-product-id');
                              openModal(productId);
                         });
-
 
                         contenedor.appendChild(dishCard);
                     });
@@ -252,8 +270,9 @@
                     contenedor.innerHTML = `<p class="error-message">Error al cargar los productos. Por favor, revisa la consola para más detalles.</p>`; 
                 }
             }
+            
             // ----------------------------------------------------
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS
+            // 5. LÓGICA DE CARGA DE COMPLEMENTOS (UNIFICADA CON TACOS)
             // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
@@ -264,12 +283,14 @@
                     const data = await response.json();
                     
                     complementosContenedor.innerHTML = ''; 
+                    modificadoresDisponibles = data.contenido || []; 
 
-                    if (data.contenido && data.contenido.length > 0) {
-                         data.contenido.forEach(complemento => {
+                    if (modificadoresDisponibles.length > 0) {
+                        modificadoresDisponibles.forEach(complemento => {
                             const complementButton = document.createElement('button');
                             complementButton.classList.add('complement-button');
                             complementButton.textContent = complemento.nombre;
+                            complementButton.setAttribute('data-mod-name', complemento.nombre);
 
                             complementButton.addEventListener('click', function() {
                                 this.classList.toggle('active-complement');
@@ -299,7 +320,6 @@
                 }
             });
         });
-
     </script>
 </body>
 </html>

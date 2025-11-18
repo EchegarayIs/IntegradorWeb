@@ -1,19 +1,16 @@
 <?php
 // vista/Cart.php
-session_start();
-$carrito = $_SESSION['carrito'] ?? []; 
-$total_subtotal = 0.00; 
-$SHIPPING_COST = 0.00; 
+require_once('../modelo/CartModel.php');
 
-foreach ($carrito as $item) {
-    // Corrección de la línea 9 y adyacentes para eliminar caracteres invisibles
-    $subtotal = is_numeric($item['subtotal']) ? (float)$item['subtotal'] : 0.00;
-    $total_subtotal += $subtotal;
-}
+// 1. Instanciar el Modelo para obtener la data
+$cart = new CartModel();
+$carrito = $cart->getItems(); 
+$total_subtotal = $cart->getTotalSubtotal(); // El Modelo calcula el subtotal por ti
+$SHIPPING_COST = 0.00; // Puedes definir esto en el Modelo si quieres
 $total_final = $total_subtotal + $SHIPPING_COST;
 
 // Variable de control para el botón de pago
-$is_cart_empty = empty($carrito); 
+$is_cart_empty = $cart->isEmpty(); 
 ?>
 
 <!DOCTYPE html>
@@ -66,27 +63,42 @@ $is_cart_empty = empty($carrito);
                     <?php endif; ?>
                     
                     <?php 
-                    foreach ($carrito as $item_id => $item): 
+                    foreach ($carrito as $item_hash => $item): // <-- ¡Usando el Hash Único!
                     ?>
                     
-                    <div class="cart-item-card" data-product-id="<?php echo $item_id; ?>">
+                    <div class="cart-item-card" data-product-id="<?php echo $item_hash; ?>">
                         <div class="item-details">
                             <div class="item-image-container">
                                 <img src="../assets/css/tacosalpastor.png" alt="<?php echo htmlspecialchars($item['nombre']); ?>">
                             </div>
                             <span class="item-name"><?php echo htmlspecialchars($item['nombre']); ?></span>
+                            <br><br>
+                            <?php if (!empty($item['modificadores'])): ?>
+                                <ul class="item-mods-list">
+                                    <?php foreach ($item['modificadores'] as $mod): ?>
+                                        <li class="mod-item">
+                                            <?php echo htmlspecialchars($mod['nombre']); ?> 
+                                            <?php if ($mod['precio_extra'] > 0): ?>
+                                                (<span class="mod-price">+$<?php echo number_format($mod['precio_extra'], 2); ?></span>)
+                                            <?php endif; ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php else: ?>
+                                <span class="no-mods"> (Sin modificaciones)</span>
+                            <?php endif; ?>
                             <span class="item-unit-price" data-unit-price="<?php echo number_format($item['precio'], 2, '.', ''); ?>" style="display:none;"></span>
                         </div>
                         
-                        <span class="item-price" id="subtotal-<?php echo $item_id; ?>">$<?php echo number_format($item['subtotal'], 2); ?></span> 
+                        <span class="item-price" id="subtotal-<?php echo $item_hash; ?>">$<?php echo number_format($item['subtotal'], 2); ?></span> 
                         
                         <div class="item-controls">
                             <div class="quantity-control small-control">
-                                <button class="quantity-button minus" data-action="decrement" data-id="<?php echo $item_id; ?>">-</button>
-                                <span class="quantity-display" id="quantity-<?php echo $item_id; ?>"><?php echo $item['cantidad']; ?></span>
-                                <button class="quantity-button plus" data-action="increment" data-id="<?php echo $item_id; ?>">+</button>
+                                <button class="quantity-button minus" data-action="decrement" data-id="<?php echo $item_hash; ?>">-</button>
+                                <span class="quantity-display" id="quantity-<?php echo $item_hash; ?>"><?php echo $item['cantidad']; ?></span>
+                                <button class="quantity-button plus" data-action="increment" data-id="<?php echo $item_hash; ?>">+</button>
                             </div>
-                            <button class="remove-item-button" data-action="remove" data-id="<?php echo $item_id; ?>">
+                            <button class="remove-item-button" data-action="remove" data-id="<?php echo $item_hash; ?>">
                                 <img src="../assets/css/botebasura.png" alt="Eliminar"> 
                             </button>
                         </div>
@@ -123,27 +135,25 @@ $is_cart_empty = empty($carrito);
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     
     <script>
-        // RUTA AJAX CORREGIDA (debe apuntar al controlador)
+        // RUTA AJAX MANTENIDA
         const CAR_AJAX_URL = '../controlador/procesar_carrito.php'; 
         const SHIPPING_COST = <?php echo $SHIPPING_COST; ?>;
 
         // -------------------------------------------------------------
         // 1. FUNCIONES DE ACTUALIZACIÓN VISUAL DEL RESUMEN
         // -------------------------------------------------------------
+        // Esta función ahora confía únicamente en el 'total_carrito' que le manda el servidor (Controlador/Modelo)
         function updateSummaryDisplay(newTotal) {
             const subtotal = parseFloat(newTotal);
             const total = subtotal + SHIPPING_COST;
             
-            // Actualiza los elementos del resumen
             $('#summary-subtotal').text(`$${subtotal.toFixed(2)}`);
             $('#summary-total').text(`$${total.toFixed(2)}`);
             $('#final-price-display').text(`$${total.toFixed(2)}`);
             
-            // Lógica para mostrar/ocultar el mensaje de carrito vacío y habilitar/deshabilitar el botón de pago
             if (subtotal <= 0) {
                 $('#checkout-button-main').prop('disabled', true);
                 $('#empty-cart-message').show().text('El carrito está vacío. ¡Añade productos del menú!');
-                // Corrección funcional: Elimina los items del DOM si el total llega a cero
                 $('.cart-items-container').find('.cart-item-card').remove();
             } else {
                 $('#checkout-button-main').prop('disabled', false);
@@ -154,11 +164,10 @@ $is_cart_empty = empty($carrito);
         // -------------------------------------------------------------
         // 2. FUNCIÓN AJAX PARA ACTUALIZAR O ELIMINAR
         // -------------------------------------------------------------
-        function updateCartItem(productId, quantity, action) {
+        function updateCartItem(itemHash, quantity, action) { // <-- Usa itemHash como ID
             
-            const cardElement = $(`.cart-item-card[data-product-id="${productId}"]`);
+            const cardElement = $(`.cart-item-card[data-product-id="${itemHash}"]`);
             
-            // Si es un cambio de cantidad a 0, lo cambiamos a acción 'remove'
             if (action === 'update' && quantity === 0) {
                 action = 'remove';
             }
@@ -169,31 +178,23 @@ $is_cart_empty = empty($carrito);
                 dataType: 'json',
                 data: {
                     action: action, 
-                    id: productId,
+                    id: itemHash, // <-- Enviamos el hash al Controlador
                     cantidad: quantity 
                 },
                 success: function(response) {
                     if (response.success) {
                         
-                        // 1. ELIMINACIÓN EXITOSA
                         if (action === 'remove') {
                             cardElement.remove();
+                            // Puedes quitar el alert si es un TPV de uso constante
                             alert(" Producto eliminado correctamente."); 
                         } 
                         
-                        // 2. ACTUALIZACIÓN EXITOSA
                         else if (action === 'update') {
-                            const unitPrice = parseFloat(cardElement.find('.item-unit-price').data('unit-price'));
+                            $(`#quantity-${itemHash}`).text(quantity);
                             
-                            // Actualiza la cantidad visual
-                            $(`#quantity-${productId}`).text(quantity);
-                            
-                            // Actualiza el subtotal del ítem
-                            const newSubtotalItem = unitPrice * quantity;
-                            $(`#subtotal-${productId}`).text(`$${newSubtotalItem.toFixed(2)}`);
                         }
                         
-                        // 3. ACTUALIZAR RESUMEN CON EL TOTAL DEL SERVIDOR
                         updateSummaryDisplay(response.total_carrito);
                         
                     } else {
@@ -212,25 +213,22 @@ $is_cart_empty = empty($carrito);
         // -------------------------------------------------------------
         $(document).ready(function() {
             
-            // Delegamos el evento de click a los botones de cantidad y eliminar
             $('.cart-items-container').on('click', 'button', function() {
                 const button = $(this);
-                const productId = button.data('id');
+                const itemHash = button.data('id'); // <-- Usamos el hash como ID
                 const action = button.data('action');
                 
-                const quantityDisplay = $(`#quantity-${productId}`);
+                const quantityDisplay = $(`#quantity-${itemHash}`);
                 let currentQuantity = parseInt(quantityDisplay.text());
 
-                // Botón de ELIMINAR (remove)
                 if (action === 'remove') {
                     const itemName = button.closest('.cart-item-card').find('.item-name').text();
                     if (confirm(`¿Estás seguro de que quieres eliminar "${itemName}"?`)) {
-                        updateCartItem(productId, 0, 'remove'); 
+                        updateCartItem(itemHash, 0, 'remove'); 
                     }
                     return;
                 }
                 
-                // Botón de AUMENTAR (+) o DISMINUIR (-) (update)
                 let newQuantity = currentQuantity;
                 if (action === 'increment') {
                     newQuantity = currentQuantity + 1;
@@ -239,13 +237,12 @@ $is_cart_empty = empty($carrito);
                 }
 
                 if (newQuantity !== currentQuantity) {
-                    updateCartItem(productId, newQuantity, 'update');
+                    updateCartItem(itemHash, newQuantity, 'update');
                 }
             });
 
         });
         
-        // El direccionamiento a checkout.php
         function finalizarPedido() {
             window.location.href = 'checkout.php';
         }

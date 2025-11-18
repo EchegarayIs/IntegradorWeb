@@ -1,28 +1,7 @@
 <?php
-// vista/checkout.php
-session_start();
-
-// ********** 1. RUTA CORREGIDA DE CONEXIÓN **********
-// La ruta sube un nivel (de 'vista' a 'IntegradorWeb'), entra a 'modelo' y luego a 'conexion'.
-require_once('../modelo/conexion/Conexion.php');
-
-// ********** 2. CÁLCULO DE LA ORDEN EN PHP **********
-$carrito = $_SESSION['carrito'] ?? [];
-$nombre_usuario = $_SESSION['usuario']['nombre'] ?? 'Usuario'; // Asume que el nombre del usuario está en $_SESSION['usuario']['nombre']
-$total_subtotal = 0.00;
-$SHIPPING_COST = 0.00; // Define el costo de envío si lo tienes
-
-// Calcular el total
-foreach ($carrito as $item) {
-    // Aseguramos que el subtotal es numérico antes de sumarlo
-    $subtotal = is_numeric($item['subtotal']) ? (float)$item['subtotal'] : 0.00;
-    $total_subtotal += $subtotal;
-}
-
-$total_final = $total_subtotal + $SHIPPING_COST;
-
-// Formato para pasar a JavaScript (usando punto como separador decimal)
-$total_final_js = number_format($total_final, 2, '.', '');
+// ********* CARGA EL CONTROLADOR QUE PREPARA LOS DATOS *********
+require_once('../controlador/checkoutController.php'); 
+// Ahora, tu HTML/CSS/JS puede usar las variables $carrito, $total_final, etc.
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,6 +12,7 @@ $total_final_js = number_format($total_final, 2, '.', '');
     <link rel="stylesheet" href="../assets/css/style.css"> 
     <link rel="stylesheet" href="menu.css"> 
     <link rel="stylesheet" href="payment.css"> 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         /* Estilo para las secciones de detalle ocultas */
         .payment-details-section.hidden {
@@ -81,7 +61,7 @@ $total_final_js = number_format($total_final, 2, '.', '');
         <nav id="main-nav">
             <ul>
                 <li><a href="index.php">Inicio</a></li>
-                <li><a href="menu.php">Menú</a></li>
+                <li><a href="index.php">Menú</a></li>
                 <li class="active-menu-link"><a href="cart.php">Carrito</a></li> 
             </ul>
         </nav>
@@ -129,7 +109,7 @@ $total_final_js = number_format($total_final, 2, '.', '');
                 <span class="final-amount">$0.00</span>
             </div>
 
-            <button class="confirm-payment-button" data-method="cash">
+            <button class="confirm-payment-button" id="submit-cash-payment" data-method="cash">
                 Confirmar Pedido con Pago en Efectivo
             </button>
         </section>
@@ -178,6 +158,7 @@ $total_final_js = number_format($total_final, 2, '.', '');
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ... (TUS CONSTANTES Y VARIABLES EXISTENTES DEBEN ESTAR AQUÍ) ...
             const modalSection = document.getElementById('payment-methods-selection');
             const optionCash = document.getElementById('option-cash');
             const optionCard = document.getElementById('option-card');
@@ -192,30 +173,97 @@ $total_final_js = number_format($total_final, 2, '.', '');
             const cardExpiryInput = document.getElementById('card-expiry');
             const cardCvvInput = document.getElementById('card-cvv');
             const cardForm = document.getElementById('card-form');
+            
+            // Botones de pago final
+            // ...
+// Botones de pago final (USANDO LOS ID REALES/NUEVOS)
+const cashConfirmButton = document.getElementById('submit-cash-payment'); //CORREGIDO: Usando el nuevo ID
+const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: El de tarjeta usa type="submit" en un form. Lo obtenemos por clase.
+// ...
 
             let selectedMethod = null;
             
-            // ********** VARIABLE RECIBIDA DESDE PHP **********
-            // Ahora la variable se inicializa con el total calculado en el servidor.
-            let finalOrderTotal = parseFloat(<?php echo $total_final_js; ?>); 
+            // ********** VARIABLES DE CONTROL **********
+            const TOTAL_FINAL = parseFloat('<?php echo $total_final_js; ?>'); 
+            const API_PEDIDO_URL = '../modelo/conexion/ApiPedidos.php'; 
 
             // ----------------------------------------------------
-            // I. LÓGICA DE LA ORDEN Y NAVEGACIÓN
+            // I. LÓGICA AJAX CENTRAL: ENVÍO DEL PEDIDO (MODIFICADA PARA DEBUG)
             // ----------------------------------------------------
+            function handleOrderSubmission(paymentMethod) {
+                if (TOTAL_FINAL <= 0) {
+                    alert('El total del pedido debe ser mayor a $0.00 para pagar.');
+                    return;
+                }
+                
+                // Deshabilitar botones para evitar doble envío
+                if (cashConfirmButton) cashConfirmButton.disabled = true;
+                if (cardPayButton) cardPayButton.disabled = true;
+                
+                const postData = {
+                    action: 'process_order',
+                    total: TOTAL_FINAL.toFixed(2), 
+                    metodo_pago: paymentMethod
+                };
+
+                $.ajax({
+                    url: API_PEDIDO_URL,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: postData,
+                    success: function(response) {
+                        if (response.success) {
+                            // Éxito: El pedido se guardó y el carrito se limpió en el servidor
+                            showConfirmation(paymentMethod, response.order_id); 
+                        } else {
+                            // Fallo de Lógica de Negocio/DB (el PHP respondió con 'success: false')
+                            alert(' Fallo de lógica al procesar el pedido. El servidor respondió: ' + response.message);
+                            console.error('Error del servidor:', response);
+                            if (cashConfirmButton) cashConfirmButton.disabled = false;
+                            if (cardPayButton) cardPayButton.disabled = false;
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Fallo de Conexión/Servidor/Error Fatal de PHP (El script crasheó)
+                        console.error(' AJAX Error Status:', status);
+                        console.error(' AJAX Response Text (Error de PHP):', xhr.responseText);
+                        
+                        // Muestra el error de PHP directamente en una alerta
+                        let errorMessage = ' ERROR FATAL DE PHP. La orden NO se guardó.\n\n';
+                        if (xhr.status === 0) {
+                            errorMessage += 'El archivo API_PEDIDO_URL es incorrecto: ' + API_PEDIDO_URL + ' (o el servidor no responde).';
+                        } else if (xhr.responseText.includes('Fatal error')) {
+                            // Recorta el error para que sea legible
+                            let phpError = xhr.responseText.substring(xhr.responseText.indexOf('Fatal error'), xhr.responseText.indexOf('<br')).trim();
+                            errorMessage += 'Detalle del error de PHP:\n' + phpError;
+                        } else {
+                            errorMessage += 'Respuesta completa:\n' + xhr.responseText.substring(0, 300) + '...';
+                        }
+                        
+                        alert(errorMessage);
+                        
+                        // Re-habilitar botones
+                        if (cashConfirmButton) cashConfirmButton.disabled = false;
+                        if (cardPayButton) cardPayButton.disabled = false;
+                    }
+                });
+            }
+
+
+            // ----------------------------------------------------
+            // II. LÓGICA DE NAVEGACIÓN Y CONFIRMACIÓN (ACTUALIZADA)
+            // ----------------------------------------------------
+
+            let finalOrderTotal = TOTAL_FINAL; 
 
             function initializeCheckout() {
-                // Si el total es 0 o NaN (por un carrito vacío), redirigir o mostrar un error
                 if (isNaN(finalOrderTotal) || finalOrderTotal <= 0) {
                      alert("Tu carrito está vacío o hubo un error al cargar el total. Volviendo al carrito.");
                      window.location.href = 'cart.php';
                      return;
                 }
-                
-                // Actualizar los totales mostrados en las secciones de pago
                 const formattedTotal = `$${finalOrderTotal.toFixed(2)}`;
                 document.querySelectorAll('.final-amount').forEach(el => el.textContent = formattedTotal);
-                
-                // Mostrar la selección de métodos
                 hideAllPaymentDetails();
                 modalSection.classList.remove('hidden');
             }
@@ -228,18 +276,11 @@ $total_final_js = number_format($total_final, 2, '.', '');
                 confirmationSection.classList.add('hidden');
             }
             
-            function showConfirmation(method) {
+            function showConfirmation(method, orderId) { 
                 hideAllPaymentDetails();
                 
-                const orderNumber = Math.floor(Math.random() * 100000) + 1000;
-
-                document.getElementById('order-number').textContent = `#${orderNumber}`;
+                document.getElementById('order-number').textContent = `#${orderId}`; 
                 document.getElementById('final-total').textContent = `$${finalOrderTotal.toFixed(2)} (${method})`;
-                
-                // ** LÓGICA CLAVE DE LIMPIEZA **
-                // Aquí deberías hacer una llamada AJAX a un script PHP (ej: procesar_pago.php)
-                // para guardar la orden en la BD y limpiar el $_SESSION['carrito'] en el servidor.
-                // localStorage.removeItem('tempCheckoutData'); // Ya no usamos localStorage
                 
                 confirmationSection.classList.remove('hidden');
             }
@@ -268,15 +309,16 @@ $total_final_js = number_format($total_final, 2, '.', '');
                 }
             });
 
-            // Flujo de Pago en Efectivo
-            document.querySelector('.confirm-payment-button[data-method="cash"]').addEventListener('click', function() {
-                // Aquí se haría la llamada AJAX para guardar la orden como "Pendiente de pago"
-                showConfirmation('Efectivo');
-            });
+            // Flujo de Pago en Efectivo (EVENTO ACTUALIZADO)
+            if (cashConfirmButton) {
+                cashConfirmButton.addEventListener('click', function() {
+                    handleOrderSubmission('Efectivo');
+                });
+            }
 
 
             // ----------------------------------------------------
-            // II. FUNCIONES DE VALIDACIÓN DE TARJETA (EXISTENTES)
+            // III. FUNCIONES DE VALIDACIÓN DE TARJETA (EXISTENTES)
             // ----------------------------------------------------
 
             function validateLuhn(cardNumber) {
@@ -325,79 +367,80 @@ $total_final_js = number_format($total_final, 2, '.', '');
 
 
             // ----------------------------------------------------
-            // III. MANEJO DEL FORMULARIO DE TARJETA (EXISTENTE)
+            // IV. MANEJO DEL FORMULARIO DE TARJETA (ACTUALIZADO)
             // ----------------------------------------------------
             
-            cardForm.addEventListener('submit', function(event) {
-                event.preventDefault();
+            if (cardForm) {
+                cardForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
 
-                const cardNumber = cardNumberInput.value;
-                const cardExpiry = cardExpiryInput.value;
-                const cardCvv = cardCvvInput.value;
-                let isValid = true;
-                let errorMessage = 'Por favor, corrige los siguientes errores:\n\n';
+                    const cardNumber = cardNumberInput.value;
+                    const cardExpiry = cardExpiryInput.value;
+                    const cardCvv = cardCvvInput.value;
+                    let isValid = true;
+                    let errorMessage = 'Por favor, corrige los siguientes errores:\n\n';
 
-                // 1. Limpiar estilos de error previos
-                [cardNumberInput, cardExpiryInput, cardCvvInput].forEach(input => {
-                    input.classList.remove('error');
+                    // 1. Limpiar estilos de error previos
+                    [cardNumberInput, cardExpiryInput, cardCvvInput].forEach(input => {
+                        input.classList.remove('error');
+                    });
+
+                    // 2. Validar campos
+                    if (!validateLuhn(cardNumber)) {
+                        isValid = false;
+                        errorMessage += '• El número de tarjeta no es válido (o formato incorrecto).\n';
+                        cardNumberInput.classList.add('error');
+                    }
+                    
+                    if (!validateExpiry(cardExpiry)) {
+                        isValid = false;
+                        errorMessage += '• La fecha de vencimiento (MM/AA) no es válida o está caducada.\n';
+                        cardExpiryInput.classList.add('error');
+                    }
+                    
+                    if (!validateCvv(cardCvv)) {
+                        isValid = false;
+                        errorMessage += '• El CVV debe tener 3 o 4 dígitos numéricos.\n';
+                        cardCvvInput.classList.add('error');
+                    }
+
+                    // 3. Resultado (LLAMADA AJAX)
+                    if (isValid) {
+                        alert("Tarjeta validada correctamente. ¡Procesando pago!");
+                        handleOrderSubmission('Tarjeta'); 
+                    } else {
+                        alert(errorMessage);
+                    }
                 });
-
-                // 2. Validar campos
-                if (!validateLuhn(cardNumber)) {
-                    isValid = false;
-                    errorMessage += '• El número de tarjeta no es válido (o formato incorrecto).\n';
-                    cardNumberInput.classList.add('error');
-                }
-                
-                if (!validateExpiry(cardExpiry)) {
-                    isValid = false;
-                    errorMessage += '• La fecha de vencimiento (MM/AA) no es válida o está caducada.\n';
-                    cardExpiryInput.classList.add('error');
-                }
-                
-                if (!validateCvv(cardCvv)) {
-                    isValid = false;
-                    errorMessage += '• El CVV debe tener 3 o 4 dígitos numéricos.\n';
-                    cardCvvInput.classList.add('error');
-                }
-
-                // 3. Resultado
-                if (isValid) {
-                    alert("Tarjeta validada correctamente. ¡Procesando pago!");
-                    // Simulación de pago exitoso (Aquí iría la llamada AJAX a un API de pago real)
-                    showConfirmation('Tarjeta');
-                } else {
-                    alert(errorMessage);
-                }
-            });
+            }
 
 
             // ----------------------------------------------------
-            // IV. MEJORAS DE UX (EXISTENTES)
+            // V. MEJORAS DE UX (EXISTENTES)
             // ----------------------------------------------------
 
             // Formato de Número de Tarjeta (4444 4444 4444 4444)
-            cardNumberInput.addEventListener('input', function(e) {
-                const value = e.target.value.replace(/\s/g, '').replace(/\D/g, ''); // Quita espacios y no dígitos
-                e.target.value = value.match(/.{1,4}/g)?.join(' ') || ''; // Agrega espacios
-            });
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    const value = e.target.value.replace(/\s/g, '').replace(/\D/g, ''); 
+                    e.target.value = value.match(/.{1,4}/g)?.join(' ') || ''; 
+                });
+            }
             
             // Formato de Vencimiento (MM/AA)
-            cardExpiryInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, ''); // Quita caracteres no numéricos
-                if (value.length > 2) {
-                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                }
-                e.target.value = value;
-            });
+            if (cardExpiryInput) {
+                cardExpiryInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, ''); 
+                    if (value.length > 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                    e.target.value = value;
+                });
+            }
 
 
             // --- INICIALIZACIÓN FINAL ---
             initializeCheckout();
-
-            document.getElementById('cerrarSesion').addEventListener('click', function() {
-                alert("Gracias por su compra. ¡Vuelva pronto!");
-            });
 
         });
     </script>
