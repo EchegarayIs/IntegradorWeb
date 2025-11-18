@@ -211,14 +211,14 @@ SESSION_start();
                 <div id="reportes-panel" class="admin-panel hidden">
                     <h3 class="panel-title">Generar reportes</h3>
                     
-                    <form class="reportes-form">
+                    <form class="reportes-form" id="reportes-form" action="../controlador/CReporte.php" method="POST" enctype="multipart/form-data">
                         <div class="date-selectors">
                             <div class="select-wrapper">
-                                <input type="date" class="profile-input" id="fecha-inicio" placeholder="Fecha de inicio" required>
+                                <input type="date" class="profile-input" id="fecha_inicio" name="fecha_inicio" placeholder="Fecha de inicio" required>
                                 <span class="dropdown-arrow-date"></span>
                             </div>
                             <div class="select-wrapper">
-                                <input type="date" class="profile-input" id="fecha-fin" placeholder="Fecha de fin" required>
+                                <input type="date" class="profile-input" id="fecha_fin" name="fecha_fin" placeholder="Fecha de fin" required>
                                 <span class="dropdown-arrow-date"></span>
                             </div>
                         </div>
@@ -708,8 +708,6 @@ SESSION_start();
         });
     }
 });
-
-    
 
     </script>
 </body>
