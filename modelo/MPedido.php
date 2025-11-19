@@ -12,14 +12,21 @@ class MPedido {
         $this->conexion = (new Conexion())->conectar();
     }
 
-<<<<<<< HEAD
+
     //  Listar pedidos por usuario
-    public function listarPedidosPorUsuario($idUsuario) {
+        public function listarPedidosPorUsuario($idUsuario) {
         $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado
                   FROM pedidos 
                   WHERE usuario_idUsuario = :idUsuario
                   ORDER BY fechaPedido DESC";
-=======
+
+        $stmt = $this->conexion->prepare($query);
+        $stmt->bindParam(":idUsuario", $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     /**
      * Registra un nuevo pedido SÓLO en la tabla 'pedidos'.
      * Los detalles del carrito ya no se insertan, pues la tabla 'detalle_pedido' no existe.
@@ -37,7 +44,7 @@ class MPedido {
         try {
             // 1. INICIAR TRANSACCIÓN
             $this->conexion->beginTransaction();
->>>>>>> 6715f1f181c6a98fb3719d359d6f608126a6df68
+
 
             // 2. INSERTAR EL PEDIDO PRINCIPAL (TABLA 'pedidos')
             $sqlPedido = "INSERT INTO pedidos (usuario_idUsuario, monto, fechaPedido, estado)
@@ -132,6 +139,7 @@ public function pedidosTerminados() {
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 
 }

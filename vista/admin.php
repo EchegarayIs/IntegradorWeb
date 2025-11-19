@@ -175,6 +175,7 @@ SESSION_start();
 
                         <div class="pedidos-table-wrapper">
                             <?php include "../controlador/pedidosTerminados.php"; ?>
+                        </div>
                     </div>
                 </div>
                 
