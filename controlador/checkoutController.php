@@ -12,8 +12,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // 2. Definición de Variables desde la Sesión
 $carrito = $_SESSION['carrito'] ?? [];
-$nombre_usuario = $_SESSION['usuario']['nombre'] ?? 'Invitado'; 
-$id_usuario_actual = $_SESSION['usuario']['idUsuario'] ?? 10; // Usaremos 10 si no hay sesión
+$nombre_usuario = $_SESSION['nombre'] ?? 'Invitado'; 
+$id_usuario_actual = $_SESSION['idUsuario'] ?? 10; // Usaremos 10 si no hay sesión
 
 // 3. Variables de Cálculo
 $total_subtotal = 0.00; 

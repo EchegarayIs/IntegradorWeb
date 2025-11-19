@@ -31,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $total = (float)$_POST['total'];
             $metodoPago = $_POST['metodo_pago'];
             
-            //VALOR TEMPORAL SOLICITADO: Usar 100 para el ID del usuario.
-            $idUsuario = 10; 
+            //VALOR TEMPORAL SOLICITADO: Usar 10 para el ID del usuario si no hay sesion.
+            $idUsuario = $_SESSION['idUsuario'] ?? 10; 
             
             $carrito = $_SESSION['carrito'];
             

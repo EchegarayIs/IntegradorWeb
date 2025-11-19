@@ -36,7 +36,7 @@ $is_cart_empty = $cart->isEmpty();
             <ul>
                 <li><a href="inicio.php">Inicio</a></li>
                 <li class="despliegue">
-                    <a href="inicios.php">Menú</a>
+                    <a href="inicio.php">Menú</a>
                     <div class="despliegue-content">
                         <a href="Tacos.php">Tacos</a>
                         <a href="Tortas.php">Tortas</a>

@@ -76,7 +76,7 @@ class MPedido {
         }
     }
     public function pedidosEspera() {
-    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado, idPago 
+    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado 
               FROM pedidos 
               WHERE estado = 1
               ORDER BY fechaPedido DESC";

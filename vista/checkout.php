@@ -60,13 +60,8 @@ require_once('../controlador/checkoutController.php');
         </div>
         <nav id="main-nav">
             <ul>
-<<<<<<< HEAD
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="index.php">Menú</a></li>
-=======
-                <li><a href="inicios.php">Inicio</a></li>
+                <li><a href="inicio.php">Inicio</a></li>
                 <li><a href="menu.php">Menú</a></li>
->>>>>>> 3afbec3e6a085baabd9f732d37aed29e60ad990c
                 <li class="active-menu-link"><a href="cart.php">Carrito</a></li> 
             </ul>
         </nav>

@@ -6,7 +6,7 @@ class complementos {
         $cnx = $conexion->conectar();
 
         // Consulta para obtener los productos
-        $stmt = $cnx->prepare("CALL dbintegrador.sp_ConsultarProductos()");
+        $stmt = $cnx->prepare("CALL sp_ConsultarProductos()");
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_OBJ);
         $productos = $stmt->fetchAll();
