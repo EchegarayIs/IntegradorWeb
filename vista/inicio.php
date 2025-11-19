@@ -104,6 +104,24 @@
                 </div>
             </div>
         </section>
+
+        <section id="hero-section">
+            <div class="hero-content">
+                <h3 style="color: #fb9c3eff;">Nuestro compromiso ambiental no es una promesa: es una acción constante.</h3>
+                <p style="color:#000000ff;">La sustentabilidad no es una tendencia, es parte de nuestra identidad. 
+                                            Hoy, cerca del 40% de nuestros productos utilizan plásticos de un solo uso, 
+                                            y estamos decididos a reducir ese porcentaje gradualmente. Estos materiales no se desechan al azar: 
+                                            los canalizamos hacia a centros certificados de reciclaje especializados en plásticos (<strong>Parque Ecológico Cubitos</strong>), 
+                                            donde se transforman en nuevos insumos para la industria, evitando que contaminen nuestros ecosistemas. 
+                                            Creemos que cada acción cuenta, y por eso seguimos innovando hacia un futuro más sostenible.</p>
+            </div>
+            <div class="hero-image-container">
+                <img src="../assets/css/plasticos.jpg" alt="Residuos plásticos" id="hero-tacos">
+            </div>
+            <div class="hero-image-container">
+                <img src="../assets/css/reciclaje.jpg" alt="Planta recicladora" id="hero-tacos">
+            </div>
+        </section>
     </main>
 
     <footer id="main-footer">
