@@ -170,47 +170,11 @@ SESSION_start();
                         </div>
                         
                         <div class="pedidos-table-wrapper">
-                            <h4 class="table-title in-progress-title">Pedidos en proceso</h4>
-                            <div class="table-scroll-area" id="pedidos-proceso">
-                                <table class="pedidos-table">
-                                    <thead>
-                                        <tr>
-                                            <th>No. de pedido</th>
-                                            <th>Fecha del pedido</th>
-                                            <th>Turno</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr data-id="1733">
-                                            <td>1733</td>
-                                            <td>10/08/2025</td>
-                                            <td>15</td>
-                                            <td><span class="status in-progress" data-status="in-progress">En proceso</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button class="change-status-button" data-from="in-progress" data-to="finished">Cambiar estado</button>
+                            <?php include "../controlador/pedidosProceso.php"; ?>
                         </div>
 
                         <div class="pedidos-table-wrapper">
-                            <h4 class="table-title finished-title">Pedidos terminados</h4>
-                            <div class="table-scroll-area" id="pedidos-terminados">
-                                <table class="pedidos-table">
-                                    <thead>
-                                        <tr>
-                                            <th>No. de pedido</th>
-                                            <th>Fecha del pedido</th>
-                                            <th>Turno</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        </tbody>
-                                </table>
-                            </div>
-                            </div>
+                            <?php include "../controlador/pedidosTerminados.php"; ?>
                     </div>
                 </div>
                 
@@ -709,6 +673,43 @@ SESSION_start();
             .then(data => {
                 alert(data);
                 location.reload(); // Recargar la página para actualizar la tabla
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+});
+// Captura los pedidos seleccionados al hacer clic en el botón
+document.addEventListener('DOMContentLoaded', () => {
+    const botonCambiar = document.getElementById('btnCambiarEstadoProceso');
+    
+    if (botonCambiar) {
+        botonCambiar.addEventListener('click', () => {
+            const seleccionados = Array.from(
+                document.querySelectorAll('#pedidos-proceso .pedido-checkbox:checked')
+            ).map(checkbox => checkbox.value);
+
+            if (seleccionados.length === 0) {
+                alert('Selecciona al menos un pedido para cambiar su estado.');
+                return;
+            }
+
+            // Solo tomamos 1 (tu PHP solo acepta uno)
+            const idPedido = seleccionados[0];
+            console.log("Pedido seleccionado (proceso):", idPedido);
+
+            // Creamos FormData
+            const formData = new FormData();
+            formData.append('idPedido', idPedido);
+
+            // Enviamos al PHP
+            fetch('../controlador/editarPedidosProceso.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                location.reload(); // Recargar para actualizar tablas
             })
             .catch(error => console.error('Error:', error));
         });

@@ -3,7 +3,7 @@ class Conexion {
     private $host = "localhost";
     private $db   = "dbintegrador1";
     private $user = "root";
-    private $pass = "qwerty1234.";
+    private $pass = "271121";
     private $charset = "utf8mb4";
 
     public function conectar() {

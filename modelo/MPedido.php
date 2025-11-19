@@ -10,7 +10,7 @@ class MPedido {
 
     //  Listar pedidos por usuario
     public function listarPedidosPorUsuario($idUsuario) {
-        $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado, idPago 
+        $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado
                   FROM pedidos 
                   WHERE usuario_idUsuario = :idUsuario
                   ORDER BY fechaPedido DESC";
@@ -30,7 +30,7 @@ class MPedido {
         return $stmt->execute();
     }
     public function pedidosEspera() {
-    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado, idPago 
+    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado 
               FROM pedidos 
               WHERE estado = 1
               ORDER BY fechaPedido DESC";
@@ -53,6 +53,29 @@ public function actualizarEstadoPedido($idPedido) {
     } catch (PDOException $e) {
         return "Error al actualizar estado del pedido: " . $e->getMessage();
     }
+}
+public function pedidosProceso() {
+    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado 
+              FROM pedidos 
+              WHERE estado = 2
+              ORDER BY fechaPedido DESC";
+
+    $stmt = $this->conexion->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function pedidosTerminados() {
+    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado 
+              FROM pedidos 
+              WHERE estado = 3
+              ORDER BY fechaPedido DESC";
+
+    $stmt = $this->conexion->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 
