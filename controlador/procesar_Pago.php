@@ -1,16 +1,9 @@
-<?php
-// controlador/procesar_pago.php
-
-// === 1. PRUEBA: Si no ves "A.", el problema es el servidor o la sintaxis inicial === 
-
-
+<?php}
+session_start();
 // === INCLUSIONES NECESARIAS ===
 // Si el controlador está en 'controlador/' y el modelo en 'modelo/', la ruta es correcta.
 require_once '../modelo/conexion/Conexion.php'; 
 // === 2. PRUEBA: Si sale 500 aquí, la ruta de la CONEXIÓN está mal ===
-
-
-
 require_once '../modelo/CheckoutModel.php';
 // === 3. PRUEBA: Si sale 500 aquí, el MODELO tiene un error de sintaxis ===
 
@@ -24,10 +17,10 @@ session_start();
 header('Content-Type: application/json');
 
 // Define el ID de usuario único que utilizaremos temporalmente
-const ID_USUARIO_FICTICIO = 10; 
+const ID_USUARIO_FICTICIO = 4; 
 
 // === 1. Asignación del ID y Verificación de Carrito ===
-$idUsuario = ID_USUARIO_FICTICIO;
+$idUsuario = $_SESSION['idUsuario'] ?? ID_USUARIO_FICTICIO;
 $carrito = $_SESSION['carrito'] ?? []; 
 
 if (empty($carrito)) {

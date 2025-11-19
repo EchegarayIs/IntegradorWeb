@@ -9,7 +9,7 @@ try {
     }
 
     $pedidoModel = new MPedido();
-    $pedidos = $pedidoModel->pedidosEspera(); // Solo pedidos con estado = 0 (en espera)
+    $pedidos = $pedidoModel->pedidosEspera(); // Solo pedidos con estado = 1 (en espera)
 
     if ($pedidos && count($pedidos) > 0) {
         echo "
