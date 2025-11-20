@@ -29,7 +29,7 @@
 
 /* Contenido del menú desplegable: **OCULTO POR DEFECTO** */
 .despliegue-content {
-  display: none; /* <-- ESTO LO OCULTA */
+  display: none;
   position: absolute; 
   background-color: #f9f9f9;
   min-width: 160px;
@@ -37,20 +37,20 @@
   z-index: 1; 
 }
 
-/* Estilo de los enlaces y que se muestren en bloque (vertical) */
+
 .despliegue-content a {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
-  display: block; /* <-- ESTO LOS PONE UNO DEBAJO DEL OTRO */
+  display: block; 
 }
 
-/* **El truco principal:** Muestra el menú al pasar el ratón */
+
 .despliegue:hover .despliegue-content {
-  display: block; /* <-- ESTO LO MUESTRA AL HACER HOVER */
+  display: block; 
 }
 
-/* Estilos de interacción */
+
 .despliegue-content a:hover {
   background-color: #f1f1f1;
 }
@@ -60,9 +60,7 @@
 
 
 
-/* ---------------------------------- */
-/* Estilos Generales y Mobile First   */
-/* ---------------------------------- */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -72,10 +70,10 @@ body {
     line-height: 1.6;
 }
 
-/* Header (Móvil) */
+
 #main-header {
     display: flex;
-    flex-direction: column; /* Apilados en móvil */
+    flex-direction: column; 
     align-items: center;
     padding: 15px 5%;
     background-color: var(--background-color);
@@ -109,7 +107,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 15px; /* Menor espacio en móvil */
+    gap: 15px; 
     margin-bottom: 10px;
 }
 
@@ -125,7 +123,7 @@ body {
 #main-nav ul li a.active {
     color: var(--primary-orange);
 }
-/* Subrayado activo */
+
 #main-nav ul li a.active::after {
     content: '';
     position: absolute;
@@ -147,10 +145,10 @@ body {
     font-size: 0.9em;
 }
 
-/* Hero Section (Móvil) */
+
 #hero-section {
     display: flex;
-    flex-direction: column; /* Imagen debajo del texto en móvil */
+    flex-direction: column; 
     align-items: center;
     padding: 40px 5%;
     gap: 30px;
