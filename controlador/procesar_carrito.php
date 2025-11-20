@@ -1,8 +1,4 @@
 <?php
-/**
- * Controlador para manejar las operaciones del carrito con soporte para Modificadores (Complementos).
- * CRÍTICO: Utiliza un "hash" único (ID de Producto + Modificadores) como clave.
- */
 
 // Debe ser lo primero
 session_start();

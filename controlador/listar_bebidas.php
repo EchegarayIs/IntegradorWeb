@@ -17,14 +17,14 @@ try {
     if ($bebidas && count($bebidas) > 0) {
         foreach ($bebidas as $producto) {
 
-            // ✅ Validar ruta de imagen
+            //Validar ruta de imagen
             if (!empty($producto["imagen"]) && file_exists($producto["imagen"])) {
                 $imagen = $producto["imagen"];
             } else {
                 $imagen = "../assets/css/agua.png"; // Imagen por defecto
             }
 
-            // ✅ Estructura del producto con data-id (necesario para editar)
+            //Estructura del producto con data-id
             echo "
             <div class='product-item-card' 
                  data-id='{$producto['idProductos']}' 

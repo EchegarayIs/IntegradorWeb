@@ -1,20 +1,19 @@
 <?php
-// controlador/procesar_carrito.php
+
 require_once('../modelo/cartModel.php');
 
 $response = ['success' => false, 'message' => 'Operación no válida.', 'total_carrito' => 0.00];
 
-// Inicializar el Modelo (inicia sesión si es necesario)
+// Inicializar el Modelo
 $cart = new cartModel();
 
-// Sanitizar y obtener la acción
 $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING);
 
 switch ($action) {
     
-    // ------------------------------------------------------------------
-    // AÑADIR PRODUCTO (Desde Tacos.php, Tortas.php, etc.)
-    // ------------------------------------------------------------------
+
+    // AÑADIR PRODUCTO
+    
     case 'add':
         $producto_id = filter_input(INPUT_POST, 'producto_id', FILTER_SANITIZE_STRING);
         $nombre = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_STRING);
@@ -38,9 +37,7 @@ switch ($action) {
         }
         break;
 
-    // ------------------------------------------------------------------
-    // ACTUALIZAR CANTIDAD (Desde cart.php)
-    // ------------------------------------------------------------------
+    
     case 'update':
         $item_hash = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
         $cantidad = filter_input(INPUT_POST, 'cantidad', FILTER_SANITIZE_NUMBER_INT);
@@ -53,9 +50,7 @@ switch ($action) {
         }
         break;
 
-    // ------------------------------------------------------------------
-    // ELIMINAR PRODUCTO (Desde cart.php)
-    // ------------------------------------------------------------------
+   
     case 'remove':
         $item_hash = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
         
@@ -72,7 +67,6 @@ switch ($action) {
         break;
 }
 
-// 4. Devolver el nuevo total calculado por el Modelo
 $response['total_carrito'] = number_format($cart->getTotalSubtotal(), 2, '.', '');
 
 header('Content-Type: application/json');

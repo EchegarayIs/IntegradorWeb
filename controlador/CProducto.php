@@ -24,9 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $resultado = $producto->registrarProducto($nombre, $precio, $categoria, $imagen);
 
     if ($resultado === true) {
-        echo "<script>alert('✅ Producto registrado correctamente'); window.location.href='../vista/admin.php';</script>";
+        echo "<script>alert('Producto registrado correctamente'); window.location.href='../vista/admin.php';</script>";
     } else {
-        echo "<script>alert('❌ Error al registrar el producto ";
+        echo "<script>alert('Error al registrar el producto ";
     }
 }
 ?>

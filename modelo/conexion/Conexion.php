@@ -13,7 +13,7 @@ class Conexion {
             $conexion->exec("SET NAMES " . $this->charset);
             return $conexion;
         } catch (PDOException $e) {
-            // Un die() aquí garantiza que el error sea visible si la conexión falla.
+           
             die("Fallo FATAL en la conexión: " . $e->getMessage());
         }
     }

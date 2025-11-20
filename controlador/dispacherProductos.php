@@ -2,7 +2,6 @@
 
 session_start();
 
-// Incluir las clases necesarias
 require_once "../modelo/conexion/Conexion.php";
 require_once "../modelo/productos.php";
 require_once "../modelo/complementos.php";
