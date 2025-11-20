@@ -2,7 +2,6 @@
 <?php
     SESSION_start();
     //include_once "../modelo/conexion/conection.php"; // prueba de conexion
-    //$db = conection::conectar();
 ?>
 <head>
     <meta charset="UTF-8">
@@ -49,6 +48,7 @@
                     } else {
                         echo "perfil.php"; 
                     }
+                
                 
                 ?>'">
         <?php 
@@ -169,31 +169,22 @@
     </footer>
     <script>
         document.getElementById('enviarTacos').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
             e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
             const form = document.getElementById('tacos-form');
-            // 3. Envía el formulario
             if (form) {
                 form.submit();
             }
         });
          document.getElementById('enviarTortas').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
             e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
             const form = document.getElementById('tortas-form');
-            // 3. Envía el formulario
             if (form) {
                 form.submit();
             }
         });
          document.getElementById('enviarBebidas').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
             e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
             const form = document.getElementById('bebidas-form');
-            // 3. Envía el formulario
             if (form) {
                 form.submit();
             }
