@@ -5,8 +5,6 @@ session_start();
 // 1. Incluir la clase de conexión y verificar el carrito
 require_once 'Conexion.php'; // Asegúrate de que la ruta sea correcta
 
-// NOTA: Asumimos que el usuario está logueado y su ID está en la sesión.
-// Reemplaza $_SESSION['idUsuario'] con la variable real de tu sistema de login.
 if (!isset($_SESSION['idUsuario'])) {
     echo json_encode(['success' => false, 'message' => 'Error: Usuario no autenticado.']);
     exit;
@@ -32,7 +30,7 @@ $conn->autocommit(FALSE); // Iniciar Transacción
 $all_ok = true;
 
 try {
-    // --- 3. INSERTAR EN LA TABLA PEDIDOS ---
+    // --- INSERTAR EN LA TABLA PEDIDOS ---
     // estado: 1 (Pagado/Confirmado), 0 (Pendiente/Cancelado)
     $stmt_pedido = $conn->prepare("INSERT INTO pedidos (monto, fechaPedido, usuario_idUsuario, estado) VALUES (?, CURDATE(), ?, 1)");
     $stmt_pedido->bind_param("di", $total_pedido, $usuario_id);
@@ -46,7 +44,7 @@ try {
     $stmt_pedido->close();
 
 
-    // --- 4. INSERTAR EN LA TABLA PEDIDOS_HAS_PRODUCTOS ---
+    // --- INSERTAR EN LA TABLA PEDIDOS_HAS_PRODUCTOS ---
     $stmt_detalle = $conn->prepare("INSERT INTO pedidos_has_productos (idPedido, idProducto, cantidadProducto, montoProductos) VALUES (?, ?, ?, ?)");
     
     foreach ($_SESSION['carrito'] as $item) {
@@ -64,14 +62,11 @@ try {
     $stmt_detalle->close();
 
     
-    // --- 5. INSERTAR EN LA TABLA PAGOS ---
+    // --- INSERTAR EN LA TABLA PAGOS ---
     // Usamos el ID del pedido como FK para la tabla pagos.
     $stmt_pago = $conn->prepare("INSERT INTO pagos (monto, Pedidos_idPedidos, metodo_pago) VALUES (?, ?)"); // Necesitas añadir la columna metodo_pago en tu tabla pagos
     
     // NOTA IMPORTANTE DE ESQUEMA:
-    // Tu tabla 'pagos' solo tiene 'monto' y 'Pedidos_idPedidos'.
-    // Para simplificar, insertaremos solo el monto y el ID. 
-    // RECOMENDACIÓN: AÑADE UNA COLUMNA `metodo` o `metodo_pago` A LA TABLA `pagos`.
     $stmt_pago_simple = $conn->prepare("INSERT INTO pagos (monto, Pedidos_idPedidos) VALUES (?, ?)");
     $stmt_pago_simple->bind_param("di", $total_pedido, $id_pedido);
     
@@ -81,7 +76,6 @@ try {
     $stmt_pago_simple->close();
 
 
-    // 6. Si todo fue bien, COMMIT y vaciar el carrito
     $conn->commit();
     unset($_SESSION['carrito']);
 
@@ -92,7 +86,6 @@ try {
     ]);
 
 } catch (Exception $e) {
-    // 7. Si algo falló, ROLLBACK
     $conn->rollback();
     echo json_encode([
         'success' => false, 

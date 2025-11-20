@@ -30,7 +30,6 @@ class MProducto {
             return "Error al registrar producto: " . $e->getMessage();
         }
     }
-    // ✅ Listar productos de categoría 0
     public function listarTacos() {
         try {
             $sql = "SELECT * FROM productos WHERE categoria = 0";
@@ -42,7 +41,6 @@ class MProducto {
         }
     }
 
-    // ✅ Listar productos de categoría 1
     public function listarBebidas() {
         try {
             $sql = "SELECT * FROM productos WHERE categoria = 1";
@@ -54,7 +52,6 @@ class MProducto {
         }
     }
 
-    // ✅ Listar productos de categoría 2
     public function listarTortas() {
         try {
             $sql = "SELECT * FROM productos WHERE categoria = 2";

@@ -16,14 +16,12 @@ try {
 
     if ($tacos && count($tacos) > 0) {
         foreach ($tacos as $producto) {
-            // ✅ Validar si la imagen existe
             if (!empty($producto["imagen"]) && file_exists($producto["imagen"])) {
                 $imagen = $producto["imagen"];
             } else {
                 $imagen = "../assets/css/Captura de pantalla 2025-11-07 001614.png"; // Imagen por defecto
             }
 
-            // ✅ Estructura del producto con data-id (necesario para editar)
             echo "
             <div class='product-item-card'
                  data-id='{$producto['idProductos']}'

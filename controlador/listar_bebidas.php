@@ -24,7 +24,6 @@ try {
                 $imagen = "../assets/css/agua.png"; // Imagen por defecto
             }
 
-            // ✅ Estructura del producto con data-id (necesario para editar)
             echo "
             <div class='product-item-card' 
                  data-id='{$producto['idProductos']}' 
