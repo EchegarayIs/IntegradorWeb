@@ -27,7 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     echo "<body style='font-family: Arial, sans-serif;'>"; 
 
     // Información General del Reporte
-    echo "<h1 style='color: #2F528F;'>Reporte de Ventas Detallado</h1>"; // Color azul oscuro
+    // Información General del Reporte
+    echo "<h1 style='color: #2F528F;'>Reporte de Ventas Detallado</h1>";
+    echo "<img src='../assets/css/tacosalpastor.png' style='width:120px;'><br>";
     echo "<p><strong>Período:</strong> Desde el " . $fechaInicio . " hasta el " . $fechaFin . "</p>";
     echo "<p><strong>Generado el:</strong> " . $fechaGeneracion . "</p>";
     echo "<br>";
@@ -43,6 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $cellStyle = "style='border: 1px solid #ccc; padding: 4px;'"; 
     $montoStyle = "style='text-align: right; border: 1px solid #ccc; padding: 3px;'";
 
+    echo "<img src='../assets/css/tacosalpastor.png' alt='Tacos al pastor' style='width:100px;'><br>";
+
     // Inicio de la Tabla
     echo "<table " . $tableStyle . ">";
     
@@ -54,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     echo "<th " . $headerStyle . ">Método de Pago</th>";
     echo "<th " . $headerStyle . ">Fecha del Pedido</th>";
     echo "<th " . $headerStyle . ">Empleado</th>";
+    echo "<img src='../assets/css/tacosalpastor.png' alt='Tacos mexicanos'>";
     echo "</tr>";
     
     // Datos del reporte y cálculo de Total General
