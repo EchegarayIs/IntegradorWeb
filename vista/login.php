@@ -65,7 +65,7 @@
                 const type = passwordField.getAttribute('type') === 'passwor' ? 'text' : 'passwor';
                 passwordField.setAttribute('type', type);
                 
-                // Nota: Para cambiar el icono, necesitarías tener dos archivos de imagen (ojo abierto y ojo cerrado)
+            
             });
         }
 

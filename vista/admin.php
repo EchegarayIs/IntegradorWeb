@@ -124,7 +124,7 @@ SESSION_start();
                     <h3 class="panel-title" id="add-edit-product-title">Editar un producto</h3>
                     
                     <form class="product-form" id="formEditarProducto" method="POST" enctype="multipart/form-data">
-                        <!-- agregado: input hidden para guardar id del producto (necesario para editar) -->
+                        <!-- input hidden para guardar id del producto  -->
                         <input type="hidden" name="idProductos" id="edit-idProductos">
                         <div class="form-grid">
                             <input type="text" class="profile-input wide-input" placeholder="Nombre del producto" name="nombre2" id="edit-nombre2" required pattern="[A-Za-zÀ-ÿ\s]+" title="Solo se permiten letras y espacios.">
@@ -333,7 +333,7 @@ SESSION_start();
     document.getElementById(panelId).classList.remove('hidden');
 }
 
-            // Definiciones de complementos por tipo de producto
+            //Complementos por tipo de producto
             const complements = {
                 tacos: ['Cilantro', 'Cebolla', 'Piña', 'Salsa verde', 'Salsa roja', 'Guacamole'],
                 tortas: ['Jitomate', 'Cebolla', 'Aguacate', 'Chiles en rajas', 'Chipotle', 'Mayonesa'],
@@ -341,19 +341,19 @@ SESSION_start();
                 none: []
             };
 
-            // --- Función para cambiar el contenido principal ---
+            //  Función para cambiar el contenido principal
             function showPanel(panelId) {
                 adminPanels.forEach(panel => panel.classList.add('hidden'));
                 document.getElementById(panelId).classList.remove('hidden');
             }
 
-            // --- Función para activar el enlace en la barra lateral ---
+            //  para activar el enlace en la barra lateral
             function activateLink(clickedLink) {
                 sidebarLinks.forEach(link => link.classList.remove('active-sidebar-link'));
                 clickedLink.classList.add('active-sidebar-link');
             }
 
-            // --- Función para filtrar productos/personal ---
+            //Función para filtrar productos/personal 
             function filterProducts(type) {
                 productCards.forEach(card => {
                     if (type === 'all' || card.dataset.productType === type) {
@@ -364,7 +364,7 @@ SESSION_start();
                 });
             }
 
-            // --- Carga dinámica de complementos ---
+            // Carga dinámica de complementos 
             function loadComplements(type, container) {
                 container.innerHTML = '';
                 const items = complements[type] || complements.none;
@@ -381,7 +381,7 @@ SESSION_start();
                 });
             }
             
-            // --- Manejo del menú lateral ---
+            //Manejo del menú lateral
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     const targetId = this.id.replace('link-', '');
@@ -391,7 +391,7 @@ SESSION_start();
                         menuSubmenu.classList.toggle('hidden');
                         this.querySelector('.dropdown-arrow').classList.toggle('up');
                         
-                        // Si se abre el submenú, activa "Menú" y oculta los paneles de edición/agregar
+                        // activa "Menú" y oculta los paneles de edición/agregar
                         if (!menuSubmenu.classList.contains('hidden')) {
                             activateLink(this);
                         } else {
@@ -409,7 +409,7 @@ SESSION_start();
                          dropdownToggle.classList.remove('active-sidebar-link');
                          dropdownToggle.querySelector('.dropdown-arrow').classList.remove('up');
                     } else {
-                        // Si es un sub-link, asegúrate que "Menú" también esté activo
+                        
                         dropdownToggle.classList.add('active-sidebar-link');
                         dropdownToggle.querySelector('.dropdown-arrow').classList.add('up');
                     }
@@ -430,12 +430,12 @@ SESSION_start();
                 });
             });
 
-            // --- Funcionalidad de AGREGAR/EDITAR PRODUCTO ---
+            //Funcionalidad de AGREGAR/EDITAR PRODUCTO
             function openProductForm(isEditing, productType = 'tacos') {
                 showPanel('add-edit-product-panel');
                 // Determina qué complementos cargar según el tipo
                 let typeToLoad = productType; 
-                // Si el producto a agregar es genérico, toma el tipo del sub-link activo (Tacos, Tortas, Bebidas)
+                
                 if (!isEditing) {
                     const activeSubLink = document.querySelector('.sub-link.active-sidebar-link');
                     typeToLoad = activeSubLink ? activeSubLink.dataset.type : 'tacos';
@@ -453,8 +453,8 @@ SESSION_start();
             // Botón Agregar
             btnAddProduct.addEventListener('click', () => openProductForm(false, 'tacos'));
             
-            // ---------- AQUI SE SUSTITUYE EL MANEJADOR EDIT PARA QUE FUNCIONE ----------
-            // Botón Editar (delegación de eventos para tarjetas existentes/futuras)
+            
+            // Botón Editar
             productManagementPanel.addEventListener('click', function(e) {
                 const editBtn = e.target.closest('.edit-button');
                 if (!editBtn) return;
@@ -462,7 +462,7 @@ SESSION_start();
                 const card = editBtn.closest('.product-item-card');
                 if (!card) return;
 
-                // intenta obtener id desde data-id o data-idProductos
+                //Obtine id desde data-id
                 const idFromData = card.dataset.id || card.dataset.idproductos || card.dataset.idProductos || card.dataset.idProductos;
                 const id = idFromData ? idFromData : null;
                 if (!id) {
@@ -470,17 +470,16 @@ SESSION_start();
                     return;
                 }
 
-                // Usamos GET para pedir el producto por id (despachador buscarXIdProductos.php)
+                
                 fetch(`../controlador/buscarXIdProductos.php?idProductos=${encodeURIComponent(id)}`)
                     .then(resp => {
                         if (!resp.ok) throw new Error('Respuesta no OK del servidor');
                         return resp.json();
                     })
                     .then(data => {
-                        // El despachador debe devolver JSON con las propiedades del producto.
-                        // Ajusta las claves si tu JSON usa otros nombres (ej. idProductos en lugar de id).
+                       
                         const product = data;
-                        // Soportamos respuesta con idProductos o id
+                        
                         const pid = product.idProductos || product.id || product.id_producto || product.idProducto;
                         if (!pid) {
                             console.warn('Objeto producto recibido:', product);
@@ -488,28 +487,28 @@ SESSION_start();
                             return;
                         }
 
-                        // Rellenar campos del formulario de edición
+                        // Rellena campos del formulario de edición
                         document.getElementById('edit-idProductos').value = pid;
-                        // nombre (campo readonly en tu formulario)
+                        // nombre
                         const nombreField = document.getElementById('edit-nombre2');
                         if (nombreField) nombreField.value = product.nombre ?? product.name ?? '';
 
-                        // precio (campo editable)
+                        // precio
                         const precioField = document.getElementById('edit-precio2');
                         if (precioField) {
-                            // si la respuesta trae 'precio' o 'price'
+                        
                             precioField.value = product.precio ?? product.price ?? '';
                         }
 
-                        // categoría (si existe)
+                        // categoría
                         const categoriaField = document.getElementById('edit-categoria2');
                         if (categoriaField) categoriaField.value = (product.categoria ?? product.category ?? '');
 
-                        // Actualizar texto del nombre de archivo si viene imagen
+                        
                         const fileNameSpan = document.getElementById('file-name-display-edit');
                         if (fileNameSpan) fileNameSpan.textContent = product.imagen ?? product.image ?? 'Subir imagen';
 
-                        // Mostrar panel de edición
+                        // Muestra panel de edición
                         showPanel('solo_edit-product-panel');
                     })
                     .catch(err => {
@@ -517,7 +516,7 @@ SESSION_start();
                         alert('Ocurrió un error al obtener los datos del producto. Revisa la consola.');
                     });
             });
-            // ---------- FIN del manejador edit sustituido ----------
+            //Fin del manejador de edicion
 
             // Botón Cancelar en el panel de edición
             document.querySelector('#solo_edit-product-panel .cancel-button')?.addEventListener('click', function() {
@@ -527,13 +526,13 @@ SESSION_start();
             // Botón Cancelar
             btnCancelProduct.addEventListener('click', function() {
                  showPanel('productos-panel');
-                 // Regresa al filtro que estaba activo (e.g., Tacos)
+                 
                  const activeSubLink = document.querySelector('.sub-link.active-sidebar-link');
                  const type = activeSubLink ? activeSubLink.dataset.type : 'all';
                  filterProducts(type);
             });
             
-            // Manejo de la subida de imagen (panel crear)
+            // Manejo de la subida de imagen
             const fileInput = document.getElementById('product-image-upload');
             const fileNameDisplay = document.getElementById('file-name-display');
             if (fileInput) {
@@ -541,7 +540,7 @@ SESSION_start();
                     fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Subir imagen';
                 });
             }
-            // Manejo de la subida de imagen (panel editar)
+            // Manejo de la subida de imagen para edición
             const editFileInput = document.getElementById('edit-product-image-upload');
             const editFileNameDisplay = document.getElementById('file-name-display-edit');
             if (editFileInput) {
@@ -550,7 +549,7 @@ SESSION_start();
                 });
             }
             
-            // --- Funcionalidad de AGREGAR/EDITAR PERSONAL ---
+            // --- Funcionalidad de AGREGAR/EDITAR PERSONAL (Pendiente)
             btnAddPerson.addEventListener('click', function() {
                 showPanel('add-edit-personal-panel');
                 document.getElementById('add-edit-personal-title').textContent = 'Agregar nuevo personal';
@@ -561,10 +560,8 @@ SESSION_start();
                 showPanel('personal-panel');
             });
             
-            // --- Funcionalidad de GESTIÓN DE PEDIDOS ---
           
-
-            // Inicializa mostrando el panel de "Productos" (que es el panel de inicio)
+            // Inicializa mostrando el panel de "Productos"
             activateLink(document.getElementById('link-inicio'));
             showPanel('productos-panel');
         });
@@ -579,7 +576,7 @@ SESSION_start();
         const idProductos = document.getElementById('edit-idProductos').value;
         const precio = document.getElementById('edit-precio2').value;
 
-        console.log("📤 Enviando al servidor:", { idProductos, precio });
+        console.log("Enviando al servidor:", { idProductos, precio });
 
         const formData = new FormData();
         formData.append('idProductos', idProductos);
@@ -595,17 +592,17 @@ SESSION_start();
             if (data.success) {
                 alert('Producto actualizado correctamente');
                 window.location.href = 'admin.php';
-                 // Recargar la lista de productos (asumiendo que tienes una función para eso)
+                 // Recargar la lista de productos
                 if (typeof cargarProductos === 'function') cargarProductos();
             } else {
-                alert('⚠️ No se pudo actualizar: ' + (data.error || 'Error desconocido'));
+                alert('No se pudo actualizar: ' + (data.error || 'Error desconocido'));
             }
         } catch (error) {
            
         }
     });
 });
-        // ----------------------------ELIMINAR PRODUCTO ----------------------------
+        //ELIMINAR PRODUCTO
         async function eliminarProducto(id) {
     if (!confirm("¿Seguro que deseas eliminar este producto?")) return;
 
@@ -622,19 +619,19 @@ SESSION_start();
 
         if (data.success) {
             alert("Producto eliminado correctamente");
-            // 🔄 Recarga la página o el panel
+            //Recarga la página o el panel
             location.reload();
         } else {
-            alert("⚠️ No se pudo eliminar: " + (data.error || "Error desconocido"));
+            alert("No se pudo eliminar: " + (data.error || "Error desconocido"));
         }
     } catch (error) {
         console.error("Error al eliminar:", error);
         alert("Ocurrió un error al intentar eliminar el producto.");
     }
 }
-//--------------------------------------------  FIN ELIMINAR PRODUCTO ----------------------------
+//FIN ELIMINAR PRODUCTO
 
-        // --- Funcionalidad de mostrar/ocultar contraseña (para Personal y Admin Info) ---
+        //Funcionalidad de mostrar/ocultar contraseña
         document.querySelectorAll('.toggle-password').forEach(button => {
             button.addEventListener('click', function() {
                 const passwordInput = this.previousElementSibling;
@@ -643,7 +640,7 @@ SESSION_start();
             });
         });
         
-    // Captura los pedidos seleccionados al hacer clic en el botón
+    //Captura los pedidos seleccionados al hacer clic en el botón
     document.addEventListener('DOMContentLoaded', () => {
     const botonCambiar = document.getElementById('btnCambiarEstado');
     
@@ -657,15 +654,12 @@ SESSION_start();
                 return;
             }
 
-            // Solo tomamos el primero seleccionado (ya que tu PHP solo recibe un idPedido)
             const idPedido = seleccionados[0];
             console.log("Pedido seleccionado:", idPedido);
 
-            // Creamos un objeto FormData
             const formData = new FormData();
             formData.append('idPedido', idPedido);
 
-            // Enviamos los datos al PHP
             fetch('../controlador/editarPedidosEspera.php', {
                 method: 'POST',
                 body: formData
@@ -694,15 +688,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Solo tomamos 1 (tu PHP solo acepta uno)
             const idPedido = seleccionados[0];
             console.log("Pedido seleccionado (proceso):", idPedido);
 
-            // Creamos FormData
             const formData = new FormData();
             formData.append('idPedido', idPedido);
 
-            // Enviamos al PHP
             fetch('../controlador/editarPedidosProceso.php', {
                 method: 'POST',
                 body: formData

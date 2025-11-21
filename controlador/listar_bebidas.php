@@ -17,7 +17,7 @@ try {
     if ($bebidas && count($bebidas) > 0) {
         foreach ($bebidas as $producto) {
 
-            // ✅ Validar ruta de imagen
+            //Validar ruta de imagen
             if (!empty($producto["imagen"]) && file_exists($producto["imagen"])) {
                 $imagen = $producto["imagen"];
             } else {

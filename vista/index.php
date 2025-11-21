@@ -2,7 +2,6 @@
 <?php
 SESSION_start();
     //include_once "../modelo/conexion/conection.php"; // prueba de conexion
-    //$db = conection::conectar();
 ?>
 <head>
     <meta charset="UTF-8">

@@ -95,8 +95,6 @@
                         const isPassword = passwordField.getAttribute('type') === 'password';
                         const newType = isPassword ? 'text' : 'password';
                         passwordField.setAttribute('type', newType);
-
-                        // RUTA DE ICONOS: Asegúrate que estas rutas sean correctas
                         const eyeOpenSrc = "../assets/css/ojoabierto.png"; 
                         const eyeClosedSrc = "../assets/css/ojocerrado.png"; 
 

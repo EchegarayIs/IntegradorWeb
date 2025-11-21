@@ -1,4 +1,4 @@
-<?php}
+<?php
 session_start();
 // === INCLUSIONES NECESARIAS ===
 // Si el controlador está en 'controlador/' y el modelo en 'modelo/', la ruta es correcta.
