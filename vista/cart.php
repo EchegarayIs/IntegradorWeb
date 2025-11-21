@@ -208,7 +208,7 @@ $is_cart_empty = $cart->isEmpty();
             
             $('.cart-items-container').on('click', 'button', function() {
                 const button = $(this);
-                const itemHash = button.data('id'); 
+                const itemHash = button.data('id'); // <-- Usamos el hash como ID
                 const action = button.data('action');
                 
                 const quantityDisplay = $(`#quantity-${itemHash}`);

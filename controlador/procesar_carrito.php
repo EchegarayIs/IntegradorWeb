@@ -4,7 +4,7 @@ session_start();
 
 header('Content-Type: application/json');
 
-// Inicializar el carrito si no existe
+// Inicializar el carrito
 if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
 }
@@ -19,6 +19,7 @@ if (!isset($_SESSION['carrito'])) {
 function generateItemHash($producto_id, $modificadores) {
     $modificadores = $modificadores ?? [];
     $mod_names = array_column($modificadores, 'nombre');
+    
     sort($mod_names); 
     $mod_string = implode('|', $mod_names);
     return md5($producto_id . ':' . $mod_string);
@@ -52,10 +53,10 @@ function calcularTotalCarrito() {
         $base_cost_unit = (float)($item['precio'] ?? 0.00);
         $mods_cost_unit = calculateModsCost($item['modificadores'] ?? []);
         
-        
+        // El precio unitario real 
         $precio_unitario_real = $base_cost_unit + $mods_cost_unit;
         
-       
+        // Recalcular el subtotal del ítem
         $item['subtotal'] = $precio_unitario_real * (int)($item['cantidad'] ?? 0);
         
         $total_subtotal += $item['subtotal'];
@@ -73,12 +74,12 @@ if (isset($_POST['action'])) {
     
     $item_hash = $_POST['id'] ?? ''; 
     
+    
     if ($action === 'add') {
         $producto_id = $_POST['producto_id'] ?? '';
         $nombre = htmlspecialchars($_POST['nombre'] ?? '');
         $precio_base = floatval($_POST['precio_base'] ?? 0.00);
         $cantidad = intval($_POST['cantidad'] ?? 0);
-        
         $modificadores_json = $_POST['modificadores_json'] ?? '[]';
         $modificadores = json_decode($modificadores_json, true);
 
@@ -86,17 +87,19 @@ if (isset($_POST['action'])) {
             
             $item_hash_unico = generateItemHash($producto_id, $modificadores);
             
-           
+            
+        
             if (isset($_SESSION['carrito'][$item_hash_unico])) {
                 $_SESSION['carrito'][$item_hash_unico]['cantidad'] += $cantidad;
             } else {
-                /
+                // Añadir nuevo producto con modificadores
                 $_SESSION['carrito'][$item_hash_unico] = [
-                    'producto_id' => $producto_id, // Guardamos el ID 
+                    'producto_id' => $producto_id, 
                     'nombre' => $nombre,
-                    'precio' => $precio_base, // Es el precio unitario BASE
+                    'precio' => $precio_base, 
                     'cantidad' => $cantidad,
                     'modificadores' => $modificadores, 
+                    'subtotal' => 0.00
                 ];
             }
             $response['success'] = true;
@@ -107,6 +110,7 @@ if (isset($_POST['action'])) {
         }
     }
 
+    
     elseif ($action === 'update') {
         $nueva_cantidad = intval($_POST['cantidad'] ?? 0);
 
@@ -114,7 +118,7 @@ if (isset($_POST['action'])) {
         if ($item_hash && isset($_SESSION['carrito'][$item_hash])) {
             
             if ($nueva_cantidad > 0) {
-                // Solo actualiza la cantidad (el subtotal se recalculará en el total)
+                
                 $_SESSION['carrito'][$item_hash]['cantidad'] = $nueva_cantidad;
                 $response['success'] = true;
                 $response['message'] = "Cantidad actualizada.";
@@ -130,7 +134,7 @@ if (isset($_POST['action'])) {
         }
     }
     
-    /
+    // --- ACCIÓN: ELIMINAR PRODUCTO DESDE EL CARRITO 
     elseif ($action === 'remove') {
         
         if ($item_hash && isset($_SESSION['carrito'][$item_hash])) {
@@ -143,7 +147,7 @@ if (isset($_POST['action'])) {
         }
     }
     
-   
+    
     if ($response['success']) {
         $response['total_carrito'] = calcularTotalCarrito();
         
@@ -153,7 +157,7 @@ if (isset($_POST['action'])) {
     exit;
 
 } else {
-    
+    // Si no es una petición POST válida, devolvemos error 
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => "Petición POST no recibida o sin acción."]);
     exit;
