@@ -10,8 +10,8 @@ class CheckoutModel {
     private $conexion;
 
     public function __construct() {
-    $con = new Conexion(); // 1. ¿Se puede crear la instancia?
-    $this->conexion = $con->conectar(); // 2. ¿Se puede llamar al método conectar()?
+    $con = new Conexion();
+    $this->conexion = $con->conectar();
 }
 
     public function confirmarPedidoYPago($montoTotal, $idUsuario, $carrito) {
@@ -26,7 +26,7 @@ class CheckoutModel {
 
             $stmt = $this->conexion->prepare("CALL sp_InsertarPedidos(?, ?, ?, ?)"); 
             
-            // PDO no tiene bind_param, usamos execute con un array
+           
             if (!$stmt->execute([$montoTotal, $fechaActual, $idUsuario, $estadoPedido])) {
                 throw new Exception("Error al ejecutar SP_InsertarPedidos.");
             }
@@ -72,7 +72,7 @@ class CheckoutModel {
             ];
 
         } catch (Exception $e) {
-            $this->conexion->rollBack(); // <--- Método PDO: rollBack()
+            $this->conexion->rollBack(); // Método PDO rollBack()
             return [
                 "success" => false,
                 "message" => "Fallo en la transacción de la DB.", 

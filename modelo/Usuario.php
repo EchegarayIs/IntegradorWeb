@@ -12,9 +12,9 @@ class Usuario {
         try {
             // Convertir género a número
             $generoValor = ($genero === 'M') ? 1 : (($genero === 'F') ? 2 : 3);
-             // Definir valores automáticos
-            $rol = 1;       // idRol por defecto = 1
-            $estado = 1;    // estado por defecto = 1 (trabajando)
+             
+            $rol = 1;       
+            $estado = 1;    
             
 
             $sql = "INSERT INTO usuarios (nombre, apellidos, fechaNac, direccion, genero, correo, passwor, Roles_idRol, estado)

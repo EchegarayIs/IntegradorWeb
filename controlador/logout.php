@@ -1,5 +1,5 @@
 <?php
-// Iniciar la sesión (CRÍTICO para acceder a los datos de sesión y destruirla)
+// Iniciar la sesión 
 session_start();
 
 // Destruir TODAS las variables de sesión del array $_SESSION

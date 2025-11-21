@@ -2,8 +2,8 @@
 // guardar_pedido.php
 session_start();
 
-// 1. Incluir la clase de conexión y verificar el carrito
-require_once 'Conexion.php'; // Asegúrate de que la ruta sea correcta
+
+require_once 'Conexion.php'; 
 
 if (!isset($_SESSION['idUsuario'])) {
     echo json_encode(['success' => false, 'message' => 'Error: Usuario no autenticado.']);
@@ -20,7 +20,7 @@ $usuario_id = $_SESSION['idUsuario'];
 $metodo_pago = $_POST['metodo'] ?? 'Efectivo'; // 'Efectivo' o 'Tarjeta'
 $total_pedido = 0;
 
-// Calcular el total final del carrito (seguridad en el servidor)
+// Calcular el total final del carrito 
 foreach ($_SESSION['carrito'] as $producto) {
     $total_pedido += $producto['precio'] * $producto['cantidad'];
 }
@@ -30,7 +30,7 @@ $conn->autocommit(FALSE); // Iniciar Transacción
 $all_ok = true;
 
 try {
-    // --- INSERTAR EN LA TABLA PEDIDOS ---
+    
     // estado: 1 (Pagado/Confirmado), 0 (Pendiente/Cancelado)
     $stmt_pedido = $conn->prepare("INSERT INTO pedidos (monto, fechaPedido, usuario_idUsuario, estado) VALUES (?, CURDATE(), ?, 1)");
     $stmt_pedido->bind_param("di", $total_pedido, $usuario_id);
@@ -44,7 +44,7 @@ try {
     $stmt_pedido->close();
 
 
-    // --- INSERTAR EN LA TABLA PEDIDOS_HAS_PRODUCTOS ---
+    
     $stmt_detalle = $conn->prepare("INSERT INTO pedidos_has_productos (idPedido, idProducto, cantidadProducto, montoProductos) VALUES (?, ?, ?, ?)");
     
     foreach ($_SESSION['carrito'] as $item) {
@@ -52,7 +52,7 @@ try {
         $cantidad = $item['cantidad'];
         $precio_total_producto = $item['precio'] * $item['cantidad'];
         
-        // El campo 'idProducto' en tu carrito debe contener el idProductos de la tabla 'productos'
+        
         $stmt_detalle->bind_param("iidi", $id_pedido, $id_producto, $cantidad, $precio_total_producto);
         
         if (!$stmt_detalle->execute()) {
@@ -62,11 +62,11 @@ try {
     $stmt_detalle->close();
 
     
-    // --- INSERTAR EN LA TABLA PAGOS ---
+    
     // Usamos el ID del pedido como FK para la tabla pagos.
     $stmt_pago = $conn->prepare("INSERT INTO pagos (monto, Pedidos_idPedidos, metodo_pago) VALUES (?, ?)"); // Necesitas añadir la columna metodo_pago en tu tabla pagos
     
-    // NOTA IMPORTANTE DE ESQUEMA:
+   
     $stmt_pago_simple = $conn->prepare("INSERT INTO pagos (monto, Pedidos_idPedidos) VALUES (?, ?)");
     $stmt_pago_simple->bind_param("di", $total_pedido, $id_pedido);
     

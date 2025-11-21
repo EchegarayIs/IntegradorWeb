@@ -63,7 +63,7 @@ $is_cart_empty = $cart->isEmpty();
                     <?php endif; ?>
                     
                     <?php 
-                    foreach ($carrito as $item_hash => $item): // <-- ¡Usando el Hash Único!
+                    foreach ($carrito as $item_hash => $item): 
                     ?>
                     
                     <div class="cart-item-card" data-product-id="<?php echo $item_hash; ?>">
@@ -135,14 +135,11 @@ $is_cart_empty = $cart->isEmpty();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     
     <script>
-        // RUTA AJAX MANTENIDA
+       
         const CAR_AJAX_URL = '../controlador/procesar_carrito.php'; 
         const SHIPPING_COST = <?php echo $SHIPPING_COST; ?>;
 
-        // -------------------------------------------------------------
-        // 1. FUNCIONES DE ACTUALIZACIÓN VISUAL DEL RESUMEN
-        // -------------------------------------------------------------
-        // Esta función ahora confía únicamente en el 'total_carrito' que le manda el servidor (Controlador/Modelo)
+        
         function updateSummaryDisplay(newTotal) {
             const subtotal = parseFloat(newTotal);
             const total = subtotal + SHIPPING_COST;
@@ -161,10 +158,8 @@ $is_cart_empty = $cart->isEmpty();
             }
         }
 
-        // -------------------------------------------------------------
-        // 2. FUNCIÓN AJAX PARA ACTUALIZAR O ELIMINAR
-        // -------------------------------------------------------------
-        function updateCartItem(itemHash, quantity, action) { // <-- Usa itemHash como ID
+        
+        function updateCartItem(itemHash, quantity, action) { 
             
             const cardElement = $(`.cart-item-card[data-product-id="${itemHash}"]`);
             
@@ -178,7 +173,7 @@ $is_cart_empty = $cart->isEmpty();
                 dataType: 'json',
                 data: {
                     action: action, 
-                    id: itemHash, // <-- Enviamos el hash al Controlador
+                    id: itemHash, 
                     cantidad: quantity 
                 },
                 success: function(response) {
@@ -186,7 +181,7 @@ $is_cart_empty = $cart->isEmpty();
                         
                         if (action === 'remove') {
                             cardElement.remove();
-                            // Puedes quitar el alert si es un TPV de uso constante
+                            
                             alert(" Producto eliminado correctamente."); 
                         } 
                         
@@ -208,14 +203,12 @@ $is_cart_empty = $cart->isEmpty();
             });
         }
 
-        // -------------------------------------------------------------
-        // 3. MANEJO DE EVENTOS DEL DOM
-        // -------------------------------------------------------------
+        
         $(document).ready(function() {
             
             $('.cart-items-container').on('click', 'button', function() {
                 const button = $(this);
-                const itemHash = button.data('id'); // <-- Usamos el hash como ID
+                const itemHash = button.data('id'); 
                 const action = button.data('action');
                 
                 const quantityDisplay = $(`#quantity-${itemHash}`);

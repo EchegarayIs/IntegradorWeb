@@ -1,7 +1,7 @@
 <?php
-// ********* CARGA EL CONTROLADOR QUE PREPARA LOS DATOS *********
+
 require_once('../controlador/checkoutController.php'); 
-// Ahora, tu HTML/CSS/JS puede usar las variables $carrito, $total_final, etc.
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -14,11 +14,11 @@ require_once('../controlador/checkoutController.php');
     <link rel="stylesheet" href="payment.css"> 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
-        /* Estilo para las secciones de detalle ocultas */
+       
         .payment-details-section.hidden {
             display: none;
         }
-        /* Estilo para la confirmación de pedido */
+        
         .confirmation-box {
             background-color: #e6ffe6;
             color: #3c763d;
@@ -43,7 +43,7 @@ require_once('../controlador/checkoutController.php');
             text-decoration: none;
             border-radius: 4px;
         }
-        /* Estilo para resaltar error en el input (usado en JS) */
+        
         .card-input.error {
             border: 2px solid red !important;
         }
@@ -158,7 +158,7 @@ require_once('../controlador/checkoutController.php');
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // ... (TUS CONSTANTES Y VARIABLES EXISTENTES DEBEN ESTAR AQUÍ) ...
+            
             const modalSection = document.getElementById('payment-methods-selection');
             const optionCash = document.getElementById('option-cash');
             const optionCard = document.getElementById('option-card');
@@ -168,28 +168,24 @@ require_once('../controlador/checkoutController.php');
             const cardDetailsSection = document.getElementById('card-payment-details');
             const confirmationSection = document.getElementById('order-confirmation');
 
-            // Inputs de Tarjeta
+           
             const cardNumberInput = document.getElementById('card-number');
             const cardExpiryInput = document.getElementById('card-expiry');
             const cardCvvInput = document.getElementById('card-cvv');
             const cardForm = document.getElementById('card-form');
             
-            // Botones de pago final
-            // ...
-// Botones de pago final (USANDO LOS ID REALES/NUEVOS)
-const cashConfirmButton = document.getElementById('submit-cash-payment'); //CORREGIDO: Usando el nuevo ID
-const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: El de tarjeta usa type="submit" en un form. Lo obtenemos por clase.
-// ...
+           
+const cashConfirmButton = document.getElementById('submit-cash-payment'); 
+const cardPayButton = document.querySelector('.pay-now-button'); 
+
 
             let selectedMethod = null;
             
-            // ********** VARIABLES DE CONTROL **********
+            
             const TOTAL_FINAL = parseFloat('<?php echo $total_final_js; ?>'); 
             const API_PEDIDO_URL = '../modelo/conexion/ApiPedidos.php'; 
 
-            // ----------------------------------------------------
-            // I. LÓGICA AJAX CENTRAL: ENVÍO DEL PEDIDO (MODIFICADA PARA DEBUG)
-            // ----------------------------------------------------
+            
             function handleOrderSubmission(paymentMethod) {
                 if (TOTAL_FINAL <= 0) {
                     alert('El total del pedido debe ser mayor a $0.00 para pagar.');
@@ -213,10 +209,10 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
                     data: postData,
                     success: function(response) {
                         if (response.success) {
-                            // Éxito: El pedido se guardó y el carrito se limpió en el servidor
+                            
                             showConfirmation(paymentMethod, response.order_id); 
                         } else {
-                            // Fallo de Lógica de Negocio/DB (el PHP respondió con 'success: false')
+                           
                             alert(' Fallo de lógica al procesar el pedido. El servidor respondió: ' + response.message);
                             console.error('Error del servidor:', response);
                             if (cashConfirmButton) cashConfirmButton.disabled = false;
@@ -224,16 +220,16 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
                         }
                     },
                     error: function(xhr, status, error) {
-                        // Fallo de Conexión/Servidor/Error Fatal de PHP (El script crasheó)
+                        
                         console.error(' AJAX Error Status:', status);
                         console.error(' AJAX Response Text (Error de PHP):', xhr.responseText);
                         
-                        // Muestra el error de PHP directamente en una alerta
+                        
                         let errorMessage = ' ERROR FATAL DE PHP. La orden NO se guardó.\n\n';
                         if (xhr.status === 0) {
                             errorMessage += 'El archivo API_PEDIDO_URL es incorrecto: ' + API_PEDIDO_URL + ' (o el servidor no responde).';
                         } else if (xhr.responseText.includes('Fatal error')) {
-                            // Recorta el error para que sea legible
+                            
                             let phpError = xhr.responseText.substring(xhr.responseText.indexOf('Fatal error'), xhr.responseText.indexOf('<br')).trim();
                             errorMessage += 'Detalle del error de PHP:\n' + phpError;
                         } else {
@@ -242,7 +238,7 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
                         
                         alert(errorMessage);
                         
-                        // Re-habilitar botones
+                        
                         if (cashConfirmButton) cashConfirmButton.disabled = false;
                         if (cardPayButton) cardPayButton.disabled = false;
                     }
@@ -250,9 +246,6 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
             }
 
 
-            // ----------------------------------------------------
-            // II. LÓGICA DE NAVEGACIÓN Y CONFIRMACIÓN (ACTUALIZADA)
-            // ----------------------------------------------------
 
             let finalOrderTotal = TOTAL_FINAL; 
 
@@ -285,7 +278,7 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
                 confirmationSection.classList.remove('hidden');
             }
             
-            // --- MANEJO DE SELECCIÓN DE MÉTODO (CASH/CARD) ---
+            
             
             function handleOptionClick(method, cardElement) {
                 document.querySelectorAll('.payment-option-card').forEach(card => {
@@ -309,7 +302,7 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
                 }
             });
 
-            // Flujo de Pago en Efectivo (EVENTO ACTUALIZADO)
+            
             if (cashConfirmButton) {
                 cashConfirmButton.addEventListener('click', function() {
                     handleOrderSubmission('Efectivo');
@@ -317,9 +310,6 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
             }
 
 
-            // ----------------------------------------------------
-            // III. FUNCIONES DE VALIDACIÓN DE TARJETA (EXISTENTES)
-            // ----------------------------------------------------
 
             function validateLuhn(cardNumber) {
                 let cleanedCardNumber = cardNumber.replace(/\s/g, '').replace(/\D/g, ''); 
@@ -365,10 +355,6 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
                 return /^\d{3,4}$/.test(cvv);
             }
 
-
-            // ----------------------------------------------------
-            // IV. MANEJO DEL FORMULARIO DE TARJETA (ACTUALIZADO)
-            // ----------------------------------------------------
             
             if (cardForm) {
                 cardForm.addEventListener('submit', function(event) {
@@ -404,7 +390,7 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
                         cardCvvInput.classList.add('error');
                     }
 
-                    // 3. Resultado (LLAMADA AJAX)
+                    // 3. Resultado 
                     if (isValid) {
                         alert("Tarjeta validada correctamente. ¡Procesando pago!");
                         handleOrderSubmission('Tarjeta'); 
@@ -415,9 +401,7 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
             }
 
 
-            // ----------------------------------------------------
-            // V. MEJORAS DE UX (EXISTENTES)
-            // ----------------------------------------------------
+        
 
             // Formato de Número de Tarjeta (4444 4444 4444 4444)
             if (cardNumberInput) {
@@ -439,7 +423,6 @@ const cardPayButton = document.querySelector('.pay-now-button'); // CORREGIDO: E
             }
 
 
-            // --- INICIALIZACIÓN FINAL ---
             initializeCheckout();
 
         });

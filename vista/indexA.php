@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <?php
 SESSION_start();
-    //LOS COMENTE PORQUE YO NO TENGO LA BASE DE DATOS
-    //include_once "../modelo/conexion/conection.php"; // prueba de conexion
-    //$db = conection::conectar();
+
 ?>
 <head>
     <meta charset="UTF-8">

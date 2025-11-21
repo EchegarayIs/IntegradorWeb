@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <?php
     SESSION_start();
-    //include_once "../modelo/conexion/conection.php"; // prueba de conexion
 ?>
 <head>
     <meta charset="UTF-8">

@@ -113,44 +113,40 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // ----------------------------------------------------
-            // 0. LOGICA DE BOTONES DEL MENÚ - ACTUALIZACIÓN 10-11-2025
-            // ----------------------------------------------------
+            
 
             document.getElementById('enviarTacos').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
+           
             e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
+           
             const form = document.getElementById('tacos-form');
-            // 3. Envía el formulario
+            
             if (form) {
                 form.submit();
             }
         });
          document.getElementById('enviarTortas').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
+            
             e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
+            
             const form = document.getElementById('tortas-form');
-            // 3. Envía el formulario
+            
             if (form) {
                 form.submit();
             }
         });
          document.getElementById('enviarBebidas').addEventListener('click', function(e) {
-            // 1. Evita que el navegador navegue a '#'
+           
             e.preventDefault(); 
-            // 2. Encuentra el formulario por su ID
+            
             const form = document.getElementById('bebidas-form');
-            // 3. Envía el formulario
+            
             if (form) {
                 form.submit();
             }
         });
             
-            // ----------------------------------------------------
-            // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES - ACTUALIZACIÓN 10-11-2025
-            // ----------------------------------------------------
+           
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
             const modalImage = document.getElementById('modal-image');
@@ -166,11 +162,7 @@
             const contenedor = document.getElementById('tortasContainer');
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
             let modificadoresDisponibles = [];
-            const CATEGORIA_ID = 2; // <--- ID de Categoría para TACOS
-
-            // ----------------------------------------------------
-            // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
-            // ----------------------------------------------------
+            const CATEGORIA_ID = 2; 
             function closeModal() {
                  modal.style.display = 'none';
                  // Resetear cantidad al cerrar
@@ -187,12 +179,11 @@
                 modalPriceDisplay.textContent = `$${newTotal.toFixed(2)} c/u`;
             }
 
-            // Eventos de botones de cantidad del modal
             minusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 if (currentQuantity > 1) {
                 quantityDisplay.textContent = currentQuantity - 1;
-                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
+                
                 updateModalPrice(currentQuantity - 1); 
                 }
             });
@@ -200,12 +191,9 @@
             plusButton.addEventListener('click', () => {
                 let currentQuantity = parseInt(quantityDisplay.textContent);
                 quantityDisplay.textContent = currentQuantity + 1;
-                // Lógica de cálculo BORRADA Y REEMPLAZADA por la función que SÍ funciona:
                 updateModalPrice(currentQuantity + 1);
             });
 
-
-            // --- FUNCIÓN CENTRAL: ABRIR MODAL ---
             function openModal(productId) {
                 const producto = productosCargados.find(p => p.idProductos == productId); 
 
@@ -213,11 +201,9 @@
                     modalImage.src = (producto.imagen === null || producto.imagen === '') ? "../assets/css/tacosalpastor.png" : producto.imagen;
                     modalName.textContent = producto.nombre;
                     
-                    // CRÍTICO: Guardar ID y Precio UNITARIO en el botón para el AJAX
                     addToCartModalButton.setAttribute('data-product-id', producto.idProductos);
                     addToCartModalButton.setAttribute('data-product-price', parseFloat(producto.precio).toFixed(2));
 
-                    // Reiniciar cantidad y precio al abrir
                     quantityDisplay.textContent = '1';
                     updateModalPrice(1);
                     
@@ -227,13 +213,9 @@
                 }
             }
             
-            // ----------------------------------------------------
-            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX)
-            // ----------------------------------------------------
-            // Tacos.php - Reemplaza el contenido de este listener
 
 addToCartModalButton.addEventListener('click', () => {
-    // 1. Obtener datos base (usando los atributos guardados al abrir el modal)
+    // 1. Obtener datos base 
     const productId = addToCartModalButton.getAttribute('data-product-id'); 
     const productPrice = addToCartModalButton.getAttribute('data-product-price'); 
     const productName = modalName.textContent; 
@@ -244,7 +226,6 @@ addToCartModalButton.addEventListener('click', () => {
         return;
     }
 
-    // 2. CRÍTICO: Recopilar los modificadores y ASIGNAR precio_extra 0.00
     const modificadoresSeleccionados = [];
     complementosContenedor.querySelectorAll('.active-complement').forEach(btn => {
         const modName = btn.getAttribute('data-mod-name'); 
@@ -260,7 +241,6 @@ addToCartModalButton.addEventListener('click', () => {
         }
     });
 
-    // 3. CRÍTICO: Preparar los datos con las claves correctas para el controlador PHP
     const ajaxData = {
         action: 'add',
         producto_id: productId,        // Esperado por PHP
@@ -270,7 +250,6 @@ addToCartModalButton.addEventListener('click', () => {
         modificadores_json: JSON.stringify(modificadoresSeleccionados) // Esperado por PHP
     };
 
-    // Llamada AJAX
     $.ajax({
         url: AJAX_CART_URL, 
         type: 'POST',
@@ -292,26 +271,21 @@ addToCartModalButton.addEventListener('click', () => {
     });
 });
             
-            // ----------------------------------------------------
-           // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ - ACTUALIZACIÓN 10-11-2025
-           // ----------------------------------------------------
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
                 try {
 
-                    // CRÍTICO: La variable PHP $rs se inyecta directamente aquí. 
-                    // Asegúrate de que $rs contenga un objeto JSON válido con la propiedad 'contenido'.
                     const data = <?= json_encode($rs); ?>; 
                     const todosLosProductos = data; 
                     
                     productosCargados = todosLosProductos; 
                     
-                    // FILTRO CORREGIDO: Usamos CATEGORIA_ID
+
                     const productosParaMostrar = todosLosProductos.filter(producto => producto.categoria == CATEGORIA_ID); 
 
                     if (productosParaMostrar.length === 0) {
-                        // MENSAJE CORREGIDO
+
                         contenedor.innerHTML = `<p class="info-message">No hay tortas disponibles en este momento.</p>`;
                         return;
                     }
@@ -331,8 +305,6 @@ addToCartModalButton.addEventListener('click', () => {
                                 <img src="../assets/css/carrito.png" alt="Agregar">
                             </button>
                         `;
-
-                        // Adjuntar listener para abrir el modal y cargar la info del producto
                         dishCard.querySelector('.add-to-cart-button').addEventListener('click', (e) => {
                              const productId = e.currentTarget.getAttribute('data-product-id');
                              openModal(productId);
@@ -347,9 +319,6 @@ addToCartModalButton.addEventListener('click', () => {
                     contenedor.innerHTML = `<p class="error-message">Error al cargar los productos. Por favor, revisa la consola para más detalles.</p>`; 
                 }
             }
-            // ----------------------------------------------------
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS - ACTUALIZACIÓN 10-11-2025
-            // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
                     
@@ -381,8 +350,6 @@ addToCartModalButton.addEventListener('click', () => {
                 }
             }
 
-
-            // --- Ejecución y Cierre del Modal ---
             cargarProductos();
             cargarComplementos();
             

@@ -17,20 +17,14 @@ try {
     if ($tortas && count($tortas) > 0) {
         foreach ($tortas as $producto) {
 
-<<<<<<< HEAD
-=======
             // Validar ruta de imagen
->>>>>>> 28dd60aa7d3d58080a9d1d4cb63ca65f076b058d
             if (!empty($producto["imagen"]) && file_exists($producto["imagen"])) {
                 $imagen = $producto["imagen"];
             } else {
                 $imagen = "../assets/css/torta_default.png"; // Imagen por defecto
             }
 
-<<<<<<< HEAD
-=======
-            // Estructura del producto con data-id (necesario para editar)
->>>>>>> 28dd60aa7d3d58080a9d1d4cb63ca65f076b058d
+            
             echo "
             <div class='product-item-card' 
                  data-id='{$producto['idProductos']}' 

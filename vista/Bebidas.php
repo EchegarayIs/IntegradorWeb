@@ -109,44 +109,40 @@
     <script>
         
         document.addEventListener('DOMContentLoaded', function() {
-            // ----------------------------------------------------
-            // 0. LOGICA DE BOTONES DEL MENÚ - ACTUALIZACIÓN 10-11-2025
-            // ----------------------------------------------------
+            
 
                 document.getElementById('enviarTacos').addEventListener('click', function(e) {
-                // 1. Evita que el navegador navegue a '#'
+                
                 e.preventDefault(); 
-                // 2. Encuentra el formulario por su ID
+                
                 const form = document.getElementById('tacos-form');
-                // 3. Envía el formulario
+                
                 if (form) {
                     form.submit();
                 }
             });
             document.getElementById('enviarTortas').addEventListener('click', function(e) {
-                // 1. Evita que el navegador navegue a '#'
+                
                 e.preventDefault(); 
-                // 2. Encuentra el formulario por su ID
+                
                 const form = document.getElementById('tortas-form');
-                // 3. Envía el formulario
+                
                 if (form) {
                     form.submit();
                 }
             });
             document.getElementById('enviarBebidas').addEventListener('click', function(e) {
-                // 1. Evita que el navegador navegue a '#'
+                
                 e.preventDefault(); 
-                // 2. Encuentra el formulario por su ID
+               
                 const form = document.getElementById('bebidas-form');
-                // 3. Envía el formulario
+                
                 if (form) {
                 form.submit();
                 }
             });
             
-            // ----------------------------------------------------
-            // 1. SELECTORES DE ELEMENTOS Y VARIABLES GLOBALES
-            // ----------------------------------------------------
+            
             const modal = document.getElementById('complements-modal');
             const closeButton = modal.querySelector('.close-button');
             const modalImage = document.getElementById('modal-image');
@@ -159,19 +155,14 @@
             const complementosContenedor = document.getElementById('complementos-contenedor');
 
             let productosCargados = []; 
-            // Asume el ID del contenedor (ajusta si es necesario)
+            
             const contenedor = document.getElementById('bebidasContainer') || document.getElementById('productosContainer'); 
             
-            // Rutas relativas
-            //const apiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiProductos.php?api=listar';
-            //const ingredientesApiUrl = 'http://localhost/IntegradorWeb/modelo/conexion/ApiIngredientes.php?api=listarBebidas';
+            
             const AJAX_CART_URL = '../controlador/procesar_carrito.php';
             let modificadoresDisponibles = [];
             const CATEGORIA_ID = 1;
 
-            // ----------------------------------------------------
-            // 2. LÓGICA DE MODAL Y CANTIDAD (+/-)
-            // ----------------------------------------------------
             function closeModal() {
                  modal.style.display = 'none';
                  quantityDisplay.textContent = '1';
@@ -201,7 +192,7 @@
             });
 
 
-            // --- FUNCIÓN CENTRAL: ABRIR MODAL ---
+            
             function openModal(productId) {
                 const producto = productosCargados.find(p => p.idProductos == productId); 
 
@@ -221,9 +212,7 @@
                 }
             }
             
-            // ----------------------------------------------------
-            // 3. LÓGICA DE AGREGAR AL CARRITO (AJAX) 
-            // ----------------------------------------------------
+            
             addToCartModalButton.addEventListener('click', () => {
                 const productId = addToCartModalButton.getAttribute('data-product-id'); 
                 const productPrice = addToCartModalButton.getAttribute('data-product-price'); 
@@ -280,16 +269,13 @@
                 });
             });
             
-            // ----------------------------------------------------
-            // 4. LÓGICA DE CARGA DE PRODUCTOS DEL MENÚ (UNIFICADA CON TACOS)
-            // ----------------------------------------------------
+        
             async function cargarProductos() {
                 contenedor.innerHTML = ''; 
 
                 try {
 
-                    // CRÍTICO: La variable PHP $rs se inyecta directamente aquí. 
-                    // Asegúrate de que $rs contenga un objeto JSON válido con la propiedad 'contenido'.
+                    
                     const data = <?= json_encode($rs); ?>; 
                     const todosLosProductos = data; 
                     
@@ -333,9 +319,6 @@
                 }
             }
             
-            // ----------------------------------------------------
-            // 5. LÓGICA DE CARGA DE COMPLEMENTOS (UNIFICADA CON TACOS)
-            // ----------------------------------------------------
             async function cargarComplementos() {
                 try {
                     
@@ -368,7 +351,7 @@
             }
 
 
-            // --- Ejecución y Cierre del Modal ---
+    
             cargarProductos();
             cargarComplementos();
             
