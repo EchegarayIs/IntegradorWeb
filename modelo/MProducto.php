@@ -13,8 +13,6 @@ class MProducto {
         try {
             // Valores por defecto
             $estado = 1;
-        
-
             $sql = "INSERT INTO productos (nombre, precio, imagen, estado, categoria)
                     VALUES (:nombre, :precio, :imagen, :estado, :categoria)";
             

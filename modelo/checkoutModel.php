@@ -21,16 +21,9 @@ class CheckoutModel {
         $idPedido = 0;
 
         try {
-            // =================================================================
-            // INICIO DE TRANSACCIÓN PDO
-            // =================================================================
+
             $this->conexion->beginTransaction();
 
-            // =================================================================
-            // PASO 1: Insertar el Pedido principal
-            // =================================================================
-            // PDO requiere una sintaxis de 'call' diferente y placeholders :param.
-            // Los procedimientos almacenados con PDO son más sencillos de llamar:
             $stmt = $this->conexion->prepare("CALL sp_InsertarPedidos(?, ?, ?, ?)"); 
             
             // PDO no tiene bind_param, usamos execute con un array
@@ -39,20 +32,15 @@ class CheckoutModel {
             }
             $stmt = null; // Cerrar el statement
 
-            // Obtener el ID del Pedido recién insertado (usando PDO: lastInsertId)
             $idPedido = $this->conexion->lastInsertId();
             
             if ($idPedido <= 0) {
                  throw new Exception("Error al obtener el ID del pedido principal.");
             }
 
-            // =================================================================
-            // PASO 2: Insertar los Productos del Pedido (Bucle por cada item)
-            // =================================================================
             $stmt = $this->conexion->prepare("CALL sp_Insertar_ProdHasPed(?, ?, ?)"); 
 
             foreach ($carrito as $item) {
-                // 🛑 AJUSTAR CLAVES DE CARRO AQUÍ 🛑 (usando 'id' y 'cant' como ejemplo)
                 $idProducto = $item['id'] ?? $item['idProducto'] ?? null; 
                 $cantidad = $item['cant'] ?? $item['cantidad'] ?? null; 
                 
@@ -67,10 +55,6 @@ class CheckoutModel {
             }
             $stmt = null;
 
-
-            // =================================================================
-            // PASO 3: Insertar el Pago
-            // =================================================================
             $stmt = $this->conexion->prepare("CALL sp_InsertarPagos(?, ?)"); 
             
             if (!$stmt->execute([$montoTotal, $idPedido])) {
@@ -79,9 +63,6 @@ class CheckoutModel {
             }
             $stmt = null;
 
-            // =================================================================
-            // PASO 4: Confirmar la Transacción (COMMIT)
-            // =================================================================
             $this->conexion->commit();
             return [
                 "success" => true,
@@ -91,7 +72,6 @@ class CheckoutModel {
             ];
 
         } catch (Exception $e) {
-            // Deshacer la Transacción (ROLLBACK) si algo falló
             $this->conexion->rollBack(); // <--- Método PDO: rollBack()
             return [
                 "success" => false,

@@ -11,10 +11,8 @@ class productos {
         $stmt->setFetchMode(PDO::FETCH_OBJ);
         $productos = $stmt->fetchAll();
 
-        // Cerrar la conexión
         $conexion->cerrarConexion();
 
-        // Retornar los productos obtenidos
         return $productos;
 
     }   

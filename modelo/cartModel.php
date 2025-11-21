@@ -4,7 +4,6 @@
 class CartModel {
     private const CART_KEY = 'carrito';
 
-    // 1. Inicializa el carrito y la sesión
     public function __construct() {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -12,14 +11,12 @@ class CartModel {
         $_SESSION[self::CART_KEY] = $_SESSION[self::CART_KEY] ?? [];
     }
 
-    // 2. Obtiene todos los ítems
     public function getItems() {
         // Asegura que todos los ítems tengan el subtotal actualizado antes de devolverlos
         $this->getTotalSubtotal(); 
         return $_SESSION[self::CART_KEY];
     }
 
-    // 3. Genera un ID único (Hash) basado en el producto y sus mods
     private function generateItemHash($producto_id, $modificadores) {
         $modificadores = $modificadores ?? []; // Asegura que es un array
         $mod_string = '';
@@ -31,7 +28,6 @@ class CartModel {
         return md5($producto_id . ':' . $mod_string);
     }
 
-    // 4. Calcula el costo extra de todos los modificadores en un ítem
     private function calculateModsCost($modificadores) {
         $costo = 0.00;
         $modificadores = $modificadores ?? []; // Asegura que es un array
@@ -41,7 +37,6 @@ class CartModel {
         return $costo;
     }
 
-    // 5. Método para añadir o incrementar un producto (USADO POR TU MENÚ)
     public function addItem($producto_id, $nombre, $precio_base, $cantidad, $modificadores = []) {
         $item_hash = $this->generateItemHash($producto_id, $modificadores);
 
@@ -61,7 +56,6 @@ class CartModel {
         return true;
     }
 
-    // 6. Actualiza la cantidad de un ítem (USADO POR TU CARRITO)
     public function updateQuantity($item_hash, $cantidad) {
         $cantidad = (int)$cantidad;
         if (isset($_SESSION[self::CART_KEY][$item_hash])) {
@@ -75,7 +69,6 @@ class CartModel {
         return false;
     }
 
-    // 7. Elimina un ítem (USADO POR TU CARRITO)
     public function removeItem($item_hash) {
         if (isset($_SESSION[self::CART_KEY][$item_hash])) {
             unset($_SESSION[self::CART_KEY][$item_hash]);
@@ -85,7 +78,6 @@ class CartModel {
         return false;
     }
 
-    // 8. Calcula el subtotal total del carrito
     public function getTotalSubtotal() {
         $total_subtotal = 0.00;
         foreach ($_SESSION[self::CART_KEY] as $item_hash => &$item) {
