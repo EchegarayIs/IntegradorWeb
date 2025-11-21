@@ -58,16 +58,27 @@
     
     <script>
         const togglePasswordIcon = document.getElementById('togglePasswordIcon');
-        const passwordField = document.getElementById('passwor');
+    const passwordField = document.getElementById('passwor');
 
-        if (togglePasswordIcon && passwordField) {
-            togglePasswordIcon.addEventListener('click', function() {
-                const type = passwordField.getAttribute('type') === 'passwor' ? 'text' : 'passwor';
-                passwordField.setAttribute('type', type);
-                
-            
-            });
-        }
+    if (togglePasswordIcon && passwordField) {
+        togglePasswordIcon.addEventListener('click', function() {
+
+            const isPassword = passwordField.getAttribute('type') === 'password';
+            const newType = isPassword ? 'text' : 'password';
+            passwordField.setAttribute('type', newType);
+
+            const eyeOpenSrc = "../assets/css/ojoabierto.png";
+            const eyeClosedSrc = "../assets/css/ojocerrado.png";
+
+            if (isPassword) {
+                this.src = eyeOpenSrc;
+                this.alt = "Ocultar contraseña";
+            } else {
+                this.src = eyeClosedSrc;
+                this.alt = "Mostrar contraseña";
+            }
+        });
+    }
 
 
     </script>

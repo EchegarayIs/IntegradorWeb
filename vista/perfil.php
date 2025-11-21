@@ -152,18 +152,28 @@ SESSION_START();
                     switchProfilePanel(targetId);
                 });
             });
+// Funcionalidad de mostrar/ocultar contraseña
+document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
 
-            // Funcionalidad de mostrar/ocultar contraseña
-            document.querySelectorAll('.toggle-password').forEach(button => {
-                button.addEventListener('click', function() {
-                    const passwordInput = this.previousElementSibling;
-                    const isPassword = passwordInput.type === 'password';
-                    passwordInput.type = isPassword ? 'text' : 'password';
-                });
-            });
+        const passwordInput = this.previousElementSibling;
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
 
-          
-           
+        // Cambiar ícono
+        const icon = this.querySelector("img");
+        const eyeOpenSrc = "../assets/css/ojoabierto.png";
+        const eyeClosedSrc = "../assets/css/ojocerrado.png";
+
+        if (isPassword) {
+            icon.src = eyeClosedSrc;
+            icon.alt = "Ocultar contraseña";
+        } else {
+            icon.src = eyeOpenSrc;
+            icon.alt = "Mostrar contraseña";
+        }
+    });
+});
 
             // Inicializa mostrando el panel de "Información personal"
             switchProfilePanel('personal');

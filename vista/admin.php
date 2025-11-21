@@ -195,7 +195,8 @@ SESSION_start();
                         </div>
                         
                         <div class="report-icon-box">
-                            <img src="../assets/css/report_icon.png" alt="Icono de reporte" class="report-icon">
+                            <img src="../assets/css/archivo.png" alt="Icono de reporte" class="report-icon">
+                            <br>
                             <button type="submit" class="save-changes-button">Generar reporte</button>
                         </div>
                     </form>
@@ -294,12 +295,12 @@ SESSION_start();
 
                         <div class="password-wrapper">
                             <input type="password" value= "<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Contraseña" name="passwor" required minlength="8">
-                            <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button> 
+                            <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button> 
                             
                         </div>
                         <div class="password-wrapper">
                             <input type="password" value="<?php $contra = $_SESSION['passwor']; echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Confirmar Contraseña" name="confirm_password" required minlength="8">
-                            <button type="button" class="toggle-password"><img src="../assets/css/eye_icon.png" alt="Ver"></button>
+                            <button type="button" class="toggle-password"><img src="../assets/css/ojocerrado.png" alt="Ver"></button>
                         </div>
 
                         <div class="full-width-control">
@@ -631,14 +632,32 @@ SESSION_start();
 }
 //FIN ELIMINAR PRODUCTO
 
-        //Funcionalidad de mostrar/ocultar contraseña
-        document.querySelectorAll('.toggle-password').forEach(button => {
-            button.addEventListener('click', function() {
-                const passwordInput = this.previousElementSibling;
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-            });
-        });
+        // Funcionalidad de mostrar/ocultar contraseña
+document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+
+        const passwordInput = this.previousElementSibling;
+        const isPassword = passwordInput.type === 'password';
+        const newType = isPassword ? 'text' : 'password';
+        passwordInput.type = newType;
+
+        const eyeOpenSrc = "../assets/css/ojoabierto.png";
+        const eyeClosedSrc = "../assets/css/ojocerrado.png";
+
+        // Obtener la imagen dentro del botón
+        const icon = this.querySelector("img");
+
+        if (isPassword) {
+            icon.src = eyeOpenSrc;
+            icon.alt = "Ocultar contraseña";
+        } else {
+            icon.src = eyeClosedSrc;
+            icon.alt = "Mostrar contraseña";
+        }
+    });
+});
+
+
         
     //Captura los pedidos seleccionados al hacer clic en el botón
     document.addEventListener('DOMContentLoaded', () => {
