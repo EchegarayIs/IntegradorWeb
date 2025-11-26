@@ -56,6 +56,7 @@ SESSION_start();
                         <li><a href="#" class="sidebar-link" id="link-reportes">Reportes</a></li>
                         <li><a href="#" class="sidebar-link" id="link-personal">Personal</a></li>
                         <li><a href="#" class="sidebar-link" id="link-informacion-personal">Información personal</a>
+                        <li><a href="../controlador/logout.php" class="sidebar-link" id="link-logout">Cerrar sesión</a></li>
                         </li>
                     </ul>
                 </nav>
@@ -513,6 +514,10 @@ SESSION_start();
                         showPanel('productos-panel');
                         productTitle.textContent = 'Gestión de productos';
                         filterProducts('all');
+                    }else if (targetId === 'logout') {
+                        document.getElementById('link-logout').classList.add('active-sidebar-link');
+                        alert('Cerrando sesión...');
+                        window.location.href = '../controlador/logout.php'; // Redirección real
                     }
                     else {
                         showPanel(targetId + '-panel');
@@ -745,8 +750,6 @@ SESSION_start();
                 }
             });
         });
-
-
 
         //Captura los pedidos seleccionados al hacer clic en el botón
         document.addEventListener('DOMContentLoaded', () => {
