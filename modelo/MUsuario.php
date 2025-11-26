@@ -45,6 +45,78 @@ class MUsuario {
 
     return $stmt->execute();
 }
+public function listarUsuariosRol2() {
+    $query = "SELECT idUsuario, nombre, apellidos, fechaNac, direccion, genero, correo, Roles_idRol, estado
+              FROM usuarios
+              WHERE Roles_idRol = 2 AND estado = 1";
+
+    $stmt = $this->conexion->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+public function actualizarUsuario2($idUsuario, $nombre, $apellidos, $fechaNac, $direccion, $genero, $correo, $passwor) {
+    try {
+
+        // Convertir género a número
+        $generoValor = (int)$genero;
+
+        $sql = "UPDATE usuarios 
+                SET nombre = :nombre,
+                    apellidos = :apellidos,
+                    fechaNac = :fechaNac,
+                    direccion = :direccion,
+                    genero = :genero,
+                    correo = :correo,
+                    passwor = :passwor
+                WHERE idUsuario = :idUsuario";
+
+        $stmt = $this->conexion->prepare($sql);
+
+        $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':apellidos', $apellidos);
+        $stmt->bindParam(':fechaNac', $fechaNac);
+        $stmt->bindParam(':direccion', $direccion);
+        $stmt->bindParam(':genero', $generoValor);
+        $stmt->bindParam(':correo', $correo);
+        $stmt->bindParam(':passwor', $passwor);
+
+        return $stmt->execute();
+
+    } catch (PDOException $e) {
+        echo "Error al actualizar usuario: " . $e->getMessage();
+        return false;
+    }
+}
+public function borrarUsuario2($idUsuario) {
+    try {
+        $sql = "DELETE FROM usuarios WHERE idUsuario = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        return $stmt->execute();
+
+    } catch (PDOException $e) {
+        echo "Error al eliminar usuario: " . $e->getMessage();
+        return false;
+    }
+} 
+public function buscarUsuarioPorId($idUsuario) {
+    try {
+        $sql = "SELECT idUsuario, nombre, apellidos, fechaNac, direccion, genero, correo, passwor, Roles_idRol, estado
+                FROM usuarios 
+                WHERE idUsuario = :idUsuario";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+    } catch (PDOException $e) {
+        return false; // 
+    }
+}
 }
 ?>
 
