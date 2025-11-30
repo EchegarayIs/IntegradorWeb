@@ -42,7 +42,7 @@ class Usuario {
             // Convertir género a número
             $generoValor = (int)$genero;
              
-            $rol = 2;       
+            $rol = 3;       
             $estado = 1;    
             
 

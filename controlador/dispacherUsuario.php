@@ -27,6 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../vista/inicio.php");
         } elseif ($resultado["Roles_idRol"] == 2) {
             header("Location: ../vista/indexA.php");
+        } elseif ($resultado["Roles_idRol"] == 3) {
+            header("Location: ../vista/inicioM.php");
         } else {
             echo "<script>alert('Acceso denegado.'); window.location.href='../vista/login.php';</script>";
         }

@@ -48,7 +48,7 @@ class MUsuario {
 public function listarUsuariosRol2() {
     $query = "SELECT idUsuario, nombre, apellidos, fechaNac, direccion, genero, correo, Roles_idRol, estado
               FROM usuarios
-              WHERE Roles_idRol = 2 AND estado = 1";
+              WHERE Roles_idRol = 3 AND estado = 1";
 
     $stmt = $this->conexion->prepare($query);
     $stmt->execute();
