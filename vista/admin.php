@@ -267,13 +267,13 @@ SESSION_start();
 
                         <div class="password-wrapper">
                             <input type="password" class="profile-input" name="passwor" placeholder="Contraseña">
-                            <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png"
+                            <button type="button" class="toggle-password"><img src="../assets/css/ojocerrado.png"
                                     alt="Ver"></button>
                         </div>
                         <div class="password-wrapper">
                             <input type="password" class="profile-input" name="confirmar_passwor"
                                 placeholder="Confirmar contraseña">
-                            <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png"
+                            <button type="button" class="toggle-password"><img src="../assets/css/ojocerrado.png"
                                     alt="Ver"></button>
                         </div>
 
@@ -326,7 +326,7 @@ SESSION_start();
                             <input type="password" class="profile-input" name="passwor2" id="edit-passwor2"
                                 placeholder="Contraseña" required>
                             <button type="button" class="toggle-password">
-                                <img src="../assets/css/ojoabierto.png" alt="Ver">
+                                <img src="../assets/css/ojocerrado.png" alt="Ver">
                             </button>
                         </div>
 
@@ -335,7 +335,7 @@ SESSION_start();
                             <input type="password" class="profile-input" name="confirmar_passwor2"
                                 id="edit-confirmar_passwor2" placeholder="Confirmar contraseña" required>
                             <button type="button" class="toggle-password">
-                                <img src="../assets/css/ojoabierto.png" alt="Ver">
+                                <img src="../assets/css/ojocerrado.png" alt="Ver">
                             </button>
                         </div>
 
@@ -380,7 +380,7 @@ SESSION_start();
                             <input type="password" value="<?php $contra = $_SESSION['passwor'];
                             echo htmlspecialchars($contra); ?>" class="profile-input" placeholder="Contraseña"
                                 name="passwor" required minlength="8">
-                            <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png"
+                            <button type="button" class="toggle-password"><img src="../assets/css/ojocerrado.png"
                                     alt="Ver"></button>
 
                         </div>

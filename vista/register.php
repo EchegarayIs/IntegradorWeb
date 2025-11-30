@@ -62,13 +62,13 @@
                     <div class="input-group password-group">
                         <input type="password" id="reg-password" name="passwor" placeholder="Contraseña" required minlength="8">
                         <span class="toggle-password">
-                            <img src="../assets/css/ojoabierto.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="reg-password">
+                            <img src="../assets/css/ojocerrado.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="reg-password">
                         </span>
                     </div>
                     <div class="input-group password-group">
                         <input type="password" id="confirm-password" name="confirmar" placeholder="Confirmar contraseña" required minlength="8">
                         <span class="toggle-password">
-                            <img src="../assets/css/ojoabierto.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="confirm-password">
+                            <img src="../assets/css/ojocerrado.png" alt="Mostrar/Ocultar Contraseña" class="toggle-icon" data-target="confirm-password">
                         </span>
                     </div>
                     
