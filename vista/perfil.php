@@ -94,11 +94,11 @@ SESSION_START();
 
                         <div class="password-wrapper">
                             <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="passwor" class="profile-input" placeholder="Contraseña" required minlength="8">
-                            <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button> 
+                            <button type="button" class="toggle-password"><img src="../assets/css/ojocerrado.png" alt="Ver"></button> 
                         </div>
                         <div class="password-wrapper">
                             <input type="password" value="<?php echo !empty($_SESSION['passwor']) ? htmlspecialchars($_SESSION['passwor']) : '';?>" name="confirm_password" class="profile-input" placeholder="Confirmar Contraseña" required minlength="8">
-                            <button type="button" class="toggle-password"><img src="../assets/css/ojoabierto.png" alt="Ver"></button>
+                            <button type="button" class="toggle-password"><img src="../assets/css/ojocerrado.png" alt="Ver"></button>
                         </div>
 
                         <div class="full-width-control">
@@ -162,8 +162,8 @@ document.querySelectorAll('.toggle-password').forEach(button => {
 
         // Cambiar ícono
         const icon = this.querySelector("img");
-        const eyeOpenSrc = "../assets/css/ojoabierto.png";
-        const eyeClosedSrc = "../assets/css/ojocerrado.png";
+        const eyeOpenSrc = "../assets/css/ojocerrado.png";
+        const eyeClosedSrc = "../assets/css/ojoabierto.png";
 
         if (isPassword) {
             icon.src = eyeClosedSrc;
