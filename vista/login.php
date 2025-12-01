@@ -15,11 +15,7 @@
                 <h2>El Gallo Giro</h2>
             </div>
         </div>
-        <nav id="main-nav">
-            <ul>
-                <li><a href="inicio.php">Inicio</a></li>
-            </ul>
-        </nav>
+        
     </header>
 
     <main class="login-main">
@@ -45,7 +41,6 @@
                     
                     <div class="button-group">
                         <button type="submit" class="submit-button">Ingresar</button>
-                        <button type="button" class="cancel-button" onclick="window.location.href='inicio.php'">Cancelar</button>
                     </div>
                 </form>
 

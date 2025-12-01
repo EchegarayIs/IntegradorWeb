@@ -11,6 +11,7 @@ $total_final = $total_subtotal + $SHIPPING_COST;
 
 // Variable de control para el botón de pago
 $is_cart_empty = $cart->isEmpty(); 
+
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +47,7 @@ $is_cart_empty = $cart->isEmpty();
                 <li class="active-menu-link"><a href="#">Carrito</a></li>
             </ul>
         </nav>
-        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'">Perfil</button>
+        <button id="user-button" class="user-active" onclick="window.location.href='Perfil.php'" ><?php echo htmlspecialchars($_SESSION['nombre']);?></button>
     </header>
 
     <main class="cart-main">
