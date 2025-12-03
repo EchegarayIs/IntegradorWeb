@@ -128,37 +128,23 @@
             
             <div class="footer-section brand-info">
                 <h3>El Gallo Giro</h3>
-                <p>El auténtico sabor de México en cada bocado. Servicio a domicilio rápido y platillos frescos.</p>
-                <div class="social-links">
-                    <a href="#"><img src="../assets/css/facebook.png" alt="Facebook"></a>
-                    <a href="#"><img src="../assets/css/instagram.png" alt="Instagram"></a>
-                    <a href="#"><img src="../assets/css/whatsapp.png" alt="WhatsApp"></a>
-                </div>
+                <p>El auténtico sabor de México en cada bocado. Disfruta de los mejores tacos de la región.</p>
+                
             </div>
             
             <div class="footer-section contact-info">
                 <h3>Contacto</h3>
                 <ul>
-                    <li>📞 Teléfono: (55) 1234 5678</li>
-                    <li>📧 Email: contacto@gallogiro.mx</li>
+                    <li>📞 Teléfono: 55 3944 9958</li>
+                    <li>ⓕ  Facebook: El Gallo Giro Tlahuelilpan</li>
                     <li>🕒 Horario: Lun - Sáb: 10:00 - 23:00</li>
                 </ul>
             </div>
             
             <div class="footer-section location-info">
                 <h3>Ubicación</h3>
-                <p>Av. Principal #456, Colonia Juárez, Ciudad de México.</p>
-                <a href="https://maps.google.com/?q=Av.+Principal+#456" target="_blank" class="map-link">Ver en Mapa</a>
-            </div>
-
-            <div class="footer-section links-menu">
-                <h3>Menú Rápido</h3>
-                <ul>
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Menú Completo</a></li>
-                    <li><a href="#">Términos y Condiciones</a></li>
-                    <li><a href="#">Aviso de Privacidad</a></li>
-                </ul>
+                <p>La Ranchería, Rancho Viejo, 42783 Tlahuelilpan, Hgo. #456</p>
+                <a href="https://maps.app.goo.gl/EGMkjwspU3VL5xX29" target="_blank" class="map-link">Ver en Mapa</a>
             </div>
 
         </div>
