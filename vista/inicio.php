@@ -78,27 +78,27 @@
             <h2>Platillos Populares</h2>
             <div class="dishes-grid">
                 <div class="dish-card">
-                    <img src="../assets/css/tacosalpastor.png" alt="Tacos de carne molida">
-                    <h3>Tacos de carne molida</h3>
-                    <p>$17.00 c/u</p>
+                    <img src="../assets/css/tacos_de_tripa.jpg" alt="Tacos de Tripa">
+                    <h3>Tacos de tripa</h3>
+                    <p>$18.00 c/u</p>
                     <button class="add-to-cart-button"><img src="../assets/css/carrito.png" alt="Agregar al carrito"></button>
                 </div>
                 <div class="dish-card">
-                    <img src="../assets/css/tacosalpastor.png" alt="Tacos al pastor">
-                    <h3>Tacos al pastor</h3>
-                    <p>$14.00 c/u</p>
+                    <img src="../assets/css/tacos_suadero.jpeg" alt="Tacos al pastor">
+                    <h3>Tacos de suadero</h3>
+                    <p>$18.00 c/u</p>
                     <button class="add-to-cart-button"><img src="../assets/css/carrito.png" alt="Agregar al carrito"></button>
                 </div>
                 <div class="dish-card">
-                    <img src="../assets/css/tacosalpastor.png" alt="Torta cubana">
+                    <img src="../assets/css/torta_cubana.jpeg" alt="Torta cubana">
                     <h3>Torta cubana</h3>
                     <p>$57.00 c/u</p>
                     <button class="add-to-cart-button"><img src="../assets/css/carrito.png" alt="Agregar al carrito"></button>
                 </div>
                 <div class="dish-card">
-                    <img src="../assets/css/tacosalpastor.png" alt="Tacos de chorizo">
-                    <h3>Tacos de chorizo</h3>
-                    <p>$19.00 c/u</p>
+                    <img src="../assets/css/torta_jamon.jpeg" alt="Tacos de chorizo">
+                    <h3>Torta de jamon</h3>
+                    <p>$35.00 c/u</p>
                     <button class="add-to-cart-button"><img src="../assets/css/carrito.png" alt="Agregar al carrito"></button>
                 </div>
             </div>
