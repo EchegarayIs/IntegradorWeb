@@ -101,7 +101,7 @@ public function pedidosProceso() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-public function pedidosTerminados() {
+/*public function pedidosTerminados() {
     $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado 
               FROM pedidos 
               WHERE estado = 3
@@ -111,7 +111,20 @@ public function pedidosTerminados() {
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}*/
+public function pedidosTerminados() {
+    $query = "SELECT idPedido, monto, fechaPedido, usuario_idUsuario, estado 
+              FROM pedidos 
+              WHERE estado = 3
+              AND DATE(fechaPedido) = CURDATE()
+              ORDER BY fechaPedido DESC";
+
+    $stmt = $this->conexion->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 }
 ?>
